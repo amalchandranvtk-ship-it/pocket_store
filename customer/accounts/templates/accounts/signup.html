@@ -1,0 +1,549 @@
+{% load static %}
+{% load socialaccount %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PocketStore Signup</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:Arial, Helvetica, sans-serif;
+    }
+
+    html,
+    body{
+      height:100%;
+      overflow:hidden;
+      background:#111827;
+    }
+
+    .container-fluid{
+      padding:0;
+    }
+
+    .signup-wrapper{
+      height:100vh;
+      overflow:hidden;
+      background:#ffffff;
+    }
+
+    .row{
+      height:100vh;
+      margin:0;
+    }
+
+    .left-side{
+      height:100vh;
+      background-image:
+      linear-gradient(rgba(15,23,42,0.20), rgba(15,23,42,0.78)),
+      url("{% static 'images/customer_signup.png' %}");
+      background-position:center top;
+      background-repeat:no-repeat;
+      background-size:cover;
+      position:relative;
+    }
+
+    .overlay{
+      position:absolute;
+      inset:0;
+      padding:40px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      color:white;
+    }
+
+    .brand{
+      font-size:24px;
+      font-weight:700;
+    }
+
+    .left-bottom{
+      max-width:480px;
+    }
+
+    .left-bottom h1{
+      font-size:42px;
+      font-weight:800;
+      line-height:1.2;
+      margin-bottom:16px;
+    }
+
+    .left-bottom p{
+      color:#e5e7eb;
+      font-size:14px;
+      line-height:1.8;
+    }
+
+    .right-side{
+      height:100vh;
+      background:#ffffff;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      padding:20px;
+      overflow:hidden;
+    }
+
+    .signup-card{
+      width:100%;
+      max-width:410px;
+      background:white;
+      border:1px solid #e5e7eb;
+      border-radius:18px;
+      padding:24px 28px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.08);
+    }
+
+    .signup-card h2{
+      font-size:28px;
+      font-weight:800;
+      color:#111827;
+      margin-bottom:6px;
+    }
+
+    .signup-card p{
+      color:#6b7280;
+      font-size:13px;
+      margin-bottom:18px;
+    }
+
+    .form-label{
+      font-size:12px;
+      font-weight:600;
+      color:#374151;
+      margin-bottom:5px;
+    }
+
+    .input-group{
+      margin-bottom:11px;
+    }
+
+    .input-group-text{
+      background:#f9fafb;
+      border-right:none;
+      border-radius:10px 0 0 10px;
+    }
+
+    .form-control{
+      height:44px;
+      border-left:none;
+      border-radius:10px;
+      font-size:13px;
+    }
+
+    .form-control:focus{
+      border-color:#2563eb;
+      box-shadow:0 0 0 4px rgba(37,99,235,0.12);
+    }
+
+    .eye{
+      background:#f9fafb;
+      border-left:none;
+      cursor:pointer;
+    }
+
+    .terms{
+      display:flex;
+      align-items:flex-start;
+      gap:9px;
+      margin-bottom:14px;
+    }
+
+    .terms label{
+      font-size:11px;
+      color:#6b7280;
+      line-height:1.5;
+    }
+
+    .terms a{
+      text-decoration:none;
+      color:#2563eb;
+      font-weight:600;
+    }
+
+    .signup-btn{
+      width:100%;
+      height:46px;
+      border:none;
+      border-radius:10px;
+      background:#2563eb;
+      color:white;
+      font-size:14px;
+      font-weight:700;
+      transition:0.3s;
+      box-shadow:0 10px 20px rgba(37,99,235,0.25);
+    }
+
+    .signup-btn:hover{
+      background:#1d4ed8;
+    }
+
+    .divider{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin:16px 0;
+      color:#9ca3af;
+      font-size:11px;
+    }
+
+    .divider::before,
+    .divider::after{
+      content:"";
+      flex:1;
+      height:1px;
+      background:#e5e7eb;
+    }
+
+    .google-btn{
+      width:100%;
+      height:44px;
+      border:1px solid #d1d5db;
+      border-radius:10px;
+      background:white;
+      font-size:13px;
+      font-weight:600;
+      transition:0.3s;
+    }
+
+    .google-btn:hover{
+      background:#f9fafb;
+    }
+
+    .login-text{
+      margin-top:16px;
+      text-align:center;
+      font-size:12px;
+      color:#6b7280;
+    }
+
+    .login-text a{
+      text-decoration:none;
+      color:#2563eb;
+      font-weight:700;
+    }
+
+    @media(max-width:991px){
+      html,
+      body{
+        height:auto;
+        overflow:auto;
+      }
+
+      .signup-wrapper,
+      .row{
+        height:auto;
+        overflow:auto;
+      }
+
+      .left-side{
+        min-height:360px;
+      }
+
+      .right-side{
+        height:auto;
+        padding:24px;
+        overflow:visible;
+      }
+
+      .overlay{
+        padding:30px;
+      }
+
+      .left-bottom h1{
+        font-size:34px;
+      }
+    }
+
+    @media(max-width:576px){
+      .signup-card{
+        padding:22px;
+      }
+
+      .signup-card h2{
+        font-size:26px;
+      }
+
+      .left-bottom h1{
+        font-size:26px;
+      }
+
+      .overlay{
+        padding:22px;
+      }
+    }
+.message-container{
+    position:fixed;
+    top:20px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:99999;
+
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+
+    align-items:center;
+}
+
+.toast-message{
+    min-width:300px;
+    max-width:500px;
+
+    padding:14px 22px;
+    border-radius:12px;
+
+    color:white;
+    font-weight:600;
+    text-align:center;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.18);
+
+    animation:fadeIn .3s ease;
+}
+
+.toast-message.success{
+    background:#16a34a;
+}
+
+.toast-message.error,
+.toast-message.danger{
+    background:#dc2626;
+}
+
+.toast-message.warning{
+    background:#f59e0b;
+}
+
+
+.toast-message.info{
+    background:#2563eb;
+}
+
+@keyframes fadeIn{
+    from{
+        opacity:0;
+        transform:translateY(-15px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+@keyframes fadeOut{
+    from{
+        opacity:1;
+        transform:translateY(0);
+    }
+    to{
+        opacity:0;
+        transform:translateY(-15px);
+    }
+}
+
+@keyframes slideDown{
+  from{
+    opacity:0;
+    transform:translateY(-8px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+  </style>
+</head>
+
+<body>
+
+<div class="container-fluid signup-wrapper">
+  <div class="row g-0">
+
+    <div class="col-lg-6">
+      <div class="left-side">
+        <div class="overlay">
+          <div class="brand">
+            <i class="bi bi-bag-check-fill"></i>
+            PocketStore
+          </div>
+
+          <div class="left-bottom">
+            <h1>
+              Smart Shopping,<br>
+              Right in Your Pocket.
+            </h1>
+
+            <p>
+              Join thousands of smart shoppers who enjoy seamless browsing,
+              secure payments and lightning-fast delivery.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-6">
+      <div class="right-side">
+        <div class="signup-card">
+          <h2>Create Account</h2>
+
+          <p>Enter your details to start shopping.</p>
+
+
+{% if messages %}
+<div class="message-container">
+    {% for message in messages %}
+        <div class="toast-message {{ message.tags }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<form method="POST">
+
+
+          <form method="POST">
+            {% csrf_token %}
+
+            <label class="form-label">Full Name</label>
+            <div class="input-group">
+              <span class="input-group-text">
+                <i class="bi bi-person"></i>
+              </span>
+              <input type="text" class="form-control" placeholder="John Doe" name="full_name">
+            </div>
+
+            <label class="form-label">Email Address</label>
+            <div class="input-group">
+              <span class="input-group-text">
+                <i class="bi bi-envelope"></i>
+              </span>
+              <input type="email" class="form-control" placeholder="john@example.com" name="email">
+            </div>
+
+            <label class="form-label">Referral Code (Optional)</label>
+
+<div class="input-group">
+
+    <span class="input-group-text">
+        <i class="bi bi-gift"></i>
+    </span>
+
+    <input
+        type="text"
+        class="form-control"
+        name="referral_code"
+        placeholder="Enter Referral Code">
+
+</div>
+
+            <label class="form-label">Password</label>
+            <div class="input-group">
+              <span class="input-group-text">
+                <i class="bi bi-lock"></i>
+              </span>
+              <input type="password" class="form-control" placeholder="••••••••" name="password">
+              <span class="input-group-text eye">
+                <i class="bi bi-eye"></i>
+              </span>
+            </div>
+
+            <label class="form-label">Confirm Password</label>
+            <div class="input-group">
+              <span class="input-group-text">
+                <i class="bi bi-lock"></i>
+              </span>
+              <input type="password" class="form-control" placeholder="••••••••" name="confirm_password">
+              <span class="input-group-text eye">
+                <i class="bi bi-eye"></i>
+              </span>
+            </div>
+
+            <div class="terms">
+              <input type="checkbox">
+              <label>
+                I agree to
+                <a href="#">Terms of Service</a>
+                &
+                <a href="#">Privacy Policy</a>
+              </label>
+            </div>
+
+            <button type="submit" class="signup-btn">Create Account</button>
+          </form>
+
+          <div class="divider">OR CONTINUE WITH</div>
+
+          <button class="google-btn">
+            <a href="{% provider_login_url 'google' %}" class="google-btn text-decoration-none d-flex align-items-center justify-content-center">
+  <img src="https://cdn-icons-png.flaticon.com/512/281/281764.png" width="18" class="me-2">
+  Continue with Google
+</a>
+          </button>
+
+          <div class="login-text">
+            Already have an account?
+            <a href="{% url 'customer_login' %}">Log in</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+document.querySelectorAll(".eye").forEach(function (eye) {
+
+    eye.addEventListener("click", function () {
+
+        const passwordInput = this.parentElement.querySelector("input");
+        const eyeIcon = this.querySelector("i");
+
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            eyeIcon.classList.remove("bi-eye");
+            eyeIcon.classList.add("bi-eye-slash");
+        } else {
+            passwordInput.type = "password";
+            eyeIcon.classList.remove("bi-eye-slash");
+            eyeIcon.classList.add("bi-eye");
+        }
+
+    });
+
+});
+</script>
+
+<script>
+setTimeout(function(){
+
+    document.querySelectorAll(".toast-message").forEach(function(msg){
+
+        msg.style.animation = "fadeOut 0.4s ease forwards";
+
+        setTimeout(function(){
+            msg.remove();
+        },400);
+
+    });
+
+},3000);
+</script>
+
+</body>
+</html>

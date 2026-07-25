@@ -1,0 +1,365 @@
+{% extends "admin_panel/base.html" %}
+
+{% block title %}
+Edit Coupon
+{% endblock %}
+
+{% block extra_css %}
+
+<style>
+
+.page-header{
+
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:25px;
+flex-wrap:wrap;
+gap:15px;
+
+}
+
+.page-header h3{
+
+font-size:28px;
+font-weight:700;
+margin:0;
+color:#111827;
+
+}
+
+.page-header p{
+
+margin:5px 0 0;
+color:#6b7280;
+font-size:14px;
+
+}
+
+.back-btn{
+
+background:#fff;
+border:1px solid #d1d5db;
+padding:10px 20px;
+border-radius:10px;
+text-decoration:none;
+font-weight:600;
+color:#111827;
+transition:.3s;
+
+}
+
+.back-btn:hover{
+
+background:#f3f4f6;
+
+}
+
+.form-card{
+
+background:#fff;
+padding:30px;
+border-radius:15px;
+box-shadow:0 2px 12px rgba(0,0,0,.05);
+
+}
+
+.section-title{
+
+font-size:18px;
+font-weight:700;
+margin-bottom:20px;
+
+}
+
+.form-label{
+
+font-size:13px;
+font-weight:700;
+margin-bottom:8px;
+color:#374151;
+
+}
+
+.form-control,
+.form-select{
+
+height:48px;
+border-radius:10px;
+
+}
+
+.errorlist{
+
+list-style:none;
+padding:0;
+margin-top:6px;
+margin-bottom:0;
+font-size:13px;
+color:#dc2626;
+
+}
+
+.help-text{
+
+font-size:12px;
+color:#6b7280;
+margin-top:5px;
+
+}
+
+.coupon-info{
+
+background:#eff6ff;
+border:1px solid #bfdbfe;
+padding:15px 18px;
+border-radius:10px;
+margin-bottom:25px;
+
+}
+
+.coupon-info strong{
+
+color:#2563eb;
+
+}
+
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+<div>
+
+<h3>Edit Coupon</h3>
+
+<p>Update coupon information.</p>
+
+</div>
+
+<a href="{% url 'coupon_list' %}" class="back-btn">
+
+<i class="bi bi-arrow-left"></i>
+
+Back
+
+</a>
+
+</div>
+
+<div class="form-card">
+
+<div class="coupon-info">
+
+Editing Coupon :
+
+<strong>{{ coupon.coupon_code }}</strong>
+
+</div>
+
+<form method="POST">
+
+{% csrf_token %}
+
+<div class="row">
+
+<div class="col-lg-6">
+
+<h5 class="section-title">
+
+Basic Information
+
+</h5>
+
+<div class="mb-4">
+
+<label class="form-label">
+
+Coupon Code
+
+</label>
+
+{{ form.coupon_code }}
+
+{{ form.coupon_code.errors }}
+
+</div>
+
+<div class="mb-4">
+
+<label class="form-label">
+
+Discount Type
+
+</label>
+
+{{ form.discount_type }}
+
+{{ form.discount_type.errors }}
+
+</div>
+
+<div class="mb-4">
+
+<label class="form-label">
+
+Discount Value
+
+</label>
+
+{{ form.discount_value }}
+
+{{ form.discount_value.errors }}
+
+</div>
+
+<div class="mb-4">
+
+<label class="form-label">
+
+Minimum Order Value
+
+</label>
+
+{{ form.minimum_order_value }}
+
+{{ form.minimum_order_value.errors }}
+
+</div>
+
+</div>
+
+<div class="col-lg-6">
+
+<h5 class="section-title">
+
+Coupon Settings
+
+</h5>
+
+<div class="mb-4">
+
+<label class="form-label">
+
+Total Usage Limit
+
+</label>
+
+{{ form.total_usage_limit }}
+
+{{ form.total_usage_limit.errors }}
+
+</div>
+
+<div class="mb-4">
+
+<label class="form-label">
+
+Limit Per User
+
+</label>
+
+{{ form.limit_per_user }}
+
+{{ form.limit_per_user.errors }}
+
+</div>
+
+<div class="mb-4">
+
+<label class="form-label">
+
+Start Date
+
+</label>
+
+{{ form.start_date }}
+
+{{ form.start_date.errors }}
+
+</div>
+
+<div class="mb-4">
+
+<label class="form-label">
+
+Expiry Date
+
+</label>
+
+{{ form.expiry_date }}
+
+{{ form.expiry_date.errors }}
+
+</div>
+
+<div class="mb-4">
+
+<div class="form-check">
+
+{{ form.is_active }}
+
+<label class="form-check-label ms-2">
+
+Active Coupon
+
+</label>
+
+</div>
+
+{{ form.is_active.errors }}
+
+</div>
+
+</div>
+
+</div>
+
+<hr class="my-4">
+
+<div class="d-flex justify-content-end gap-2 flex-wrap">
+
+<a href="{% url 'coupon_list' %}" class="btn btn-outline-secondary px-4">
+
+Cancel
+
+</a>
+
+<button type="submit" class="btn btn-primary px-4">
+
+<i class="bi bi-check-circle"></i>
+
+Update Coupon
+
+</button>
+
+</div>
+
+</form>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+
+<script>
+
+const couponInput=document.getElementById("id_coupon_code");
+
+if(couponInput){
+
+couponInput.addEventListener("keyup",function(){
+
+this.value=this.value.toUpperCase();
+
+});
+
+}
+
+</script>
+
+{% endblock %}

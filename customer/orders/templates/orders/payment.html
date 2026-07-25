@@ -1,0 +1,1221 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Payment</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+
+<style>
+:root{
+    --bg:#050505;
+    --card:#101010;
+    --border:#242424;
+    --text:#ffffff;
+    --muted:#9ca3af;
+    --primary:#2563eb;
+    --success:#22c55e;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:Inter,sans-serif;
+}
+
+
+
+.stepper{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin-bottom:70px;
+}
+
+.step{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+}
+
+.circle{
+    width:48px;
+    height:48px;
+    border-radius:50%;
+    background:#2a2a2a;
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:700;
+    font-size:17px;
+}
+
+.step.completed .circle{
+    background:#4b5563;
+}
+
+.step.active .circle{
+    background:var(--primary);
+}
+
+.step p{
+    margin-top:10px;
+    font-size:12px;
+    color:#9ca3af;
+    letter-spacing:1px;
+}
+
+.line{
+    width:120px;
+    height:2px;
+    background:#2f2f2f;
+    margin:0 10px;
+    margin-bottom:24px;
+}
+
+
+.payment-card{
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    background:var(--card);
+
+    border:1px solid var(--border);
+
+    border-radius:18px;
+
+    padding:28px;
+
+    margin-bottom:20px;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+    position:relative;
+
+}
+
+.payment-card:hover{
+
+    border-color:var(--primary);
+
+}
+
+.payment-card.active{
+
+    border:2px solid var(--primary);
+
+}
+
+.payment-card input{
+
+    display:none;
+
+}
+
+.payment-card h4{
+
+    font-size:26px;
+
+    margin-bottom:8px;
+
+}
+
+.payment-card p{
+
+    color:var(--muted);
+
+    margin-bottom:0;
+
+}
+
+.payment-icon{
+
+    font-size:38px;
+
+    color:#bfc8d4;
+
+}
+
+
+.summary-box{
+
+    background:var(--card);
+
+    border:1px solid var(--border);
+
+    border-radius:20px;
+
+    padding:30px;
+
+    position:sticky;
+
+    top:20px;
+
+}
+
+.summary-box h3{
+
+    margin-bottom:30px;
+
+    font-size:34px;
+
+    font-weight:700;
+
+}
+
+
+
+.product-row{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:25px;
+
+}
+
+.product-row:last-child{
+
+    margin-bottom:0;
+
+}
+
+.product-img{
+
+    width:70px;
+
+    height:70px;
+
+    object-fit:contain;
+
+    background:#000;
+
+    border-radius:10px;
+
+    padding:6px;
+
+}
+
+.product-row h6{
+
+    font-size:20px;
+
+    margin-bottom:6px;
+
+}
+
+.product-row p{
+
+    color:var(--muted);
+
+    margin-bottom:0;
+
+}
+
+
+
+.summary-row{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    margin-bottom:18px;
+
+    color:#d1d5db;
+
+    font-size:17px;
+
+}
+
+.summary-total{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-top:25px;
+
+    font-size:36px;
+
+    font-weight:800;
+
+}
+
+
+.btn-primary{
+
+    background:var(--primary);
+
+    border:none;
+
+    border-radius:12px;
+
+    font-size:18px;
+
+    font-weight:600;
+
+    padding:15px;
+
+}
+
+.btn-primary:hover{
+
+    background:#1d4ed8;
+
+}
+
+.secure-text{
+
+    text-align:center;
+
+    color:#9ca3af;
+
+    margin-top:20px;
+
+    font-size:13px;
+
+}
+
+.secure-text i{
+
+    margin-right:6px;
+
+}
+
+
+
+@media(max-width:992px){
+
+.line{
+
+    width:70px;
+
+}
+
+.summary-box{
+
+    margin-top:40px;
+
+    position:relative;
+
+}
+
+.payment-card h4{
+
+    font-size:22px;
+
+}
+
+.summary-total{
+
+    font-size:28px;
+
+}
+
+}
+
+@media(max-width:768px){
+
+.stepper{
+
+    overflow:auto;
+
+}
+
+.payment-card{
+
+    flex-direction:column;
+
+    align-items:flex-start;
+
+}
+
+.payment-icon{
+
+    margin-top:20px;
+
+}
+
+.product-row{
+
+    flex-direction:column;
+
+    align-items:flex-start;
+
+}
+
+.product-row>div:last-child{
+
+    margin-top:15px;
+
+}
+
+.summary-total{
+
+    font-size:24px;
+
+}
+
+}
+.topbar{
+
+height:75px;
+
+background:#0b0b0b;
+
+border-bottom:1px solid #1f1f1f;
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+padding:0 55px;
+
+}
+
+.brand{
+
+font-size:24px;
+
+font-weight:800;
+
+color:white;
+
+text-decoration:none;
+
+}
+
+.desktop-nav{
+
+display:flex;
+
+gap:38px;
+
+}
+
+.nav-link{
+
+color:#bdbdbd;
+
+text-decoration:none;
+
+font-size:15px;
+
+font-weight:500;
+
+transition:.3s;
+
+}
+
+.nav-link:hover{
+
+color:white;
+
+}
+
+.header-icons{
+
+display:flex;
+
+gap:22px;
+
+align-items:center;
+
+}
+
+.top-icon{
+
+color:#d1d5db;
+
+font-size:20px;
+
+position:relative;
+
+transition:.3s;
+
+}
+
+.top-icon:hover{
+
+color:#2563eb;
+
+}
+
+.badge-count{
+
+position:absolute;
+
+top:-7px;
+
+right:-8px;
+
+background:#2563eb;
+
+width:18px;
+
+height:18px;
+
+font-size:10px;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+border-radius:50%;
+
+color:white;
+
+font-weight:700;
+
+}
+.footer{
+
+margin-top:80px;
+
+padding:60px 0;
+
+background:#090909;
+
+border-top:1px solid #1e1e1e;
+
+}
+
+.footer h3{
+
+font-size:34px;
+
+font-weight:800;
+
+margin-bottom:15px;
+
+color:white;
+
+}
+
+.footer h6{
+
+color:white;
+
+margin-bottom:20px;
+
+font-size:16px;
+
+font-weight:700;
+
+}
+
+.footer p{
+
+color:#8b8b8b;
+
+line-height:1.8;
+
+}
+
+.footer a{
+
+display:block;
+
+color:#8b8b8b;
+
+text-decoration:none;
+
+margin-bottom:12px;
+
+transition:.3s;
+
+}
+
+.footer a:hover{
+
+color:white;
+
+}
+.message-container{
+    position:fixed;
+    top:20px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:99999;
+
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+
+    align-items:center;
+}
+
+.toast-message{
+    min-width:300px;
+    max-width:500px;
+
+    padding:14px 22px;
+    border-radius:12px;
+
+    color:white;
+    font-weight:600;
+    text-align:center;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.18);
+
+    animation:fadeIn .3s ease;
+}
+
+
+.toast-message.success{
+    background:#16a34a;
+}
+
+
+.toast-message.error,
+.toast-message.danger{
+    background:#dc2626;
+}
+
+
+.toast-message.warning{
+    background:#f59e0b;
+}
+
+
+.toast-message.info{
+    background:#2563eb;
+}
+
+@keyframes fadeIn{
+    from{
+        opacity:0;
+        transform:translateY(-15px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+@keyframes fadeOut{
+    from{
+        opacity:1;
+        transform:translateY(0);
+    }
+    to{
+        opacity:0;
+        transform:translateY(-15px);
+    }
+}
+
+
+
+
+
+
+</style>
+</head>
+
+<body>
+
+{% include "includes/header.html" %}
+
+{% if messages %}
+<div class="message-container">
+    {% for message in messages %}
+        <div class="toast-message {{ message.tags }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="container py-5">
+
+<form id="paymentForm" method="POST" action="{% url 'place_order' %}">
+{% csrf_token %}
+
+<input type="hidden" name="address" value="{{ address.id }}">
+
+<div class="stepper mb-5">
+
+<div class="step completed">
+<div class="circle">
+<i class="bi bi-check"></i>
+</div>
+<p>Cart</p>
+</div>
+
+<div class="line"></div>
+
+<div class="step completed">
+<div class="circle">
+<i class="bi bi-check"></i>
+</div>
+<p>Address</p>
+</div>
+
+<div class="line"></div>
+
+<div class="step active">
+<div class="circle">
+3
+</div>
+<p>Payment</p>
+</div>
+
+<div class="line"></div>
+
+<div class="step">
+<div class="circle">
+4
+</div>
+<p>Confirm</p>
+</div>
+
+</div>
+
+<div class="row">
+
+<div class="col-lg-7">
+
+<h2 class="fw-bold text-white mb-4">
+Select Payment Method
+</h2>
+
+<label class="payment-card active">
+
+<input
+type="radio"
+name="payment_method"
+value="razorpay"
+checked
+>
+
+<div>
+
+<h4>Razorpay</h4>
+
+<p>
+All major payment methods supported through Razorpay
+</p>
+
+</div>
+
+<i class="bi bi-credit-card payment-icon"></i>
+
+</label>
+
+<label class="payment-card">
+
+<input
+type="radio"
+name="payment_method"
+value="cod"
+>
+
+<div>
+
+<h4>Cash On Delivery</h4>
+
+<p>
+Pay when your order is delivered.
+</p>
+
+</div>
+
+<i class="bi bi-cash payment-icon"></i>
+
+</label>
+
+<label class="payment-card">
+
+<input
+type="radio"
+name="payment_method"
+value="wallet"
+>
+
+<div>
+
+<h4>Wallet</h4>
+
+<p>
+
+Use your PocketStore Wallet balance.
+
+</p>
+<p class="text-success">
+ Wallet Balance :    {{balance}}
+
+</p>
+</div>
+
+<i class="bi bi-wallet2 payment-icon"></i>
+
+</label>
+
+</div>
+
+<div class="col-lg-5">
+
+<div class="summary-box">
+
+<h3>
+Order Summary
+</h3>
+
+{% for item in cart_items %}
+
+<div class="product-row">
+
+<div class="d-flex">
+
+<img
+src="{{ item.variant.main_image.url }}"
+class="product-img"
+>
+
+<div class="ms-3">
+
+<h6>
+
+{{ item.variant.product.product_name }}
+
+</h6>
+
+<p>
+
+Qty :
+{{ item.quantity }}
+
+</p>
+
+</div>
+
+</div>
+
+<div>
+
+₹{{ item.selling_amount }}
+
+</div>
+
+</div>
+
+{% endfor %}
+
+<hr>
+
+<div class="summary-row">
+
+<span>
+
+Subtotal
+
+</span>
+
+<span>
+
+₹{{ subtotal }}
+
+</span>
+
+</div>
+
+<div class="summary-row">
+
+<span>
+
+Discount
+
+</span>
+
+<span class="text-danger">
+
+- ₹{{ discount_amount }}
+
+</span>
+
+</div>
+<div class="d-flex justify-content-between mb-2">
+
+    <span>Coupon Discount</span>
+
+    <span class="text-success">
+
+        -₹{{ coupon_discount }}
+
+    </span>
+
+</div>
+
+<div class="summary-row">
+
+<span>
+
+Delivery
+
+</span>
+
+<span class="text-success">
+
+{% if delivery_charge == 0 %}
+
+FREE
+
+{% else %}
+
+₹{{ delivery_charge }}
+
+{% endif %}
+
+</span>
+
+</div>
+
+<div class="summary-row">
+
+<span>
+
+GST
+
+</span>
+
+<span>
+
+₹{{ tax_amount }}
+
+</span>
+
+</div>
+
+<hr>
+
+<div class="summary-total">
+
+<span>
+
+Total Amount
+
+</span>
+
+<span>
+
+₹{{ total_amount }}
+
+</span>
+
+</div>
+
+<button
+id="payButton"
+type="button"
+class="btn btn-primary w-100">
+
+
+Pay Securely
+
+</button>
+
+<div class="secure-text">
+
+<i class="bi bi-shield-lock"></i>
+
+100% Secure Payments
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</form>
+
+</div>
+
+{% include "includes/footer.html" %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+
+<script>
+
+const cards=document.querySelectorAll(".payment-card");
+
+cards.forEach(card=>{
+
+card.addEventListener("click",function(){
+
+cards.forEach(c=>c.classList.remove("active"));
+
+this.classList.add("active");
+
+this.querySelector("input").checked=true;
+
+});
+
+});
+
+document.getElementById("payButton").onclick=function(){
+
+const paymentMethod=document.querySelector(
+
+'input[name="payment_method"]:checked'
+
+).value;
+
+if(paymentMethod==="cod"){
+
+document.getElementById("paymentForm").submit();
+
+}
+
+else if(paymentMethod==="wallet"){
+
+fetch(
+
+"{% url 'place_order' %}",
+
+{
+
+method:"POST",
+
+headers:{
+
+"X-CSRFToken":"{{ csrf_token }}"
+
+},
+
+body:new FormData(
+
+document.getElementById("paymentForm")
+
+)
+
+}
+
+)
+
+.then(res=>res.json())
+
+.then(function(data){
+
+if(data.success){
+
+window.location.href=data.redirect_url;
+
+}
+
+else{
+
+alert(data.message);
+
+}
+
+});
+
+}
+
+else if(paymentMethod==="razorpay"){
+
+fetch(
+
+"{% url 'place_order' %}",
+
+{
+
+method:"POST",
+
+headers:{
+
+"X-CSRFToken":"{{ csrf_token }}"
+
+},
+
+body:new FormData(
+
+document.getElementById("paymentForm")
+
+)
+
+}
+
+)
+
+.then(res=>res.json())
+
+.then(function(data){
+
+if(!data.success){
+
+alert(data.message);
+
+return;
+
+}
+
+createRazorpayOrder();
+
+});
+
+}
+
+};
+
+
+
+function verifyPayment(response){
+
+fetch(
+
+"{% url 'verify_razorpay_payment' %}",
+
+{
+
+method:"POST",
+
+headers:{
+
+"X-CSRFToken":"{{ csrf_token }}"
+
+},
+
+body:new URLSearchParams({
+
+razorpay_order_id:response.razorpay_order_id,
+
+razorpay_payment_id:response.razorpay_payment_id,
+
+razorpay_signature:response.razorpay_signature
+
+})
+
+}
+
+)
+
+.then(res=>res.json())
+
+.then(function(data){
+
+if(data.success){
+
+window.location.href=data.redirect_url;
+
+}
+
+else{
+
+alert(data.message);
+
+}
+
+});
+
+}
+function createRazorpayOrder(){
+
+fetch(
+"{% url 'create_razorpay_order' %}",
+{
+method:"POST",
+headers:{
+"X-CSRFToken":"{{ csrf_token }}"
+}
+}
+)
+
+.then(res=>res.json())
+
+.then(function(data){
+
+if(!data.success){
+
+alert(data.message);
+
+return;
+
+}
+
+var options={
+
+key:data.key,
+
+amount:data.amount,
+
+currency:"INR",
+
+order_id:data.order_id,
+
+name:"PocketStore",
+
+description:"Order Payment",
+
+handler:function(response){
+
+verifyPayment(response);
+
+},
+
+theme:{
+color:"#2563eb"
+}
+
+};
+
+var rzp=new Razorpay(options);
+
+rzp.open();
+
+});
+
+}
+</script>
+
+<script>
+setTimeout(function(){
+
+    document.querySelectorAll(".toast-message").forEach(function(msg){
+
+        msg.style.animation = "fadeOut 0.4s ease forwards";
+
+        setTimeout(function(){
+            msg.remove();
+        },400);
+
+    });
+
+},3000);
+</script>
+
+</body>
+
+</html>

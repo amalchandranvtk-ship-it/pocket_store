@@ -1,0 +1,810 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Write Review</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<link rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<style>
+
+body{
+
+background:#080808;
+
+font-family:Inter,sans-serif;
+
+
+}
+
+.topbar{
+
+height:75px;
+
+background:#0b0b0b;
+
+border-bottom:1px solid #1f1f1f;
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+padding:0 55px;
+
+}
+
+.brand{
+
+font-size:24px;
+
+font-weight:800;
+
+color:white;
+
+text-decoration:none;
+
+}
+
+.desktop-nav{
+
+display:flex;
+
+gap:38px;
+
+}
+
+.nav-link{
+
+color:#bdbdbd;
+
+text-decoration:none;
+
+font-size:15px;
+
+font-weight:500;
+
+transition:.3s;
+
+}
+
+.nav-link:hover{
+
+color:white;
+
+}
+
+.header-icons{
+
+display:flex;
+
+gap:22px;
+
+align-items:center;
+
+}
+
+.top-icon{
+
+color:#d1d5db;
+
+font-size:20px;
+
+position:relative;
+
+transition:.3s;
+
+}
+
+.top-icon:hover{
+
+color:#2563eb;
+
+}
+
+.badge-count{
+
+position:absolute;
+
+top:-7px;
+
+right:-8px;
+
+background:#2563eb;
+
+width:18px;
+
+height:18px;
+
+font-size:10px;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+border-radius:50%;
+
+color:white;
+
+font-weight:700;
+
+}
+
+
+
+.review-section{
+
+padding:60px 0;
+
+min-height:100vh;
+
+}
+
+.review-header{
+
+text-align:center;
+
+margin-bottom:35px;
+
+}
+
+.review-header h2{
+
+font-size:34px;
+
+font-weight:700;
+
+margin-bottom:10px;
+
+}
+
+.review-header p{
+
+color:#6b7280;
+
+font-size:15px;
+
+}
+
+.product-card{
+
+background:#fff;
+
+border-radius:18px;
+
+padding:25px;
+
+box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+border:1px solid #ececec;
+
+margin-bottom:30px;
+
+}
+
+.product-image{
+
+width:100px;
+
+height:100px;
+
+object-fit:cover;
+
+border-radius:12px;
+
+border:1px solid #e5e7eb;
+
+}
+
+.product-card h5{
+
+font-weight:700;
+
+margin-bottom:10px;
+
+}
+
+.badge{
+
+padding:7px 12px;
+
+font-size:13px;
+
+margin-right:6px;
+
+border-radius:20px;
+
+}
+
+.review-box{
+
+background:#fff;
+
+padding:30px;
+
+border-radius:18px;
+
+box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+border:1px solid #ececec;
+
+}
+
+.form-label{
+
+font-weight:600;
+
+margin-bottom:10px;
+
+}
+
+.form-control{
+
+border-radius:12px;
+
+padding:12px 15px;
+
+}
+
+.form-control:focus{
+
+border-color:#2563eb;
+
+box-shadow:0 0 0 .15rem rgba(37,99,235,.2);
+
+}
+
+textarea.form-control{
+
+resize:none;
+
+}
+
+.rating-stars{
+
+display:flex;
+
+gap:10px;
+
+margin-top:10px;
+
+margin-bottom:25px;
+
+}
+
+.star{
+
+font-size:34px;
+
+cursor:pointer;
+
+color:#d1d5db;
+
+transition:.25s;
+
+}
+
+.star.active{
+
+color:#ffc107;
+
+}
+
+.star:hover{
+
+transform:scale(1.1);
+
+}
+
+.btn{
+
+border-radius:10px;
+
+padding:10px 24px;
+
+font-weight:600;
+
+}
+
+.btn-primary{
+
+background:#2563eb;
+
+border:none;
+
+}
+
+.btn-primary:hover{
+
+background:#1d4ed8;
+
+}
+
+@media(max-width:768px){
+
+.review-section{
+
+padding:35px 0;
+
+}
+
+.review-box{
+
+padding:20px;
+
+}
+
+.product-card{
+
+text-align:center;
+
+}
+
+.product-image{
+
+margin-bottom:15px;
+
+}
+
+.d-flex.justify-content-end{
+
+display:block!important;
+
+}
+
+.btn{
+
+width:100%;
+
+margin-bottom:10px;
+
+}
+
+}
+.footer{
+
+margin-top:80px;
+
+padding:60px 0;
+
+background:#090909;
+
+border-top:1px solid #1e1e1e;
+
+}
+
+.footer h3{
+
+font-size:34px;
+
+font-weight:800;
+
+margin-bottom:15px;
+
+color:white;
+
+}
+
+.footer h6{
+
+color:white;
+
+margin-bottom:20px;
+
+font-size:16px;
+
+font-weight:700;
+
+}
+
+.footer p{
+
+color:#8b8b8b;
+
+line-height:1.8;
+
+}
+
+.footer a{
+
+display:block;
+
+color:#8b8b8b;
+
+text-decoration:none;
+
+margin-bottom:12px;
+
+transition:.3s;
+
+}
+
+.footer a:hover{
+
+color:white;
+
+}
+.message-container{
+    position:fixed;
+    top:20px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:99999;
+
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+
+    align-items:center;
+}
+
+.toast-message{
+    min-width:300px;
+    max-width:500px;
+
+    padding:14px 22px;
+    border-radius:12px;
+
+    color:white;
+    font-weight:600;
+    text-align:center;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.18);
+
+    animation:fadeIn .3s ease;
+}
+
+
+.toast-message.success{
+    background:#16a34a;
+}
+
+
+.toast-message.error,
+.toast-message.danger{
+    background:#dc2626;
+}
+
+
+.toast-message.warning{
+    background:#f59e0b;
+}
+
+
+.toast-message.info{
+    background:#2563eb;
+}
+
+@keyframes fadeIn{
+    from{
+        opacity:0;
+        transform:translateY(-15px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+@keyframes fadeOut{
+    from{
+        opacity:1;
+        transform:translateY(0);
+    }
+    to{
+        opacity:0;
+        transform:translateY(-15px);
+    }
+}
+
+
+
+
+
+</style>
+
+</head>
+
+<body>
+
+{% include "includes/header.html" %}
+{% if messages %}
+<div class="message-container">
+    {% for message in messages %}
+        <div class="toast-message {{ message.tags }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<section class="review-section">
+
+<div class="container">
+
+<div class="row justify-content-center">
+
+<div class="col-lg-8 col-xl-7">
+
+<div class="review-header">
+
+<h2>
+
+Write a Review
+
+</h2>
+
+<p>
+
+Share your experience with this product
+
+</p>
+
+</div>
+
+<div class="product-card">
+
+<div class="row align-items-center">
+
+<div class="col-md-3 text-center">
+
+{% with image=variant.images.first %}
+
+{% if image %}
+
+<img
+src="{{ image.image.url }}"
+class="product-image">
+
+{% else %}
+
+<img
+src="{% static 'images/no-image.png' %}"
+class="product-image">
+
+{% endif %}
+
+{% endwith %}
+
+</div>
+
+<div class="col-md-6 mt-3 mt-md-0">
+
+<h5>
+
+{{ product.product_name }}
+
+</h5>
+
+{% if variant.color %}
+
+<span class="badge bg-secondary">
+
+{{ variant.color }}
+
+</span>
+
+{% endif %}
+
+{% if variant.storage %}
+
+<span class="badge bg-secondary">
+
+{{ variant.storage }}
+
+</span>
+
+{% endif %}
+
+{% if variant.ram %}
+
+<span class="badge bg-secondary">
+
+{{ variant.ram }}
+
+</span>
+
+{% endif %}
+
+<p class="text-success mt-3 mb-0">
+
+Delivered on
+
+{{ order_item.order.placed_at|date:"d M Y" }}
+
+</p>
+
+</div>
+
+<div class="col-md-3 text-md-end mt-3 mt-md-0">
+
+<h4 class="text-primary">
+
+₹{{ order_item.price }}
+
+</h4>
+
+<small>
+
+Order #
+
+{{ order_item.order.order_number }}
+
+</small>
+
+</div>
+
+</div>
+
+</div>
+
+<form method="post">
+
+{% csrf_token %}
+
+<div class="review-box">
+<label class="form-label">
+
+Overall Rating <span class="text-danger">*</span>
+
+</label>
+
+<div class="rating-stars">
+
+<input
+type="hidden"
+name="rating"
+id="rating-value">
+
+<i class="bi bi-star-fill star" data-value="1"></i>
+
+<i class="bi bi-star-fill star" data-value="2"></i>
+
+<i class="bi bi-star-fill star" data-value="3"></i>
+
+<i class="bi bi-star-fill star" data-value="4"></i>
+
+<i class="bi bi-star-fill star" data-value="5"></i>
+
+</div>
+
+<div class="mb-4">
+
+<label class="form-label">
+
+Review Title
+
+</label>
+
+{{ form.review_title }}
+
+</div>
+
+<div class="mb-4">
+
+<label class="form-label">
+
+Review Description
+
+</label>
+
+{{ form.review_description }}
+
+</div>
+
+<div class="d-flex justify-content-end gap-3">
+
+<a
+href="javascript:history.back()"
+class="btn btn-outline-secondary">
+
+Cancel
+
+</a>
+
+<button
+type="submit"
+class="btn btn-primary">
+
+Submit Review
+
+</button>
+
+</div>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+{% include "includes/footer.html" %}
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+
+const stars=document.querySelectorAll(".star");
+
+const rating=document.getElementById("rating-value");
+
+stars.forEach((star)=>{
+
+star.addEventListener("click",function(){
+
+const value=this.dataset.value;
+
+rating.value=value;
+
+stars.forEach((s,index)=>{
+
+if(index<value){
+
+s.classList.add("active");
+
+}
+
+else{
+
+s.classList.remove("active");
+
+}
+
+});
+
+});
+
+});
+
+document.querySelector("form").addEventListener("submit",function(e){
+
+if(!rating.value){
+
+e.preventDefault();
+
+alert("Please select a rating.");
+
+}
+
+});
+
+</script>
+<script>
+setTimeout(function(){
+
+    document.querySelectorAll(".toast-message").forEach(function(msg){
+
+        msg.style.animation = "fadeOut 0.4s ease forwards";
+
+        setTimeout(function(){
+            msg.remove();
+        },400);
+
+    });
+
+},3000);
+</script>
+
+</body>
+
+</html>

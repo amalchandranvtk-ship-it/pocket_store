@@ -1,0 +1,653 @@
+{% extends "admin_panel/base.html" %}
+{% load static %}
+
+{% block title %}
+Customers
+{% endblock %}
+
+{% block extra_css %}
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+  background:#f5f7fb;
+  color:#111827;
+  overflow-x:hidden;
+}
+
+.admin-wrapper{
+  min-height:100vh;
+  display:flex;
+}
+
+.sidebar{
+  width:230px;
+  background:#020202;
+  color:white;
+  height:100vh;
+  position:fixed;
+  top:0;
+  left:0;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+
+.brand-box{
+  padding:22px 18px 14px;
+  flex-shrink:0;
+}
+
+.brand-box h3{
+  font-size:21px;
+  font-weight:900;
+  margin-bottom:4px;
+}
+
+.brand-box span{
+  font-size:11px;
+  color:#9ca3af;
+}
+
+.menu{
+  flex:1;
+  padding:10px 12px;
+  overflow:hidden;
+}
+
+.menu a{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  color:#d1d5db;
+  text-decoration:none;
+  padding:10px 14px;
+  border-radius:8px;
+  font-size:13.5px;
+  font-weight:600;
+  margin-bottom:4px;
+}
+
+.menu a.active,
+.menu a:hover{
+  background:#2563eb;
+  color:white;
+}
+
+.logout-box{
+  padding:12px;
+  border-top:1px solid rgba(255,255,255,0.08);
+  flex-shrink:0;
+}
+
+.logout-box a{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  color:white;
+  text-decoration:none;
+  padding:10px 14px;
+  border-radius:8px;
+  font-size:13.5px;
+  font-weight:600;
+}
+
+.logout-box a:hover{
+  background:#dc2626;
+}
+
+
+.main-content{
+  margin-left:230px;
+  width:calc(100% - 230px);
+  min-height:100vh;
+}
+
+.topbar{
+  height:68px;
+  background:#fff;
+  border-bottom:1px solid #e5e7eb;
+  display:flex;
+  justify-content:flex-end;
+  align-items:center;
+  padding:0 28px;
+}
+
+.admin-profile{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.admin-profile img{
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  object-fit:cover;
+}
+
+.admin-profile h6{
+  margin:0;
+  font-size:13px;
+  font-weight:800;
+}
+
+.admin-profile span{
+  font-size:11px;
+  color:#64748b;
+  font-weight:700;
+}
+
+.content-area{
+  padding:28px;
+}
+
+.page-title h1{
+  font-size:30px;
+  font-weight:900;
+  margin-bottom:6px;
+}
+
+.page-title p{
+  color:#64748b;
+  font-size:15px;
+  margin-bottom:24px;
+}
+
+.message-box{
+  margin-bottom:18px;
+}
+
+.custom-alert{
+  border-radius:10px;
+  font-size:14px;
+  padding:12px 16px;
+}
+
+.filter-card{
+  background:white;
+  border:1px solid #e5e7eb;
+  border-radius:12px;
+  padding:24px;
+  margin-bottom:25px;
+  box-shadow:0 4px 18px rgba(15,23,42,0.04);
+}
+
+.filter-card label{
+  font-size:12px;
+  font-weight:800;
+  color:#64748b;
+  margin-bottom:8px;
+}
+
+.form-control,
+.form-select{
+  height:48px;
+  border-radius:8px;
+  font-size:14px;
+  border:1px solid #dbe3ef;
+}
+
+.search-btn{
+  height:48px;
+  background:#111827;
+  color:white;
+  border:none;
+  border-radius:8px;
+  padding:0 24px;
+  font-weight:700;
+}
+
+.filter-btn{
+  height:48px;
+  background:white;
+  color:#334155;
+  border:1px solid #dbe3ef;
+  border-radius:8px;
+  padding:0 20px;
+  font-weight:700;
+}
+
+.table-card{
+  background:white;
+  border:1px solid #e5e7eb;
+  border-radius:12px;
+  overflow:hidden;
+  box-shadow:0 4px 18px rgba(15,23,42,0.04);
+}
+
+table{
+  margin:0 !important;
+  min-width:900px;
+}
+
+thead{
+  background:#f8fafc;
+}
+
+th{
+  font-size:11px;
+  color:#64748b;
+  font-weight:900;
+  letter-spacing:1px;
+  padding:18px !important;
+  white-space:nowrap;
+}
+
+td{
+  padding:18px !important;
+  vertical-align:middle;
+  font-size:14px;
+  color:#334155;
+}
+
+.customer-info{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  min-width:260px;
+}
+
+.customer-img{
+  width:42px;
+  height:42px;
+  border-radius:8px;
+  object-fit:cover;
+  flex-shrink:0;
+}
+
+.customer-name{
+  font-weight:800;
+  color:#111827;
+  display:block;
+  word-break:break-word;
+  line-height:1.3;
+}
+
+.badge-role{
+  background:#dbeafe;
+  color:#2563eb;
+  padding:6px 12px;
+  border-radius:20px;
+  font-size:11px;
+  font-weight:800;
+  white-space:nowrap;
+}
+
+.badge-active{
+  background:#bbf7d0;
+  color:#15803d;
+  padding:6px 12px;
+  border-radius:20px;
+  font-size:11px;
+  font-weight:800;
+  white-space:nowrap;
+}
+
+.badge-blocked{
+  background:#fee2e2;
+  color:#dc2626;
+  padding:6px 12px;
+  border-radius:20px;
+  font-size:11px;
+  font-weight:800;
+  white-space:nowrap;
+}
+
+.action-btn{
+  width:36px;
+  height:34px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:7px;
+  color:white;
+  text-decoration:none;
+  font-size:15px;
+}
+
+.action-btn:hover{
+  color:white;
+  opacity:0.85;
+}
+
+.table-footer{
+  padding:18px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  color:#64748b;
+  font-size:14px;
+  border-top:1px solid #e5e7eb;
+}
+
+
+@media(max-width:991px){
+  .admin-wrapper{
+    flex-direction:column;
+  }
+
+  .sidebar{
+    position:relative;
+    width:100%;
+    height:auto;
+  }
+
+  .brand-box{
+    padding:18px 16px 10px;
+  }
+
+  .menu{
+    overflow:visible;
+    padding:10px 12px;
+  }
+
+  .menu a{
+    padding:10px 12px;
+    font-size:13px;
+  }
+
+  .logout-box{
+    padding:10px 12px;
+  }
+
+  .logout-box a{
+    padding:10px 12px;
+    font-size:13px;
+  }
+
+  .main-content{
+    margin-left:0;
+    width:100%;
+  }
+
+  .content-area{
+    padding:24px;
+  }
+}
+
+@media(max-width:576px){
+  .topbar{
+    justify-content:center;
+    padding:0 15px;
+  }
+
+  .content-area{
+    padding:18px;
+  }
+
+  .page-title h1{
+    font-size:24px;
+  }
+
+  .filter-card{
+    padding:18px;
+  }
+
+  .table-footer{
+    flex-direction:column;
+    gap:12px;
+    text-align:center;
+  }
+
+  .customer-info{
+    min-width:220px;
+  }
+}
+.message-container{
+    position:fixed;
+    top:20px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:99999;
+
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+
+    align-items:center;
+}
+
+.toast-message{
+    min-width:300px;
+    max-width:500px;
+
+    padding:14px 22px;
+    border-radius:12px;
+
+    color:white;
+    font-weight:600;
+    text-align:center;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.18);
+
+    animation:fadeIn .3s ease;
+}
+
+
+.toast-message.success{
+    background:#16a34a;
+}
+
+.toast-message.error,
+.toast-message.danger{
+    background:#dc2626;
+}
+
+
+.toast-message.warning{
+    background:#f59e0b;
+}
+
+
+.toast-message.info{
+    background:#2563eb;
+}
+
+@keyframes fadeIn{
+    from{
+        opacity:0;
+        transform:translateY(-15px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+@keyframes fadeOut{
+    from{
+        opacity:1;
+        transform:translateY(0);
+    }
+    to{
+        opacity:0;
+        transform:translateY(-15px);
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+   
+
+
+      <div class="page-title">
+        <h1>Customers Management</h1>
+        <p>View, search, block and unblock platform customers</p>
+      </div>
+
+      <form method="GET" class="filter-card">
+        <div class="row g-3 align-items-end">
+
+          <div class="col-lg-6">
+            <label>SEARCH</label>
+            <input type="text"
+                   name="q"
+                   value="{{ q }}"
+                   class="form-control"
+                   placeholder="Search by name, email or phone...">
+          </div>
+
+          <div class="col-lg-3">
+            <label>STATUS</label>
+            <select name="status" class="form-select">
+              <option value="">All Status</option>
+              <option value="active" {% if status == 'active' %}selected{% endif %}>Active</option>
+              <option value="blocked" {% if status == 'blocked' %}selected{% endif %}>Blocked</option>
+            </select>
+          </div>
+
+          <div class="col-lg-2 col-6">
+            <button type="submit" class="search-btn w-100">Search</button>
+          </div>
+
+          <div class="col-lg-1 col-6">
+            <a href="{% url 'admin_customers' %}"
+               class="filter-btn w-100 d-flex align-items-center justify-content-center text-decoration-none">
+              All
+            </a>
+          </div>
+
+        </div>
+      </form>
+
+      <div class="table-card">
+
+        <div class="table-responsive">
+          <table class="table align-middle">
+            <thead>
+              <tr>
+                <th>CUSTOMER ID</th>
+                <th>NAME</th>
+                <th>EMAIL</th>
+                <th>PHONE</th>
+                <th>ROLE</th>
+                <th>STATUS</th>
+                <th>REGISTERED DATE</th>
+                <th>ACTION</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {% for customer in customers %}
+              <tr>
+                <td>#USR-{{ customer.id }}</td>
+
+                <td>
+                  <div class="customer-info">
+
+                    {% if customer.profile_image %}
+                      <img src="{{ customer.profile_image.url }}" class="customer-img" alt="Customer">
+                    {% elif customer.image %}
+                      <img src="{{ customer.image.url }}" class="customer-img" alt="Customer">
+                    {% else %}
+                      <img src="{% static 'images/default-user.png' %}" class="customer-img" alt="Customer">
+                    {% endif %}
+
+                    <span class="customer-name">
+                      {% if customer.full_name %}
+                        {{ customer.full_name }}
+                      {% elif customer.first_name %}
+                        {{ customer.first_name }} {{ customer.last_name }}
+                      {% else %}
+                        {{ customer.username }}
+                      {% endif %}
+                    </span>
+                  </div>
+                </td>
+
+                <td>{{ customer.email }}</td>
+
+                <td>
+                  {% if customer.phone %}
+                    {{ customer.phone }}
+                  {% else %}
+                    Not Added
+                  {% endif %}
+                </td>
+
+                <td>
+                  <span class="badge-role">CUSTOMER</span>
+                </td>
+
+                <td>
+                  {% if customer.is_active %}
+                    <span class="badge-active">ACTIVE</span>
+                  {% else %}
+                    <span class="badge-blocked">BLOCKED</span>
+                  {% endif %}
+                </td>
+
+                <td>{{ customer.date_joined|date:"Y-m-d" }}</td>
+
+                <td>
+                  {% if customer.is_active %}
+                    <a href="{% url 'block_customer' customer.id %}"
+                       class="action-btn bg-danger"
+                       title="Block Customer"
+                       onclick="return confirm('Are you sure you want to block this customer?')">
+                      <i class="bi bi-person-x"></i>
+                    </a>
+                  {% else %}
+                    <a href="{% url 'unblock_customer' customer.id %}"
+                       class="action-btn bg-success"
+                       title="Unblock Customer"
+                       onclick="return confirm('Are you sure you want to unblock this customer?')">
+                      <i class="bi bi-person-check"></i>
+                    </a>
+                  {% endif %}
+                </td>
+              </tr>
+
+              {% empty %}
+              <tr>
+                <td colspan="8" class="text-center py-5 text-muted">
+                  No customers found
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="table-footer">
+          <div>
+            Showing {{ customers|length }} customers
+          </div>
+
+          <div class="d-flex gap-2 align-items-center">
+            {% if page_obj.has_previous %}
+              <a class="btn btn-sm btn-light"
+                 href="?page={{ page_obj.previous_page_number }}&q={{ q }}&status={{ status }}">
+                Previous
+              </a>
+            {% endif %}
+
+            <span class="btn btn-sm btn-dark">
+              {{ page_obj.number }}
+            </span>
+
+            {% if page_obj.has_next %}
+              <a class="btn btn-sm btn-light"
+                 href="?page={{ page_obj.next_page_number }}&q={{ q }}&status={{ status }}">
+                Next
+              </a>
+            {% endif %}
+          </div>
+        </div>
+
+      </div>
+
+
+
+
+
+{% endblock %}

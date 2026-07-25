@@ -1,0 +1,1907 @@
+{% extends "admin_panel/base.html" %}
+{% load static %}
+
+{% block title %}
+Products
+{% endblock %}
+
+{% block extra_css %}
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+
+.page-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:24px;
+gap:20px;
+}
+
+.page-header h2{
+font-size:30px;
+font-weight:900;
+margin:0;
+}
+
+.page-header p{
+margin-top:6px;
+color:#64748b;
+}
+
+
+
+
+.page-header h2{
+
+font-size:34px;
+
+font-weight:700;
+
+margin-bottom:5px;
+
+}
+
+.page-header p{
+
+margin:0;
+
+color:#6b7280;
+
+font-size:14px;
+
+}
+
+.page-header .btn{
+
+padding:10px 18px;
+
+border-radius:10px;
+
+font-weight:500;
+
+}
+
+
+
+.card{
+
+border:none;
+
+border-radius:18px;
+
+box-shadow:0 8px 20px rgba(0,0,0,.06);
+
+margin-bottom:25px;
+
+overflow:hidden;
+
+}
+
+.card-header{
+
+background:#fff;
+
+padding:18px 25px;
+
+border-bottom:1px solid #eef2f7;
+
+}
+
+.card-header h5{
+
+margin:0;
+
+font-size:18px;
+
+font-weight:600;
+
+}
+
+.card-body{
+
+padding:25px;
+
+}
+
+label{
+
+display:block;
+
+font-size:13px;
+
+color:#6b7280;
+
+margin-bottom:6px;
+
+font-weight:500;
+
+}
+
+h6{
+
+font-size:16px;
+
+font-weight:600;
+
+margin-bottom:0;
+
+color:#111827;
+
+}
+
+
+.table{
+
+margin-bottom:0;
+
+}
+
+.table thead{
+
+background:#f8fafc;
+
+}
+
+.table thead th{
+
+padding:16px;
+
+font-size:14px;
+
+font-weight:600;
+
+color:#475569;
+
+border-bottom:1px solid #e2e8f0;
+
+white-space:nowrap;
+
+}
+
+.table tbody td{
+
+padding:18px 16px;
+
+vertical-align:middle;
+
+border-bottom:1px solid #edf2f7;
+
+font-size:14px;
+
+}
+
+.table tbody tr{
+
+transition:.25s;
+
+}
+
+.table tbody tr:hover{
+
+background:#f9fafb;
+
+}
+
+
+
+.product-img{
+
+width:70px;
+
+height:70px;
+
+object-fit:cover;
+
+border-radius:12px;
+
+background:#f8fafc;
+
+padding:6px;
+
+border:1px solid #e5e7eb;
+
+}
+
+
+
+
+.summary-row{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+margin-bottom:16px;
+
+font-size:15px;
+
+color:#374151;
+
+}
+
+.summary-row:last-child{
+
+margin-bottom:0;
+
+}
+
+.summary-total{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+font-size:20px;
+
+font-weight:700;
+
+margin-top:18px;
+
+}
+
+
+
+.badge{
+
+padding:8px 14px;
+
+border-radius:30px;
+
+font-size:12px;
+
+font-weight:600;
+
+}
+
+.bg-primary{
+
+background:#2563eb !important;
+
+}
+
+.bg-success{
+
+background:#16a34a !important;
+
+}
+
+.bg-danger{
+
+background:#dc2626 !important;
+
+}
+
+.bg-warning{
+
+background:#facc15 !important;
+
+color:#111827 !important;
+
+}
+
+.bg-secondary{
+
+background:#6b7280 !important;
+
+}
+
+.bg-info{
+
+background:#0ea5e9 !important;
+
+color:#fff !important;
+
+}
+
+.bg-dark{
+
+background:#1f2937 !important;
+
+}
+
+
+.form-select{
+
+height:48px;
+
+border-radius:10px;
+
+}
+
+.form-select:focus{
+
+border-color:#2563eb;
+
+box-shadow:0 0 0 .2rem rgba(37,99,235,.15);
+
+}
+
+.btn{
+
+border-radius:10px;
+
+padding:12px 18px;
+
+font-weight:600;
+
+}
+
+.btn-primary{
+
+background:#2563eb;
+
+border:none;
+
+}
+
+.btn-primary:hover{
+
+background:#1d4ed8;
+
+}
+
+.btn-outline-secondary{
+
+border:1px solid #d1d5db;
+
+}
+
+.btn-outline-secondary:hover{
+
+background:#f3f4f6;
+
+}
+
+
+.card-body strong{
+
+font-size:16px;
+
+color:#111827;
+
+}
+
+.card-body h5{
+
+font-size:18px;
+
+font-weight:700;
+
+margin-bottom:0;
+
+}
+
+.card-body p{
+
+margin-bottom:8px;
+
+color:#6b7280;
+
+}
+
+.payment-box{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+padding:15px 0;
+
+border-bottom:1px solid #e5e7eb;
+
+}
+
+.payment-box:last-child{
+
+border-bottom:none;
+
+}
+
+.payment-label{
+
+font-size:14px;
+
+color:#6b7280;
+
+font-weight:500;
+
+}
+
+.payment-value{
+
+font-size:16px;
+
+font-weight:600;
+
+color:#111827;
+
+}
+
+.timeline-item{
+
+display:flex;
+
+position:relative;
+
+padding-left:45px;
+
+margin-bottom:30px;
+
+}
+
+.timeline-item:last-child{
+
+margin-bottom:0;
+
+}
+
+.timeline-dot{
+
+position:absolute;
+
+left:0;
+
+top:4px;
+
+width:16px;
+
+height:16px;
+
+background:#2563eb;
+
+border-radius:50%;
+
+border:4px solid #dbeafe;
+
+}
+
+.timeline-item::before{
+
+content:"";
+
+position:absolute;
+
+left:7px;
+
+top:18px;
+
+width:2px;
+
+height:calc(100% + 15px);
+
+background:#d1d5db;
+
+}
+
+.timeline-item:last-child::before{
+
+display:none;
+
+}
+
+.timeline-content h6{
+
+font-size:16px;
+
+font-weight:600;
+
+margin-bottom:5px;
+
+color:#111827;
+
+}
+
+.timeline-content p{
+
+font-size:14px;
+
+color:#6b7280;
+
+margin-bottom:4px;
+
+}
+
+.timeline-content small{
+
+color:#9ca3af;
+
+font-size:12px;
+
+}
+
+.status-card{
+
+background:#fff;
+
+border-radius:15px;
+
+padding:20px;
+
+box-shadow:0 5px 15px rgba(0,0,0,.05);
+
+}
+
+.status-card h5{
+
+margin-bottom:20px;
+
+font-weight:600;
+
+}
+
+.btn{
+
+transition:.3s;
+
+}
+
+.btn:hover{
+
+transform:translateY(-2px);
+
+}
+
+.btn-primary{
+
+background:#2563eb;
+
+}
+
+.btn-primary:hover{
+
+background:#1d4ed8;
+
+}
+
+.btn-success{
+
+background:#16a34a;
+
+border:none;
+
+}
+
+.btn-success:hover{
+
+background:#15803d;
+
+}
+
+.btn-danger{
+
+background:#dc2626;
+
+border:none;
+
+}
+
+.btn-danger:hover{
+
+background:#b91c1c;
+
+}
+
+.invoice-btn{
+
+display:inline-flex;
+
+align-items:center;
+
+gap:8px;
+
+padding:12px 18px;
+
+border-radius:10px;
+
+font-weight:600;
+
+text-decoration:none;
+
+}
+
+.invoice-btn i{
+
+font-size:18px;
+
+}
+
+.card{
+
+transition:.3s;
+
+}
+
+.card:hover{
+
+transform:translateY(-2px);
+
+box-shadow:0 12px 30px rgba(0,0,0,.08);
+
+}
+
+@media (max-width:1400px){
+
+.main-content{
+
+padding:30px;
+
+}
+
+.page-header h2{
+
+font-size:30px;
+
+}
+
+}
+
+@media (max-width:1200px){
+
+.sidebar{
+
+width:240px;
+
+}
+
+.main-content{
+
+margin-left:240px;
+
+width:calc(100% - 240px);
+
+}
+
+.table-responsive{
+
+overflow-x:auto;
+
+}
+
+}
+
+@media (max-width:992px){
+
+.wrapper{
+
+display:block;
+
+}
+
+.sidebar{
+
+position:relative;
+
+width:100%;
+
+height:auto;
+
+padding:20px;
+
+}
+
+.sidebar ul{
+
+display:flex;
+
+flex-wrap:wrap;
+
+gap:10px;
+
+}
+
+.sidebar ul li{
+
+margin-bottom:0;
+
+}
+
+.sidebar ul li a{
+
+padding:10px 15px;
+
+font-size:14px;
+
+}
+
+.main-content{
+
+margin-left:0;
+
+width:100%;
+
+padding:20px;
+
+}
+
+.page-header{
+
+flex-direction:column;
+
+align-items:flex-start;
+
+}
+
+.page-header .btn{
+
+width:100%;
+
+margin-top:10px;
+
+}
+
+.card-body{
+
+padding:20px;
+
+}
+
+.table{
+
+min-width:900px;
+
+}
+
+.summary-total{
+
+font-size:18px;
+
+}
+
+}
+
+@media (max-width:768px){
+
+.page-header h2{
+
+font-size:24px;
+
+}
+
+.page-header p{
+
+font-size:13px;
+
+}
+
+.card-header h5{
+
+font-size:16px;
+
+}
+
+.table thead th{
+
+font-size:13px;
+
+}
+
+.table tbody td{
+
+font-size:13px;
+
+padding:12px;
+
+}
+
+.product-img{
+
+width:60px;
+
+height:60px;
+
+}
+
+.summary-row{
+
+font-size:14px;
+
+}
+
+.summary-total{
+
+font-size:17px;
+
+}
+
+.timeline-item{
+
+padding-left:35px;
+
+}
+
+.timeline-dot{
+
+width:14px;
+
+height:14px;
+
+}
+
+.timeline-item::before{
+
+left:6px;
+
+}
+
+.payment-box{
+
+flex-direction:column;
+
+align-items:flex-start;
+
+gap:6px;
+
+}
+
+}
+
+@media (max-width:576px){
+
+.main-content{
+
+padding:15px;
+
+}
+
+.sidebar{
+
+padding:15px;
+
+}
+
+.logo h2{
+
+font-size:22px;
+
+}
+
+.logo p{
+
+font-size:12px;
+
+}
+
+.sidebar ul{
+
+display:block;
+
+}
+
+.sidebar ul li{
+
+margin-bottom:8px;
+
+}
+
+.sidebar ul li a{
+
+font-size:14px;
+
+padding:10px 14px;
+
+}
+
+.page-header{
+
+margin-bottom:20px;
+
+}
+
+.page-header h2{
+
+font-size:22px;
+
+}
+
+.page-header .btn{
+
+width:100%;
+
+margin-bottom:10px;
+
+}
+
+.card{
+
+border-radius:14px;
+
+}
+
+.card-body{
+
+padding:15px;
+
+}
+
+.card-header{
+
+padding:15px;
+
+}
+
+.form-select{
+
+height:44px;
+
+font-size:14px;
+
+}
+
+.btn{
+
+padding:10px;
+
+font-size:14px;
+
+width:100%;
+
+}
+
+.product-img{
+
+width:55px;
+
+height:55px;
+
+}
+
+.timeline-content h6{
+
+font-size:15px;
+
+}
+
+.timeline-content p{
+
+font-size:13px;
+
+}
+
+.timeline-content small{
+
+font-size:11px;
+
+}
+
+.summary-row{
+
+font-size:13px;
+
+}
+
+.summary-total{
+
+font-size:16px;
+
+}
+
+.table{
+
+min-width:850px;
+
+}
+
+}
+
+::-webkit-scrollbar{
+
+width:8px;
+
+height:8px;
+
+}
+
+::-webkit-scrollbar-track{
+
+background:#f1f5f9;
+
+}
+
+::-webkit-scrollbar-thumb{
+
+background:#94a3b8;
+
+border-radius:20px;
+
+}
+
+::-webkit-scrollbar-thumb:hover{
+
+background:#64748b;
+
+}
+
+.text-primary{
+
+color:#2563eb !important;
+
+}
+
+.text-success{
+
+color:#16a34a !important;
+
+}
+
+.text-danger{
+
+color:#dc2626 !important;
+
+}
+
+.fw-600{
+
+font-weight:600;
+
+}
+
+.rounded-15{
+
+border-radius:15px;
+
+}
+
+.shadow-soft{
+
+box-shadow:0 10px 30px rgba(0,0,0,.06);
+
+}
+.message-container{
+    position:fixed;
+    top:20px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:99999;
+
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+
+    align-items:center;
+}
+
+.toast-message{
+    min-width:300px;
+    max-width:500px;
+
+    padding:14px 22px;
+    border-radius:12px;
+
+    color:white;
+    font-weight:600;
+    text-align:center;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.18);
+
+    animation:fadeIn .3s ease;
+}
+
+
+.toast-message.success{
+    background:#16a34a;
+}
+
+
+.toast-message.error,
+.toast-message.danger{
+    background:#dc2626;
+}
+
+
+.toast-message.warning{
+    background:#f59e0b;
+}
+
+
+.toast-message.info{
+    background:#2563eb;
+}
+
+@keyframes fadeIn{
+    from{
+        opacity:0;
+        transform:translateY(-15px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+@keyframes fadeOut{
+    from{
+        opacity:1;
+        transform:translateY(0);
+    }
+    to{
+        opacity:0;
+        transform:translateY(-15px);
+    }
+}
+
+</style>
+
+{% endblock %}
+{% block content %}
+
+
+
+
+
+<div class="page-header">
+
+<div>
+
+<h2>
+
+Order Details
+
+</h2>
+
+<p>
+
+Order #
+
+{{ order.order_number }}
+
+</p>
+
+</div>
+
+<div>
+
+<a
+
+href="{% url 'admin_order_list' %}"
+
+class="btn btn-outline-secondary">
+
+<i class="bi bi-arrow-left"></i>
+
+Back
+
+</a>
+
+<a
+
+href="{% url 'download_invoice' order.order_number %}"
+
+class="btn btn-primary">
+
+<i class="bi bi-download"></i>
+
+Invoice
+
+</a>
+
+</div>
+
+</div>
+
+<div class="row">
+
+<div class="col-lg-8">
+
+<div class="card mb-4">
+
+<div class="card-header">
+
+<h5>
+
+Customer Information
+
+</h5>
+
+</div>
+
+<div class="card-body">
+
+<div class="row">
+
+<div class="col-md-6">
+
+<label>
+
+Customer Name
+
+</label>
+
+<h6>
+
+{{ order.user.full_name }}
+
+</h6>
+
+</div>
+
+<div class="col-md-6">
+
+<label>
+
+Email
+
+</label>
+
+<h6>
+
+{{ order.user.email }}
+
+</h6>
+
+</div>
+
+<div class="col-md-6 mt-3">
+
+<label>
+
+Phone
+
+</label>
+
+<h6>
+
+{{ order.user.phone }}
+
+</h6>
+
+</div>
+
+<div class="col-md-6 mt-3">
+
+<label>
+
+Order Date
+
+</label>
+
+<h6>
+
+{{ order.placed_at|date:"d M Y, h:i A" }}
+
+</h6>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<div class="card-header">
+
+<h5>
+
+Shipping Address
+
+</h5>
+
+</div>
+
+<div class="card-body">
+
+<strong>
+
+{{ order.address.full_name }}
+
+</strong>
+
+<br>
+
+{{ order.address.phone }}
+
+<br><br>
+
+{{ order.address.address_line1 }}
+
+{% if order.address.address_line2 %}
+
+<br>
+
+{{ order.address.address_line2 }}
+
+{% endif %}
+
+<br>
+
+{{ order.address.city }}
+
+,
+
+{{ order.address.state }}
+
+-
+
+{{ order.address.zip_code }}
+
+</div>
+
+</div>
+
+<div class="card mt-4">
+
+    <div class="card-header d-flex justify-content-between align-items-center">
+
+        <h5 class="mb-0">
+
+            Order Items
+
+        </h5>
+
+        <span class="badge bg-primary">
+
+            {{ order.items.count }} Items
+
+        </span>
+
+    </div>
+
+    <div class="card-body p-0">
+
+        <div class="table-responsive">
+
+            <table class="table align-middle mb-0">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Product</th>
+
+                        <th>SKU</th>
+
+                        <th>Price</th>
+
+                        <th>Qty</th>
+
+                        <th>Status</th>
+
+                        <th>Total</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% for item in order.items.all %}
+
+                    <tr>
+
+                        <td>
+
+                            <div class="d-flex align-items-center">
+
+                                {% if item.variant.main_image %}
+
+                                <img
+                                src="{{ item.variant.main_image.url }}"
+                                class="product-img">
+
+                                {% else %}
+
+                                <img
+                                src="{% static 'images/no-image.png' %}"
+                                class="product-img">
+
+                                {% endif %}
+
+                                <div class="ms-3">
+
+                                    <h6 class="mb-1">
+
+                                        {{ item.product_name }}
+
+                                    </h6>
+
+                                    <small class="text-muted">
+
+                                        {{ item.variant.product.brand.brand_name }}
+
+                                    </small>
+
+                                    <br>
+
+                                    <small>
+
+                                        {% if item.variant.color %}
+
+                                        {{ item.variant.color }}
+
+                                        {% endif %}
+
+                                        {% if item.variant.storage %}
+
+                                        • {{ item.variant.storage }}
+
+                                        {% endif %}
+
+                                        {% if item.variant.ram %}
+
+                                        • {{ item.variant.ram }}
+
+                                        {% endif %}
+
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+                        <td>
+
+                            {{ item.sku }}
+
+                        </td>
+
+                        <td>
+
+                            ₹{{ item.price }}
+
+                        </td>
+
+                        <td>
+
+                            {{ item.quantity }}
+
+                        </td>
+
+                        <td>
+
+                            {% if item.status == "pending" %}
+
+                            <span class="badge bg-secondary">
+
+                                Pending
+
+                            </span>
+
+                            {% elif item.status == "confirmed" %}
+
+                            <span class="badge bg-primary">
+
+                                Confirmed
+
+                            </span>
+
+                            {% elif item.status == "processing" %}
+
+                            <span class="badge bg-warning text-dark">
+
+                                Processing
+
+                            </span>
+
+                            {% elif item.status == "shipped" %}
+
+                            <span class="badge bg-info">
+
+                                Shipped
+
+                            </span>
+
+                            {% elif item.status == "out_for_delivery" %}
+
+                            <span class="badge bg-dark">
+
+                                Out for Delivery
+
+                            </span>
+
+                            {% elif item.status == "delivered" %}
+
+                            <span class="badge bg-success">
+
+                                Delivered
+
+                            </span>
+
+                            {% elif item.status == "cancelled" %}
+
+                            <span class="badge bg-danger">
+
+                                Cancelled
+
+                            </span>
+
+                            {% elif item.status == "returned" %}
+
+                            <span class="badge bg-danger">
+
+                                Returned
+
+                            </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            <strong>
+
+                                ₹{{ item.total }}
+
+                            </strong>
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+</div>
+
+
+<div class="col-lg-4">
+
+<div class="card mb-4">
+
+<div class="card-header">
+
+<h5>
+
+Payment Summary
+
+</h5>
+
+</div>
+
+<div class="card-body">
+
+<div class="summary-row">
+
+<span>
+
+Subtotal
+
+</span>
+
+<span>
+
+₹{{ subtotal }}
+
+</span>
+
+</div>
+
+<div class="summary-row">
+
+<span>
+
+Discount
+
+</span>
+
+<span class="text-danger">
+
+- ₹{{ discount }}
+
+</span>
+
+</div>
+
+<div class="summary-row">
+
+
+    <span>Coupon Discount</span>
+
+    <span class="text-success">
+
+        -₹{{ coupon_discount }}
+
+    </span>
+
+
+
+</div>
+
+<div class="summary-row">
+
+<span>
+
+GST
+
+</span>
+
+<span>
+
+₹{{ order.tax_amount }}
+
+</span>
+
+</div>
+
+<hr>
+
+<div class="summary-total">
+
+<span>
+
+Grand Total
+
+</span>
+
+<strong>
+
+₹{{ order.total_amount }}
+
+</strong>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="card mb-4">
+
+<div class="card-header">
+
+<h5>
+
+Update Order Status
+
+</h5>
+
+</div>
+
+<div class="card-body">
+
+<form
+method="POST"
+action="{% url 'update_order_status' order.order_number %}">
+
+{% csrf_token %}
+
+<select
+name="status"
+class="form-select mb-3">
+
+<option value="pending"
+{% if order.order_status == "pending" %}selected{% endif %}>
+Pending
+</option>
+
+<option value="confirmed"
+{% if order.order_status == "confirmed" %}selected{% endif %}>
+Confirmed
+</option>
+
+<option value="processing"
+{% if order.order_status == "processing" %}selected{% endif %}>
+Processing
+</option>
+
+<option value="shipped"
+{% if order.order_status == "shipped" %}selected{% endif %}>
+Shipped
+</option>
+
+<option value="out_for_delivery"
+{% if order.order_status == "out_for_delivery" %}selected{% endif %}>
+Out For Delivery
+</option>
+
+<option value="delivered"
+{% if order.order_status == "delivered" %}selected{% endif %}>
+Delivered
+</option>
+
+<option value="cancelled"
+{% if order.order_status == "cancelled" %}selected{% endif %}>
+Cancelled
+</option>
+
+</select>
+
+<button
+type="submit"
+class="btn btn-primary w-100">
+
+<i class="bi bi-check-circle"></i>
+
+Update Status
+
+</button>
+
+</form>
+
+</div>
+
+</div>
+
+
+
+<div class="card mb-4">
+
+<div class="card-header">
+
+<h5>
+
+Payment Details
+
+</h5>
+
+</div>
+
+<div class="card-body">
+
+<div class="mb-3">
+
+<label>
+
+Payment Method
+
+</label>
+
+<h6>
+
+{{ order.payment.payment_method|title }}
+
+</h6>
+
+</div>
+
+<div class="mb-3">
+
+<label>
+
+Payment Status
+
+</label>
+
+<br>
+
+{% if order.payment.payment_status == "paid" %}
+
+<span class="badge bg-success">
+
+Paid
+
+</span>
+
+{% elif order.payment.payment_status == "pending" %}
+
+<span class="badge bg-warning text-dark">
+
+Pending
+
+</span>
+
+{% elif order.payment.payment_status == "failed" %}
+
+<span class="badge bg-danger">
+
+Failed
+
+</span>
+
+{% elif order.payment.payment_status == "refunded" %}
+
+<span class="badge bg-info">
+
+Refunded
+
+</span>
+
+{% endif %}
+
+</div>
+
+<div>
+
+<label>
+
+Transaction Amount
+
+</label>
+
+<h5>
+
+₹{{ order.payment.amount }}
+
+</h5>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<div class="card">
+
+<div class="card-header">
+
+<h5>
+
+Order Timeline
+
+</h5>
+
+</div>
+
+<div class="card-body">
+
+{% for history in history %}
+
+<div class="timeline-item">
+
+<div class="timeline-dot"></div>
+
+<div class="timeline-content">
+
+<h6>
+
+{{ history.status }}
+
+</h6>
+
+<p>
+
+{{ history.note }}
+
+</p>
+
+<small>
+
+{{ history.created_at|date:"d M Y h:i A" }}
+
+</small>
+
+</div>
+
+</div>
+
+{% empty %}
+
+<p class="text-muted">
+
+No status history available.
+
+</p>
+
+{% endfor %}
+
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+
+
+
+{% endblock %}

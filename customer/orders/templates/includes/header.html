@@ -1,0 +1,63 @@
+<header class="topbar">
+
+    <a href="{% url 'public_home' %}" class="brand">
+            <i class="bi bi-bag-check-fill"></i>
+
+        PocketStore
+    </a>
+
+    <nav class="desktop-nav">
+
+        <a href="{% url 'public_home' %}" class="nav-link">
+            Home
+        </a>
+
+        <a href="{% url 'mobile_page' %}" class="nav-link">
+            Mobiles
+        </a>
+
+        <a href="{% url 'audio_page' %}" class="nav-link">
+            Audio
+        </a>
+
+        <a href="#" class="nav-link">
+            Contacts
+        </a>
+
+    </nav>
+
+    <div class="header-icons">
+
+        <a href="{% url 'wishlist' %}" class="top-icon">
+
+            <i class="bi bi-heart"></i>
+
+            {% if wishlist_count %}
+            <span class="badge-count">
+                {{ wishlist_count }}
+            </span>
+            {% endif %}
+
+        </a>
+
+        <a href="{% url 'cart' %}" class="top-icon">
+
+            <i class="bi bi-cart3"></i>
+
+            {% if cart_count %}
+            <span class="badge-count">
+                {{ cart_count }}
+            </span>
+            {% endif %}
+
+        </a>
+
+        <a href="{% url 'customer_home' %}" class="top-icon">
+
+            <i class="bi bi-person-circle"></i>
+
+        </a>
+
+    </div>
+
+</header>

@@ -1,0 +1,1684 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ product.product_name }} | PocketStore</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@500&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --accent-red: #DC3545;
+  --surface-border: #343A40;
+  --background: #101418;
+  --background-deep: #08090A;
+  --surface-container-high: #262a2e;
+  --on-surface-variant: #c2c6d8;
+  --on-surface: #e0e3e8;
+  --surface-container: #1c2024;
+  --primary: #b1c5ff;
+  --primary-container: #0d6efd;
+  --on-primary-container: #ffffff;
+  --accent-gold: #FFC107;
+  --text-muted: #ADB5BD;
+  --surface-container-low: #181c20;
+  --gutter: 1.5rem;
+  --container-max: 1320px;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+  background:var(--background);
+  color:var(--on-surface);
+  font-family:Inter,sans-serif;
+  overflow-x:hidden;
+}
+
+.topbar{
+  width:100%;
+  height:74px;
+  background:var(--background-deep);
+  border-bottom:1px solid #23272f;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 42px;
+  position:sticky;
+  top:0;
+  z-index:1000;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  color:white;
+  text-decoration:none;
+  font-size:32px;
+  font-weight:900;
+  letter-spacing:-1px;
+  font-family:'Hanken Grotesk',sans-serif;
+}
+
+.brand:hover{color:white}
+.brand i{font-size:26px}
+
+.desktop-nav{
+  display:flex;
+  align-items:center;
+  gap:34px;
+}
+
+.nav-link{
+  position:relative;
+  color:#9ca3af;
+  text-decoration:none;
+  font-size:14px;
+  font-weight:600;
+  transition:.3s;
+}
+
+.nav-link:hover{color:white}
+
+.header-icons{
+  display:flex;
+  align-items:center;
+  gap:20px;
+}
+
+.top-icon{
+  color:#d1d5db;
+  font-size:20px;
+  transition:.3s;
+  text-decoration:none;
+}
+
+.top-icon:hover{
+  color:var(--primary-container);
+  transform:translateY(-2px);
+}
+
+.material-symbols-outlined{
+  font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;
+  display:inline-block;
+  vertical-align:middle;
+}
+
+.main-wrapper {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 2rem var(--gutter);
+}
+
+.alert-message {
+  background-color: var(--surface-container);
+  border: 1px solid var(--surface-border);
+  color: var(--on-surface);
+  padding: 0.75rem 1rem;
+  border-radius: 0.25rem;
+}
+
+.breadcrumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 2rem;
+}
+
+.breadcrumbs a {
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: 0.2s;
+}
+
+.breadcrumbs a:hover {
+  color: white;
+}
+
+.breadcrumbs .active {
+  color: var(--on-surface);
+}
+
+.breadcrumbs .chevron {
+  font-size: 14px;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--gutter);
+  margin-bottom: 4rem;
+}
+
+.gallery-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.product-image-container{
+  background:radial-gradient(circle at center,#212529 0%,#101418 100%);
+  aspect-ratio: 1 / 1;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--surface-border);
+  overflow: hidden;
+  padding: 2rem;
+  position:relative;
+}
+
+.product-image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.zoom-box{
+  overflow:hidden;
+  cursor:zoom-in;
+  position:relative;
+}
+
+.zoom-box img{
+  transition:transform .25s ease;
+  transform-origin:center center;
+}
+
+.thumbs-row {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+}
+
+.thumb-item {
+  width: 5rem;
+  height: 5rem;
+  border-radius: 0.5rem;
+  background-color: var(--surface-container);
+  overflow: hidden;
+  padding: 0.5rem;
+  flex-shrink: 0;
+  cursor: pointer;
+  border: 1px solid var(--surface-border);
+  opacity: 0.7;
+  transition: opacity 0.2s, border-color 0.2s;
+}
+
+.thumb-item:hover {
+  opacity: 1;
+}
+
+.thumb-item.active {
+  border: 2px solid var(--primary-container);
+  opacity: 1;
+}
+
+.thumb-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.details-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.brand-name {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-weight: 700;
+}
+
+.product-title {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  margin-top: 0.25rem;
+  line-height: 1.2;
+}
+
+.rating-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.rating-stars {
+  display: flex;
+  color: var(--accent-gold);
+}
+
+.rating-stars .material-symbols-outlined {
+  font-size: 20px;
+}
+
+.reviews-count {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.price-container {
+  display: flex;
+  align-items: end;
+  gap: 0.75rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--surface-border);
+}
+
+.price-display {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 36px;
+  color: var(--on-surface);
+  font-weight: 700;
+}
+
+.original-price {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 20px;
+  color: var(--text-muted);
+  text-decoration: line-through;
+  margin-bottom: 0.25rem;
+}
+
+.save-badge {
+  background-color: rgba(220, 53, 69, 0.1);
+  color: var(--accent-red);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+  display: inline-block;
+}
+
+.promo-box {
+  background-color: var(--surface-container-low);
+  border: 1px solid rgba(177, 197, 255, 0.2);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.promo-box .material-symbols-outlined {
+  color: var(--primary);
+}
+
+.promo-text {
+  font-size: 14px;
+  color: var(--on-surface-variant);
+}
+
+.stock-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.stock-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.stock-dot.in-stock {
+  background-color: #22c55e;
+}
+
+.stock-dot.out-of-stock {
+  background-color: #ef4444;
+}
+
+.stock-text {
+  font-size: 14px;
+  color: var(--on-surface);
+}
+
+.options-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.option-column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.option-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.color-list {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.color-dot {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  border: 1px solid var(--surface-border);
+  transition: border-color 0.2s;
+  background-color: var(--surface-container-high);
+}
+
+.color-dot:hover {
+  border-color: var(--primary);
+}
+
+.color-dot.active {
+  border: 2px solid var(--primary);
+  outline: 1px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.spec-badges {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.spec-badge {
+  background-color: var(--surface-container-high);
+  border: 1px solid var(--surface-border);
+  border-radius: 0.25rem;
+  padding: 0.25rem 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 10px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.spec-badge .material-symbols-outlined {
+  font-size: 14px;
+}
+
+.variant-selection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.variant-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.variant-chip {
+  background-color: var(--surface-container-high);
+  border: 1px solid var(--surface-border);
+  border-radius: 0.25rem;
+  padding: 0.25rem 0.75rem;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  transition: border-color 0.2s;
+}
+
+.variant-chip:hover {
+  border-color: var(--primary);
+}
+
+.variant-chip.active {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.action-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.btn-cart {
+  flex: 1;
+  background-color: var(--primary-container);
+  color: var(--on-primary-container);
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  transition: filter 0.2s, transform 0.1s;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-cart:hover {
+  filter: brightness(1.1);
+}
+
+.btn-cart:active {
+  transform: scale(0.95);
+}
+
+.btn-cart:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-wishlist {
+  width: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--surface-border);
+  border-radius: 0.5rem;
+  text-decoration: none;
+  color: var(--on-surface);
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.btn-wishlist:hover {
+  background-color: var(--surface-container-low);
+}
+
+.btn-wishlist:active {
+  transform: scale(0.95);
+}
+
+.tabs-section {
+  margin-top: 4rem;
+}
+
+.tabs-nav {
+  display: flex;
+  border-bottom: 1px solid var(--surface-border);
+  gap: 2rem;
+  overflow-x: auto;
+}
+
+.tab-btn {
+  background: none;
+  border: none;
+  padding: 0 0 1rem 0;
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.2s;
+  border-bottom: 2px solid transparent;
+}
+
+.tab-btn:hover {
+  color: var(--on-surface);
+}
+
+.tab-btn.active-tab {
+  border-bottom: 2px solid var(--primary-container);
+  color: var(--on-surface);
+}
+
+.tabs-content {
+  padding: 2rem 0;
+}
+
+.tab-pane {
+  display: none;
+}
+
+.tab-pane.active {
+  display: block;
+}
+
+.tab-pane h3 {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 32px;
+  font-weight: 600;
+  margin-bottom: 2rem;
+}
+
+.specs-table {
+  background-color: var(--surface-container);
+  border-radius: 0.75rem;
+  border: 1px solid var(--surface-border);
+  overflow: hidden;
+}
+
+.specs-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  border-bottom: 1px solid var(--surface-border);
+}
+
+.specs-row:last-child {
+  border-bottom: none;
+}
+
+.specs-label {
+  padding: 1.5rem;
+  background-color: var(--surface-container-high);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.specs-value {
+  padding: 1.5rem;
+  font-size: 16px;
+  color: var(--on-surface);
+}
+
+.description-card, .reviews-card {
+  background-color: var(--surface-container);
+  border-radius: 0.75rem;
+  border: 1px solid var(--surface-border);
+  padding: 1.5rem;
+}
+
+.description-text {
+  color: var(--on-surface-variant);
+  line-height: 1.6;
+}
+
+.no-reviews-text {
+  color: var(--text-muted);
+}
+
+.related-section {
+  margin-top: 5rem;
+}
+
+.related-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 2rem;
+}
+
+.related-title {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 32px;
+  font-weight: 600;
+}
+
+.related-view-all {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  text-decoration: none;
+  transition: text-decoration 0.2s;
+}
+
+.related-view-all:hover {
+  text-decoration: underline;
+}
+
+.related-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--gutter);
+}
+
+.related-card {
+  background-color: var(--surface-container-low);
+  border: 1px solid var(--surface-border);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  transition: border-color 0.2s;
+}
+
+.related-card:hover {
+  border-color: rgba(177, 197, 255, 0.5);
+}
+
+.related-img-wrapper {
+  position: relative;
+  background-color: white;
+  border-radius: 0.5rem;
+  aspect-ratio: 1 / 1;
+  margin-bottom: 1rem;
+  padding: 1.5rem;
+  overflow: hidden;
+}
+
+.related-img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.save-label {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  background-color: var(--accent-red);
+  color: white;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+}
+
+.favorite-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  color: #6b7280;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.favorite-btn:hover {
+  color: var(--accent-red);
+}
+
+.related-rating {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: var(--accent-gold);
+  margin-bottom: 0.5rem;
+}
+
+.related-rating .material-symbols-outlined {
+  font-size: 14px;
+}
+
+.related-rating-text {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.related-product-title {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--on-surface);
+}
+
+.related-price {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--on-surface);
+  margin-bottom: 1rem;
+}
+
+.related-original-price {
+  color: var(--text-muted);
+  text-decoration: line-through;
+  font-size: 14px;
+  margin-left: 0.25rem;
+}
+
+.btn-related-cart {
+  width: 100%;
+  border: 1px solid var(--surface-border);
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: var(--on-surface);
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+  background: none;
+  cursor: pointer;
+}
+
+.btn-related-cart:hover {
+  background-color: var(--primary);
+  color: #000;
+  border-color: var(--primary);
+}
+
+.btn-related-cart:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.footer {
+  background:#000;
+  padding:65px 45px 28px;
+  border-top:1px solid rgba(255,255,255,0.05);
+  margin-top:70px;
+}
+
+.footer-grid {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:40px;
+}
+
+.footer-box h5 {
+  color:white;
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:2px;
+  margin-bottom:26px;
+}
+
+.footer-box p {
+  color:#6b7280;
+  font-size:11px;
+  line-height:2;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  max-width:260px;
+}
+
+.footer-box a {
+  display:block;
+  color:#6b7280;
+  text-decoration:none;
+  font-size:11px;
+  letter-spacing:1px;
+  margin-bottom:15px;
+}
+
+.footer-box a:hover{color:white}
+
+.footer-bottom {
+  margin-top:45px;
+  padding-top:24px;
+  border-top:1px solid rgba(255,255,255,0.06);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:20px;
+}
+
+.footer-copy {
+  color:#4b5563;
+  font-size:10px;
+  letter-spacing:1px;
+}
+
+.footer-social {
+  display:flex;
+  align-items:center;
+  gap:18px;
+}
+
+.footer-social a {
+  color:#6b7280;
+  font-size:15px;
+}
+
+.footer-social a:hover{color:white}
+
+@media (min-width: 768px) {
+  .specs-row {
+    grid-template-columns: 3fr 9fr;
+  }
+}
+
+@media (min-width: 576px) {
+  .related-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 992px) {
+  .product-grid {
+    grid-template-columns: 7fr 5fr;
+  }
+  .related-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media(max-width:991px){
+  .desktop-nav{display:none}
+  .topbar{padding:0 20px}
+  .brand{font-size:26px}
+  .footer-grid{grid-template-columns:repeat(2,1fr)}
+}
+
+@media(max-width:576px){
+  .topbar{height:68px;padding:0 16px}
+  .brand{font-size:22px;gap:10px}
+  .brand i{font-size:20px}
+  .header-icons{gap:14px}
+  .top-icon{font-size:18px}
+  .footer{padding:45px 22px 24px}
+  .footer-grid{grid-template-columns:1fr;gap:30px}
+  .footer-bottom{flex-direction:column;align-items:flex-start}
+}
+ .message-container{
+    position:fixed;
+    top:20px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:99999;
+
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+
+    align-items:center;
+}
+
+.toast-message{
+    min-width:300px;
+    max-width:500px;
+
+    padding:14px 22px;
+    border-radius:12px;
+
+    color:white;
+    font-weight:600;
+    text-align:center;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.18);
+
+    animation:fadeIn .3s ease;
+}
+
+.toast-message.success{
+    background:#16a34a;
+}
+
+
+.toast-message.error,
+.toast-message.danger{
+    background:#dc2626;
+}
+
+
+.toast-message.warning{
+    background:#f59e0b;
+}
+
+
+.toast-message.info{
+    background:#2563eb;
+}
+
+@keyframes fadeIn{
+    from{
+        opacity:0;
+        transform:translateY(-15px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+@keyframes fadeOut{
+    from{
+        opacity:1;
+        transform:translateY(0);
+    }
+    to{
+        opacity:0;
+        transform:translateY(-15px);
+    }
+}
+.offer-badge{
+    position:absolute;
+    top:10px;
+    left:10px;
+    background:#ef4444;
+    color:#fff;
+    padding:4px 10px;
+    border-radius:6px;
+    font-size:12px;
+    font-weight:700;
+}
+.review-divider{
+    border:0;
+    border-top:1px solid #3a3a3a;
+    margin:20px 0;
+}
+.review-profile{
+    width:60px;
+    height:60px;
+    border-radius:50%;
+    object-fit:cover;
+    border:2px solid #3b82f6;
+    flex-shrink:0;
+}
+
+.review-item{
+    padding:20px 0;
+}
+
+.review-divider{
+    border:0;
+    border-top:1px solid #343A40;
+    margin:0;
+}
+
+.review-item h5{
+    margin:0;
+    font-size:18px;
+    font-weight:600;
+}
+
+.review-item h6{
+    margin-top:10px;
+    font-size:16px;
+    font-weight:600;
+}
+
+.review-item p{
+    color:#c2c6d8;
+    line-height:1.6;
+}
+</style>
+</head>
+
+<body>
+
+<header class="topbar">
+  <a href="{% url 'public_home' %}" class="brand">
+    <i class="bi bi-bag-check-fill"></i>
+    <span>PocketStore</span>
+  </a>
+
+  <nav class="desktop-nav">
+    <a href="{% url 'public_home' %}" class="nav-link">Home</a>
+    <a href="{% url 'mobile_page' %}" class="nav-link">Mobiles</a>
+    <a href="{% url 'audio_page' %}" class="nav-link">Audio</a>
+    <a href="#contact" class="nav-link">Contacts</a>
+  </nav>
+
+  <div class="header-icons">
+    <a href="{% url 'wishlist' %}" class="top-icon"><i class="bi bi-heart"></i></a>
+    <a href="{% url 'cart' %}" class="top-icon"><i class="bi bi-cart3"></i></a>
+    <a href="{% url 'customer_home' %}" class="top-icon"><i class="bi bi-person"></i></a>
+  </div>
+</header>
+
+<main class="main-wrapper">
+
+{% if messages %}
+<div class="message-container">
+    {% for message in messages %}
+        <div class="toast-message {{ message.tags }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<nav class="breadcrumbs">
+  <a href="{% url 'public_home' %}">Home</a>
+  <span class="material-symbols-outlined chevron">chevron_right</span>
+
+  {% if product.category.type == "audio" %}
+    <a href="{% url 'audio_page' %}">{{ product.category.category_name }}</a>
+  {% else %}
+    <a href="{% url 'mobile_page' %}">{{ product.category.category_name }}</a>
+  {% endif %}
+
+  <span class="material-symbols-outlined chevron">chevron_right</span>
+  <span class="active">{{ product.product_name }}</span>
+</nav>
+
+<div class="product-grid">
+
+  <div class="gallery-section">
+    <div class="product-image-container zoom-box">
+      {% if offer_data.has_offer %}
+<div class="offer-badge">
+    {{ offer_data.discount_percentage }}% OFF
+</div>
+{% endif %}
+
+      {% if selected_variant.main_image %}
+        <img id="mainImage" alt="{{ product.product_name }}" src="{{ selected_variant.main_image.url }}">
+      {% elif selected_variant.images.first %}
+        <img id="mainImage" alt="{{ product.product_name }}" src="{{ selected_variant.images.first.image.url }}">
+      {% else %}
+        <img id="mainImage" alt="No Image" src="{% static 'images/no-image.png' %}">
+      {% endif %}
+
+    </div>
+
+    <div class="thumbs-row">
+      {% if selected_variant.main_image %}
+        <div class="thumb-item active" onclick="setThumbActive(this)">
+          <img onclick="changeImage('{{ selected_variant.main_image.url }}')" src="{{ selected_variant.main_image.url }}">
+        </div>
+      {% endif %}
+
+      {% for image in selected_variant.images.all %}
+        <div class="thumb-item" onclick="setThumbActive(this)">
+          <img onclick="changeImage('{{ image.image.url }}')" src="{{ image.image.url }}">
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="details-panel">
+    <div>
+      <span class="brand-name">
+        {{ product.brand.brand_name }}
+      </span>
+
+      <h1 class="product-title">
+        {{ product.product_name }}
+      </h1>
+
+      <div class="rating-container">
+        <div class="rating-stars">
+          <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">star</span>
+          <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">star</span>
+          <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">star</span>
+          <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">star</span>
+          <span class="material-symbols-outlined">star_half</span>
+        </div>
+        <span class="reviews-count">4.8 reviews</span>
+      </div>
+    </div>
+
+    <div class="price-container">
+      {% if offer_data.has_offer %}
+
+<span class="price-display">
+₹{{ offer_data.selling_price }}
+</span>
+
+<span class="original-price">
+₹{{ offer_data.original_price }}
+</span>
+
+<span class="save-badge">
+{{ offer_data.discount_percentage }}% OFF
+</span>
+
+{% else %}
+
+<span class="price-display">
+₹{{ selected_variant.price }}
+</span>
+
+{% endif %}
+    </div>
+
+    <div class="promo-box">
+      <span class="material-symbols-outlined">local_offer</span>
+      <span class="promo-text">
+        Limited time offer: free shipping + secure checkout.
+      </span>
+    </div>
+
+    <div class="stock-status">
+      {% if selected_variant.stock_quantity > 0 %}
+        <div class="stock-dot in-stock"></div>
+        <span class="stock-text">
+          In stock - only {{ selected_variant.stock_quantity }} left
+        </span>
+      {% else %}
+        <div class="stock-dot out-of-stock"></div>
+        <span class="stock-text">Out of stock</span>
+      {% endif %}
+    </div>
+
+    <div class="options-grid">
+
+      <div class="option-column">
+
+        <span class="option-title">
+          Color: {{ selected_variant.color }}
+        </span>
+
+        <div class="color-list">
+
+          {% for variant in variants %}
+
+            <a href="?variant={{ variant.id }}"
+               class="color-dot {% if selected_variant.id == variant.id %}active{% endif %}"
+               title="{{ variant.color }}"></a>
+
+          {% endfor %}
+
+        </div>
+
+      </div>
+
+      <div class="option-column">
+
+        <span class="option-title">
+          Variant
+        </span>
+
+        <div class="spec-badges">
+
+          {% if selected_variant.ram %}
+          <div class="spec-badge">
+            <span class="material-symbols-outlined">memory</span>
+            <span>{{ selected_variant.ram }}</span>
+          </div>
+          {% endif %}
+
+          {% if selected_variant.storage %}
+          <div class="spec-badge">
+            <span class="material-symbols-outlined">storage</span>
+            <span>{{ selected_variant.storage }}</span>
+          </div>
+          {% endif %}
+
+          {% if selected_variant.connectivity %}
+          <div class="spec-badge">
+            <span class="material-symbols-outlined">5g</span>
+            <span>{{ selected_variant.connectivity }}</span>
+          </div>
+          {% endif %}
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="variant-selection">
+
+      <span class="option-title">
+        Select Variant
+      </span>
+
+      <div class="variant-chips">
+
+        {% for variant in variants %}
+
+          <a href="?variant={{ variant.id }}"
+             class="variant-chip {% if selected_variant.id == variant.id %}active{% endif %}">
+
+            <span>
+
+              {{ variant.color }}
+
+              {% if variant.storage %}
+                | {{ variant.storage }}
+              {% endif %}
+
+              {% if variant.ram %}
+                | {{ variant.ram }}
+              {% endif %}
+
+              {% if variant.connectivity %}
+                | {{ variant.connectivity }}
+              {% endif %}
+
+            </span>
+
+          </a>
+
+        {% endfor %}
+
+      </div>
+
+    </div>
+
+    <div class="action-buttons">
+
+      {% if selected_variant.stock_quantity > 0 %}
+
+      <a href="{% url 'add_to_cart' selected_variant.id %}" class="btn-cart">
+        <span class="material-symbols-outlined">shopping_cart</span>
+        Add to Cart
+      </a>
+
+      {% else %}
+
+      <button class="btn-cart" disabled>
+        Out of Stock
+      </button>
+
+      {% endif %}
+
+      <a href="{% url 'add_to_wishlist' selected_variant.id %}" class="btn-wishlist">
+        <span class="material-symbols-outlined">favorite</span>
+      </a>
+
+    </div>
+
+  </div>
+
+</div>
+
+<div class="tabs-section">
+
+  <div class="tabs-nav">
+
+    <button class="tab-btn active-tab" onclick="showTab('specificationTab', this)">
+      Specifications
+    </button>
+
+    <button class="tab-btn" onclick="showTab('descriptionTab', this)">
+      Description
+    </button>
+
+    <button class="tab-btn" onclick="showTab('reviewsTab', this)">
+      Reviews
+    </button>
+
+  </div>
+
+  <div class="tabs-content">
+
+    <div id="specificationTab" class="tab-pane active">
+
+      <h3>Technical Specifications</h3>
+
+      <div class="specs-table">
+
+        {% for spec in specifications %}
+
+        <div class="specs-row">
+
+          <div class="specs-label">
+            {{ spec.spec_name }}
+          </div>
+
+          <div class="specs-value">
+            {{ spec.spec_value }}
+          </div>
+
+        </div>
+
+        {% empty %}
+
+        <div style="padding: 1.5rem;" class="no-reviews-text">
+          No specifications added
+        </div>
+
+        {% endfor %}
+
+      </div>
+
+    </div>
+
+    <div id="descriptionTab" class="tab-pane">
+
+      <div class="description-card">
+
+        <h3>Product Description</h3>
+
+        <p class="description-text">
+
+          {% if product.full_description %}
+            {{ product.full_description }}
+          {% else %}
+            {{ product.short_description }}
+          {% endif %}
+
+        </p>
+
+      </div>
+
+    </div>
+
+   
+  
+<div id="reviewsTab" class="tab-pane">
+
+    <div class="reviews-card">
+
+        <h3>Customer Reviews ({{ reviews.count }} reviews)</h3>
+
+        {% if reviews %}
+
+            {% for review in reviews %}
+
+            <div class="review-item">
+
+                <div class="d-flex align-items-center mb-3">
+
+                    {% if review.user.profile_image %}
+                        <img src="{{ review.user.profile_image.url }}"
+                             alt=""
+                             class="review-profile">
+                  
+                    {% endif %}
+
+                    <div class="ms-3">
+
+                        <h5 class="mb-1">
+                            {{ review.user.full_name }}
+                        </h5>
+
+                        <div class="d-flex align-items-center flex-wrap">
+
+                            <div class="me-3">
+
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= review.rating %}
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                    {% else %}
+                                        <i class="bi bi-star text-secondary"></i>
+                                    {% endif %}
+                                {% endfor %}
+
+                            </div>
+
+                            <small style="color:#ffffff;">
+                                {{ review.created_at|date:"d M Y" }}
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <h6 class="fw-bold mb-1">
+                    {{ review.review_title }}
+                </h6>
+
+                <p class="mb-0">
+                    {{ review.review_description }}
+                </p>
+
+            </div>
+
+            {% if not forloop.last %}
+                <hr class="review-divider">
+            {% endif %}
+
+            {% endfor %}
+
+        {% else %}
+
+            <p class="no-reviews-text">
+                No reviews added yet.
+            </p>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+
+
+<section class="related-section">
+
+  <div class="related-header">
+
+    <h3 class="related-title">
+      {% if product.category.type == "audio" %}
+        Related Audio Products
+      {% else %}
+        Related Mobile Products
+      {% endif %}
+    </h3>
+
+    {% if product.category.type == "audio" %}
+      <a class="related-view-all" href="{% url 'audio_page' %}">
+        View All <span class="material-symbols-outlined icon-md">arrow_forward</span>
+      </a>
+    {% else %}
+      <a class="related-view-all" href="{% url 'mobile_page' %}">
+        View All <span class="material-symbols-outlined icon-md">arrow_forward</span>
+      </a>
+    {% endif %}
+
+  </div>
+
+  <div class="related-grid">
+
+    {% for related in related_products %}
+      {% with related_variant=related.default_variant %}
+
+        {% if related_variant %}
+
+          <div class="related-card">
+
+            <div class="related-img-wrapper">
+{% if related.offer_data.has_offer %}
+<div class="save-label">
+    {{ related.offer_data.discount_percentage }}% OFF
+</div>
+{% endif %}
+              {% endif %}
+
+              <a href="{% url 'add_to_wishlist' related_variant.id %}" class="favorite-btn">
+                <span class="material-symbols-outlined">favorite</span>
+              </a>
+
+              <a href="{% url 'product_detail' related.slug %}">
+                {% if related_variant.main_image %}
+                  <img alt="{{ related.product_name }}" src="{{ related_variant.main_image.url }}">
+                {% elif related_variant.images.first %}
+                  <img alt="{{ related.product_name }}" src="{{ related_variant.images.first.image.url }}">
+                {% else %}
+                  <img alt="No image" src="{% static 'images/no-image.png' %}">
+                {% endif %}
+              </a>
+
+            </div>
+
+            <div class="related-rating">
+              <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">star</span>
+              <span class="related-rating-text">(4.8)</span>
+            </div>
+
+            <h4 class="related-product-title">
+              {{ related.product_name }}
+            </h4>
+
+            <p class="related-price">
+              {% if related.offer_data.has_offer %}
+
+₹{{ related.offer_data.selling_price }}
+
+<span class="related-original-price">
+₹{{ related.offer_data.original_price }}
+</span>
+
+{% else %}
+
+₹{{ related_variant.price }}
+
+{% endif %}
+            </p>
+
+            {% if related_variant.stock_quantity > 0 %}
+              <a href="{% url 'add_to_cart' related_variant.id %}" class="btn-related-cart">
+                <span class="material-symbols-outlined">shopping_cart</span>
+                Add to Cart
+              </a>
+            {% else %}
+              <button class="btn-related-cart" disabled>
+                Out of Stock
+              </button>
+            {% endif %}
+
+          </div>
+
+
+      {% endwith %}
+    {% empty %}
+
+      <div class="related-card">
+        No related products found
+      </div>
+
+    {% endfor %}
+
+  </div>
+
+</section>
+
+<footer class="footer" id="contact">
+
+  <div class="footer-grid">
+
+    <div class="footer-box">
+
+      <h5>POCKETSTORE</h5>
+
+      <p>
+        Pioneer in high-end mobile technology distribution engineered for those who demand ultimate precision and performance.
+      </p>
+
+    </div>
+
+    <div class="footer-box">
+
+      <h5>PLATFORMS</h5>
+
+      <a href="#">IOS SYSTEM</a>
+      <a href="#">ANDROID SYSTEM</a>
+
+    </div>
+
+    <div class="footer-box">
+
+      <h5>SERVICES</h5>
+
+      <a href="{% url 'mobile_page' %}">MOBILES</a>
+      <a href="{% url 'audio_page' %}">AUDIO</a>
+      <a href="#">REFER A TECHIE</a>
+      <a href="#contact">CONTACTS</a>
+
+    </div>
+
+    <div class="footer-box">
+
+      <h5>LEGAL</h5>
+
+      <a href="#">PRIVACY POLICY</a>
+      <a href="#">TERMS OF USE</a>
+
+    </div>
+
+  </div>
+
+  <div class="footer-bottom">
+
+    <div class="footer-copy">
+      © 2024 POCKETSTORE. ENGINEERED FOR PRECISION.
+    </div>
+
+    <div class="footer-social">
+
+      <a href="#">
+        <i class="bi bi-github"></i>
+      </a>
+
+      <a href="#">
+        <i class="bi bi-instagram"></i>
+      </a>
+
+    </div>
+
+  </div>
+
+</footer>
+
+</main>
+
+<script>
+
+function changeImage(imageUrl){
+  const mainImage = document.getElementById("mainImage");
+  mainImage.src = imageUrl;
+}
+
+function setThumbActive(el) {
+  document.querySelectorAll('.thumb-item').forEach(function(item) {
+    item.classList.remove('active');
+  });
+  el.classList.add('active');
+}
+
+function showTab(tabId, btn){
+  document.querySelectorAll(".tab-pane").forEach(function(tab){
+    tab.classList.remove("active");
+  });
+  document.querySelectorAll(".tab-btn").forEach(function(item){
+    item.classList.remove("active-tab");
+  });
+  document.getElementById(tabId).classList.add("active");
+  btn.classList.add("active-tab");
+}
+
+const zoomBox = document.querySelector(".zoom-box");
+const zoomImg = document.getElementById("mainImage");
+
+if(zoomBox && zoomImg){
+  zoomBox.addEventListener("mousemove", function(e){
+    const rect = zoomBox.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    zoomImg.style.transformOrigin = `${x}% ${y}%`;
+    zoomImg.style.transform = "scale(2)";
+  });
+
+  zoomBox.addEventListener("mouseleave", function(){
+    zoomImg.style.transformOrigin = "center center";
+    zoomImg.style.transform = "scale(1)";
+  });
+}
+</script>
+<script>
+setTimeout(function(){
+
+    document.querySelectorAll(".toast-message").forEach(function(msg){
+
+        msg.style.animation = "fadeOut 0.4s ease forwards";
+
+        setTimeout(function(){
+            msg.remove();
+        },400);
+
+    });
+
+},3000);
+</script>
+</body>
+</html>

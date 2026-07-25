@@ -1,0 +1,424 @@
+{% extends "admin_panel/base.html" %}
+{% load static %}
+
+{% block title %}
+Offers
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h3 class="fw-bold mb-1">Offer Management</h3>
+            <p class="text-muted mb-0">
+                Manage Product & Category Offers
+            </p>
+        </div>
+
+        <a href="{% url 'offer_add' %}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i>
+            Add Offer
+        </a>
+
+    </div>
+
+
+    {% if messages %}
+
+        {% for message in messages %}
+
+        <div class="alert alert-success alert-dismissible fade show">
+
+            {{ message }}
+
+            <button
+                class="btn-close"
+                data-bs-dismiss="alert">
+            </button>
+
+        </div>
+
+        {% endfor %}
+
+    {% endif %}
+
+
+    <div class="card shadow-sm border-0">
+
+        <div class="card-body">
+
+            <form method="get">
+
+                <div class="row g-3">
+
+                    <div class="col-lg-5">
+
+                        <input
+                            type="text"
+                            name="search"
+                            value="{{ search }}"
+                            class="form-control"
+                            placeholder="Search offer">
+
+                    </div>
+
+                    <div class="col-lg-2">
+
+                        <select
+                            name="offer_type"
+                            class="form-select">
+
+                            <option value="">
+                                All Types
+                            </option>
+
+                            <option
+                                value="percentage"
+                                {% if offer_type == "percentage" %}
+                                selected
+                                {% endif %}>
+
+                                Percentage
+
+                            </option>
+
+                            <option
+                                value="flat"
+                                {% if offer_type == "flat" %}
+                                selected
+                                {% endif %}>
+
+                                Flat
+
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-lg-2">
+
+                        <select
+                            name="status"
+                            class="form-select">
+
+                            <option value="">
+                                All Status
+                            </option>
+
+                            <option
+                                value="active"
+                                {% if status == "active" %}
+                                selected
+                                {% endif %}>
+                                Active
+                            </option>
+
+                            <option
+                                value="inactive"
+                                {% if status == "inactive" %}
+                                selected
+                                {% endif %}>
+                                Inactive
+                            </option>
+
+                            <option
+                                value="expired"
+                                {% if status == "expired" %}
+                                selected
+                                {% endif %}>
+                                Expired
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-lg-3 d-flex gap-2">
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary w-100">
+
+                            Search
+
+                        </button>
+
+                        <a
+                            href="{% url 'offer_list' %}"
+                            class="btn btn-outline-secondary w-100">
+
+                            Clear
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <div class="card shadow-sm border-0 mt-4">
+
+        <div class="card-body p-0">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle mb-0">
+
+                    <thead class="table-light">
+
+                        <tr>
+
+                            <th>#</th>
+
+                            <th>Offer Name</th>
+
+                            <th>Type</th>
+
+                            <th>Apply To</th>
+
+                            <th>Discount</th>
+
+                            <th>Start Date</th>
+
+                            <th>End Date</th>
+
+                            <th>Status</th>
+
+                            <th class="text-center">
+                                Actions
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+                    {% for offer in page_obj %}
+
+<tr>
+
+    <td>{{ forloop.counter }}</td>
+
+    <td>
+
+        <strong>{{ offer.offer_name }}</strong>
+
+    </td>
+
+    <td>
+
+        {% if offer.offer_type == "percentage" %}
+
+            <span class="badge bg-primary">
+                Percentage
+            </span>
+
+        {% else %}
+
+            <span class="badge bg-info">
+                Flat
+            </span>
+
+        {% endif %}
+
+    </td>
+
+    <td>
+
+        {% if offer.apply_to == "product" %}
+
+            Product
+
+        {% else %}
+
+            Category
+
+        {% endif %}
+
+    </td>
+
+    <td>
+
+        {% if offer.offer_type == "percentage" %}
+
+            {{ offer.discount_value }}%
+
+        {% else %}
+
+            ₹{{ offer.discount_value }}
+
+        {% endif %}
+
+    </td>
+
+    <td>
+
+        {{ offer.valid_from }}
+
+    </td>
+
+    <td>
+
+        {{ offer.valid_to }}
+
+    </td>
+
+    <td>
+
+        {% if offer.active %}
+
+            <span class="badge bg-success">
+                Active
+            </span>
+
+        {% elif offer.expired %}
+
+            <span class="badge bg-danger">
+                Expired
+            </span>
+
+        {% else %}
+
+            <span class="badge bg-secondary">
+                Inactive
+            </span>
+
+        {% endif %}
+
+    </td>
+
+    <td class="text-center">
+
+        <a
+            href="{% url 'offer_edit' offer.id %}"
+            class="btn btn-sm btn-warning">
+
+            Edit
+
+        </a>
+
+        <a
+            href="{% url 'offer_delete' offer.id %}"
+            class="btn btn-sm btn-danger"
+            onclick="return confirm('Delete this offer?')">
+
+            Delete
+
+        </a>
+
+    </td>
+
+</tr>
+
+{% empty %}
+
+<tr>
+
+    <td colspan="9" class="text-center py-5">
+
+        <h5>No offers found.</h5>
+
+    </td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+
+<nav class="mt-4">
+
+<ul class="pagination justify-content-center">
+
+{% if page_obj.has_previous %}
+
+<li class="page-item">
+
+<a
+class="page-link"
+href="?page={{ page_obj.previous_page_number }}&search={{ search }}&offer_type={{ offer_type }}&status={{ status }}">
+
+Previous
+
+</a>
+
+</li>
+
+{% endif %}
+
+
+{% for page in page_obj.paginator.page_range %}
+
+{% if page == page_obj.number %}
+
+<li class="page-item active">
+
+<span class="page-link">
+
+{{ page }}
+
+</span>
+
+</li>
+
+{% else %}
+
+<li class="page-item">
+
+<a
+class="page-link"
+href="?page={{ page }}&search={{ search }}&offer_type={{ offer_type }}&status={{ status }}">
+
+{{ page }}
+
+</a>
+
+</li>
+
+{% endif %}
+
+{% endfor %}
+
+
+{% if page_obj.has_next %}
+
+<li class="page-item">
+
+<a
+class="page-link"
+href="?page={{ page_obj.next_page_number }}&search={{ search }}&offer_type={{ offer_type }}&status={{ status }}">
+
+Next
+
+</a>
+
+</li>
+
+{% endif %}
+
+</ul>
+
+</nav>
+
+</div>
+
+{% endblock %}

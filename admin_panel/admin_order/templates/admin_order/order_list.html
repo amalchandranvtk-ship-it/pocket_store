@@ -1,0 +1,1644 @@
+{% extends "admin_panel/base.html" %}
+{% load static %}
+
+{% block title %}
+Products
+{% endblock %}
+
+{% block extra_css %}
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+
+
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:24px;
+gap:20px;
+}
+
+.header h1{
+font-size:30px;
+font-weight:900;
+margin:0;
+}
+
+.header p{
+margin-top:6px;
+color:#64748b;
+}
+
+
+
+.card{
+border:none;
+border-radius:18px;
+box-shadow:0 8px 20px rgba(0,0,0,.05);
+overflow:hidden;
+}
+
+.card-body{
+padding:25px;
+}
+
+.stat-card{
+
+background:#fff;
+
+border-radius:18px;
+
+padding:25px;
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+box-shadow:0 5px 15px rgba(0,0,0,.05);
+
+height:100%;
+
+transition:.3s;
+
+}
+
+.stat-card:hover{
+
+transform:translateY(-4px);
+
+box-shadow:0 10px 25px rgba(0,0,0,.08);
+
+}
+
+.stat-card h6{
+
+font-size:14px;
+
+color:#6b7280;
+
+margin-bottom:10px;
+
+}
+
+.stat-card h2{
+
+font-size:34px;
+
+font-weight:700;
+
+margin-bottom:0;
+
+color:#111827;
+
+}
+
+.stat-card .badge{
+
+padding:8px 14px;
+
+border-radius:20px;
+
+font-size:12px;
+
+font-weight:600;
+
+}
+
+.search-card{
+
+border-radius:18px;
+
+overflow:hidden;
+
+}
+
+.search-card .card-body{
+
+padding:25px;
+
+}
+
+.input-group-text{
+
+background:#f3f4f6;
+
+border:1px solid #d1d5db;
+
+border-right:none;
+
+}
+
+.form-control{
+
+height:48px;
+
+border-left:none;
+
+border-radius:0 10px 10px 0;
+
+}
+
+.form-control:focus{
+
+box-shadow:none;
+
+border-color:#2563eb;
+
+}
+
+.form-select{
+
+height:48px;
+
+border-radius:10px;
+
+}
+
+.form-select:focus{
+
+box-shadow:none;
+
+border-color:#2563eb;
+
+}
+
+
+.order-card{
+
+border-radius:18px;
+
+overflow:hidden;
+
+}
+
+.table{
+
+margin-bottom:0;
+
+}
+
+.table thead{
+
+background:#f9fafb;
+
+}
+
+.table thead th{
+
+padding:18px;
+
+font-size:14px;
+
+font-weight:700;
+
+color:#374151;
+
+border-bottom:1px solid #e5e7eb;
+
+white-space:nowrap;
+
+}
+
+.table tbody td{
+
+padding:18px;
+
+vertical-align:middle;
+
+border-bottom:1px solid #f1f5f9;
+
+font-size:14px;
+
+}
+
+.table tbody tr{
+
+transition:.2s;
+
+}
+
+.table tbody tr:hover{
+
+background:#f8fafc;
+
+}
+
+
+.customer-info{
+
+display:flex;
+
+align-items:center;
+
+gap:12px;
+
+}
+
+.customer-avatar{
+
+width:46px;
+
+height:46px;
+
+border-radius:50%;
+
+overflow:hidden;
+
+background:#e5e7eb;
+
+flex-shrink:0;
+
+}
+
+.customer-avatar img{
+
+width:100%;
+
+height:100%;
+
+object-fit:cover;
+
+}
+
+.customer-info h6{
+
+margin:0;
+
+font-size:15px;
+
+font-weight:600;
+
+color:#111827;
+
+}
+
+.customer-info small{
+
+color:#6b7280;
+
+font-size:12px;
+
+}
+.brand-box h3{
+font-size:21px;
+font-weight:900;
+margin-bottom:4px;
+}
+
+.brand-box span{
+font-size:11px;
+color:#9ca3af;
+}
+
+
+.order-id{
+
+font-weight:700;
+
+text-decoration:none;
+
+color:#2563eb;
+
+}
+
+.order-id:hover{
+
+text-decoration:underline;
+
+}
+
+.badge{
+
+padding:8px 16px;
+
+font-size:12px;
+
+font-weight:600;
+
+border-radius:30px;
+
+}
+
+.bg-secondary{
+
+background:#e5e7eb !important;
+
+color:#374151 !important;
+
+}
+
+.bg-primary{
+
+background:#2563eb !important;
+
+color:#fff !important;
+
+}
+
+.bg-warning{
+
+background:#facc15 !important;
+
+color:#78350f !important;
+
+}
+
+.bg-info{
+
+background:#38bdf8 !important;
+
+color:#083344 !important;
+
+}
+
+.bg-success{
+
+background:#22c55e !important;
+
+color:#fff !important;
+
+}
+
+.bg-danger{
+
+background:#ef4444 !important;
+
+color:#fff !important;
+
+}
+
+.bg-dark{
+
+background:#1f2937 !important;
+
+color:#fff !important;
+
+}
+
+.btn{
+
+border-radius:10px;
+
+padding:10px 18px;
+
+font-size:14px;
+
+font-weight:600;
+
+transition:.3s;
+
+}
+
+.btn-primary{
+
+background:#2563eb;
+
+border:none;
+
+}
+
+.btn-primary:hover{
+
+background:#1d4ed8;
+
+}
+
+.btn-outline-primary{
+
+border:1px solid #2563eb;
+
+color:#2563eb;
+
+background:#fff;
+
+}
+
+.btn-outline-primary:hover{
+
+background:#2563eb;
+
+color:#fff;
+
+}
+
+.btn-outline-secondary{
+
+border:1px solid #d1d5db;
+
+color:#374151;
+
+background:#fff;
+
+}
+
+.btn-outline-secondary:hover{
+
+background:#f3f4f6;
+
+}
+
+.btn-light{
+
+background:#fff;
+
+border:1px solid #e5e7eb;
+
+}
+
+.btn-light:hover{
+
+background:#f8fafc;
+
+}
+
+.table .btn{
+
+padding:8px 14px;
+
+font-size:13px;
+
+}
+
+.table .btn i{
+
+margin-right:5px;
+
+}
+
+
+.card-footer{
+
+background:#fff;
+
+padding:20px;
+
+border-top:1px solid #e5e7eb;
+
+}
+
+.pagination{
+
+gap:6px;
+
+}
+
+.page-item .page-link{
+
+border-radius:8px;
+
+border:1px solid #d1d5db;
+
+padding:10px 15px;
+
+color:#374151;
+
+}
+
+.page-item.active .page-link{
+
+background:#2563eb;
+
+border-color:#2563eb;
+
+color:#fff;
+
+}
+
+.page-link:hover{
+
+background:#eff6ff;
+
+color:#2563eb;
+
+}
+
+.table tbody tr{
+
+transition:.25s;
+
+}
+
+.table tbody tr:hover{
+
+background:#f9fafb;
+
+transform:scale(1.002);
+
+}
+
+.table-responsive::-webkit-scrollbar{
+
+height:8px;
+
+}
+
+.table-responsive::-webkit-scrollbar-thumb{
+
+background:#cbd5e1;
+
+border-radius:20px;
+
+}
+
+.table-responsive::-webkit-scrollbar-track{
+
+background:#f1f5f9;
+
+}
+
+@media (max-width:1400px){
+
+.main-content{
+
+padding:25px;
+
+}
+
+.stat-card h2{
+
+font-size:28px;
+
+}
+
+}
+
+
+
+@media (max-width:1200px){
+
+.sidebar{
+
+width:240px;
+
+}
+
+.main-content{
+
+margin-left:240px;
+
+width:calc(100% - 240px);
+
+}
+
+.order-card{
+
+overflow-x:auto;
+
+}
+
+}
+
+
+
+@media (max-width:992px){
+
+.wrapper{
+
+display:block;
+
+}
+
+.sidebar{
+
+position:relative;
+
+width:100%;
+
+height:auto;
+
+padding:20px;
+
+}
+
+.sidebar ul{
+
+display:flex;
+
+flex-wrap:wrap;
+
+gap:10px;
+
+}
+
+.sidebar ul li{
+
+margin-bottom:0;
+
+}
+
+.sidebar ul li a{
+
+padding:10px 15px;
+
+}
+
+.main-content{
+
+margin-left:0;
+
+width:100%;
+
+padding:20px;
+
+}
+
+.header{
+
+flex-direction:column;
+
+align-items:flex-start;
+
+}
+
+.top-actions{
+
+width:100%;
+
+display:flex;
+
+justify-content:flex-start;
+
+flex-wrap:wrap;
+
+gap:10px;
+
+}
+
+.search-card .row{
+
+row-gap:15px;
+
+}
+
+.table{
+
+min-width:900px;
+
+}
+
+}
+
+
+
+@media (max-width:768px){
+
+.topbar h2{
+
+font-size:26px;
+
+}
+
+.topbar p{
+
+font-size:13px;
+
+}
+
+.stat-card{
+
+padding:18px;
+
+}
+
+.stat-card h2{
+
+font-size:26px;
+
+}
+
+.stat-card h6{
+
+font-size:13px;
+
+}
+
+.card-body{
+
+padding:18px;
+
+}
+
+.customer-avatar{
+
+width:40px;
+
+height:40px;
+
+}
+
+.customer-info h6{
+
+font-size:14px;
+
+}
+
+.customer-info small{
+
+font-size:11px;
+
+}
+
+.btn{
+
+padding:8px 14px;
+
+font-size:13px;
+
+}
+
+.table thead th{
+
+font-size:13px;
+
+}
+
+.table tbody td{
+
+font-size:13px;
+
+padding:14px;
+
+}
+
+}
+
+
+
+@media (max-width:576px){
+
+.main-content{
+
+padding:15px;
+
+}
+
+.topbar{
+
+margin-bottom:20px;
+
+}
+
+.topbar h2{
+
+font-size:22px;
+
+}
+
+.logo h2{
+
+font-size:24px;
+
+}
+
+.logo p{
+
+font-size:12px;
+
+}
+
+.sidebar ul{
+
+display:block;
+
+}
+
+.sidebar ul li{
+
+margin-bottom:6px;
+
+}
+
+.sidebar ul li a{
+
+font-size:14px;
+
+padding:10px 14px;
+
+}
+
+.stat-card{
+
+flex-direction:column;
+
+align-items:flex-start;
+
+gap:10px;
+
+}
+
+.stat-card h2{
+
+font-size:24px;
+
+}
+
+.search-card .card-body{
+
+padding:15px;
+
+}
+
+.form-control,
+
+.form-select{
+
+height:44px;
+
+font-size:14px;
+
+}
+
+.input-group-text{
+
+height:44px;
+
+}
+
+.btn{
+
+width:100%;
+
+}
+
+.card-footer{
+
+padding:15px;
+
+}
+
+.pagination{
+
+justify-content:center;
+
+flex-wrap:wrap;
+
+}
+
+.page-link{
+
+padding:8px 12px;
+
+font-size:13px;
+
+}
+
+}
+.message-container{
+    position:fixed;
+    top:20px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:99999;
+
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+
+    align-items:center;
+}
+
+.toast-message{
+    min-width:300px;
+    max-width:500px;
+
+    padding:14px 22px;
+    border-radius:12px;
+
+    color:white;
+    font-weight:600;
+    text-align:center;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.18);
+
+    animation:fadeIn .3s ease;
+}
+
+
+.toast-message.success{
+    background:#16a34a;
+}
+
+
+.toast-message.error,
+.toast-message.danger{
+    background:#dc2626;
+}
+
+
+.toast-message.warning{
+    background:#f59e0b;
+}
+
+
+.toast-message.info{
+    background:#2563eb;
+}
+
+@keyframes fadeIn{
+    from{
+        opacity:0;
+        transform:translateY(-15px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+@keyframes fadeOut{
+    from{
+        opacity:1;
+        transform:translateY(0);
+    }
+    to{
+        opacity:0;
+        transform:translateY(-15px);
+    }
+}
+
+
+
+
+
+
+</style>
+
+{% endblock %}
+{% block content %}
+
+
+
+
+
+<div class="content-area">
+
+<div class="header">
+
+<div>
+
+<h1>Orders</h1>
+
+<p>Manage customer orders</p>
+
+</div>
+
+<div class="top-actions">
+
+<a href="#" class="btn btn-light">
+<i class="bi bi-funnel"></i>
+Filter
+</a>
+
+<a href="#" class="btn btn-primary">
+<i class="bi bi-download"></i>
+Export
+</a>
+
+</div>
+
+</div>
+
+
+
+<div class="row g-4 mb-4">
+
+<div class="col-xl-3 col-md-6">
+
+<div class="stat-card">
+
+<div>
+
+<h6>Total Orders</h6>
+
+<h2>{{ total_orders }}</h2>
+
+</div>
+
+<span class="badge bg-primary">
+
++12%
+
+</span>
+
+</div>
+
+</div>
+
+
+<div class="col-xl-3 col-md-6">
+
+<div class="stat-card">
+
+<div>
+
+<h6>Processing</h6>
+
+<h2>{{ processing_count }}</h2>
+
+</div>
+
+<span class="badge bg-warning text-dark">
+
+Stable
+
+</span>
+
+</div>
+
+</div>
+
+
+<div class="col-xl-3 col-md-6">
+
+<div class="stat-card">
+
+<div>
+
+<h6>Pending</h6>
+
+<h2>{{ pending_count }}</h2>
+
+</div>
+
+<span class="badge bg-danger">
+
+{{ pending_count }}
+
+</span>
+
+</div>
+
+</div>
+
+
+<div class="col-xl-3 col-md-6">
+
+<div class="stat-card">
+
+<div>
+
+<h6>Delivered</h6>
+
+<h2>{{ delivered_count }}</h2>
+
+</div>
+
+<span class="badge bg-success">
+
+{{ delivered_count }}
+
+</span>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<div class="card search-card mb-4">
+
+<div class="card-body">
+
+<form
+method="GET"
+action="{% url 'admin_order_list' %}">
+
+<div class="row g-3 align-items-center">
+
+<div class="col-lg-5">
+
+<div class="input-group">
+
+<span class="input-group-text">
+
+<i class="bi bi-search"></i>
+
+</span>
+
+<input
+
+type="text"
+
+class="form-control"
+
+name="search"
+
+value="{{ search }}"
+
+placeholder="Search Order ID / Customer">
+
+</div>
+
+</div>
+
+
+<div class="col-lg-2">
+
+<select
+
+class="form-select"
+
+name="status">
+
+<option value="">
+
+All Status
+
+</option>
+
+<option value="pending"
+
+{% if status == "pending" %}
+
+selected
+
+{% endif %}>
+
+Pending
+
+</option>
+
+<option value="confirmed"
+
+{% if status == "confirmed" %}
+
+selected
+
+{% endif %}>
+
+Confirmed
+
+</option>
+
+<option value="processing"
+
+{% if status == "processing" %}
+
+selected
+
+{% endif %}>
+
+Processing
+
+</option>
+
+<option value="shipped"
+
+{% if status == "shipped" %}
+
+selected
+
+{% endif %}>
+
+Shipped
+
+</option>
+
+<option value="out_for_delivery"
+
+{% if status == "out_for_delivery" %}
+
+selected
+
+{% endif %}>
+
+Out For Delivery
+
+</option>
+
+<option value="delivered"
+
+{% if status == "delivered" %}
+
+selected
+
+{% endif %}>
+
+Delivered
+
+</option>
+
+<option value="cancelled"
+
+{% if status == "cancelled" %}
+
+selected
+
+{% endif %}>
+
+Cancelled
+
+</option>
+
+</select>
+
+</div>
+
+
+<div class="col-lg-2">
+
+<select
+
+class="form-select"
+
+name="sort">
+
+<option value="new"
+
+{% if sort == "new" %}
+
+selected
+
+{% endif %}>
+
+Newest
+
+</option>
+
+<option value="old"
+
+{% if sort == "old" %}
+
+selected
+
+{% endif %}>
+
+Oldest
+
+</option>
+
+<option value="amount"
+
+{% if sort == "amount" %}
+
+selected
+
+{% endif %}>
+
+Amount
+
+</option>
+
+</select>
+
+</div>
+
+
+<div class="col-lg-2 d-grid">
+
+<button
+
+class="btn btn-primary"
+
+type="submit">
+
+Search
+
+</button>
+
+</div>
+
+
+<div class="col-lg-1 d-grid">
+
+<a
+
+href="{% url 'admin_order_list' %}"
+
+class="btn btn-outline-secondary">
+
+Clear
+
+</a>
+
+</div>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+<div class="card order-card">
+
+<div class="table-responsive">
+
+<table class="table align-middle">
+
+<thead>
+
+<tr>
+
+<th>Order ID</th>
+
+<th>Customer</th>
+
+<th>Date</th>
+
+<th>Status</th>
+
+<th>Amount</th>
+
+<th>Payment</th>
+
+<th>Action</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+{% for order in page_obj %}
+<tr>
+
+<td>
+
+<a
+href="{% url 'admin_order_detail' order.order_number %}"
+class="order-id">
+
+{{ order.order_number }}
+
+</a>
+
+</td>
+
+<td>
+
+<div class="customer-info">
+
+<div class="customer-avatar">
+
+{% if order.user.profile_image %}
+
+<img
+src="{{ order.user.profile_image.url }}"
+alt="Customer">
+
+{% else %}
+
+<img
+src="{% static 'images/default-user.png' %}"
+alt="Customer">
+
+{% endif %}
+
+</div>
+
+<div>
+
+<h6>
+
+{{ order.user.full_name }}
+
+</h6>
+
+<small>
+
+{{ order.user.email }}
+
+</small>
+
+</div>
+
+</div>
+
+</td>
+
+<td>
+
+{{ order.placed_at|date:"M d, Y" }}
+
+</td>
+
+<td>
+
+{% if order.order_status == "pending" %}
+
+<span class="badge bg-secondary">
+
+Pending
+
+</span>
+
+{% elif order.order_status == "confirmed" %}
+
+<span class="badge bg-primary">
+
+Confirmed
+
+</span>
+
+{% elif order.order_status == "processing" %}
+
+<span class="badge bg-warning text-dark">
+
+Processing
+
+</span>
+
+{% elif order.order_status == "shipped" %}
+
+<span class="badge bg-info">
+
+Shipped
+
+</span>
+
+{% elif order.order_status == "out_for_delivery" %}
+
+<span class="badge bg-dark">
+
+Out For Delivery
+
+</span>
+
+{% elif order.order_status == "delivered" %}
+
+<span class="badge bg-success">
+
+Delivered
+
+</span>
+
+{% elif order.order_status == "cancelled" %}
+
+<span class="badge bg-danger">
+
+Cancelled
+
+</span>
+
+{% endif %}
+
+</td>
+
+<td>
+
+₹{{ order.total_amount }}
+
+</td>
+
+<td>
+
+{% if order.payment %}
+
+{{ order.payment.payment_method|title }}
+
+{% else %}
+
+-
+
+{% endif %}
+
+</td>
+
+<td>
+
+<a
+
+href="{% url 'admin_order_detail' order.order_number %}"
+
+class="btn btn-sm btn-outline-primary">
+
+<i class="bi bi-eye"></i>
+
+View
+
+</a>
+
+</td>
+
+</tr>
+
+{% empty %}
+
+<tr>
+
+<td colspan="7" class="text-center py-5">
+
+<h5>
+
+No Orders Found
+
+</h5>
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+{% if page_obj.has_other_pages %}
+
+<div class="card-footer bg-white">
+
+<nav>
+
+<ul class="pagination justify-content-end mb-0">
+
+{% if page_obj.has_previous %}
+
+<li class="page-item">
+
+<a
+class="page-link"
+href="?page={{ page_obj.previous_page_number }}&search={{ search }}&status={{ status }}&sort={{ sort }}">
+
+Previous
+
+</a>
+
+</li>
+
+{% endif %}
+
+
+{% for num in page_obj.paginator.page_range %}
+
+{% if page_obj.number == num %}
+
+<li class="page-item active">
+
+<span class="page-link">
+
+{{ num }}
+
+</span>
+
+</li>
+
+{% else %}
+
+<li class="page-item">
+
+<a
+class="page-link"
+href="?page={{ num }}&search={{ search }}&status={{ status }}&sort={{ sort }}">
+
+{{ num }}
+
+</a>
+
+</li>
+
+{% endif %}
+
+{% endfor %}
+
+
+{% if page_obj.has_next %}
+
+<li class="page-item">
+
+<a
+class="page-link"
+href="?page={{ page_obj.next_page_number }}&search={{ search }}&status={{ status }}&sort={{ sort }}">
+
+Next
+
+</a>
+
+</li>
+
+{% endif %}
+
+</ul>
+
+</nav>
+
+</div>
+
+{% endif %}
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+
+
+
+{% endblock %}

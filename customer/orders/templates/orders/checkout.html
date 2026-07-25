@@ -1,0 +1,2115 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Checkout | PocketStore</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+
+background:#080808;
+
+font-family:Inter,sans-serif;
+
+color:white;
+
+}
+
+a{
+
+text-decoration:none;
+
+}
+
+.navbar{
+
+background:#0d0d0d;
+
+border-bottom:1px solid #1d1d1d;
+
+padding:18px 50px;
+
+}
+
+.brand{
+
+font-size:32px;
+
+font-weight:800;
+
+color:white;
+
+}
+
+.nav-link{
+
+color:#bdbdbd;
+
+margin:0 16px;
+
+font-weight:500;
+
+}
+
+.nav-link:hover{
+
+color:white;
+
+}
+
+.icon-link{
+
+color:white;
+
+font-size:22px;
+
+margin-left:22px;
+
+position:relative;
+
+}
+
+.count{
+
+position:absolute;
+
+top:-8px;
+
+right:-8px;
+
+width:18px;
+
+height:18px;
+
+border-radius:50%;
+
+background:#2563eb;
+
+font-size:11px;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+}
+
+.checkout-wrapper{
+
+max-width:1450px;
+
+margin:auto;
+
+padding:45px 20px;
+
+}
+
+.stepper{
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+margin-bottom:60px;
+
+}
+
+.step{
+
+text-align:center;
+
+}
+
+.circle{
+
+width:48px;
+
+height:48px;
+
+border-radius:50%;
+
+background:#202020;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+font-weight:700;
+
+margin:auto;
+
+}
+
+.circle.active{
+
+background:#2563eb;
+
+}
+
+.circle.done{
+
+background:#353535;
+
+}
+
+.line{
+
+width:130px;
+
+height:2px;
+
+background:#2e2e2e;
+
+margin:0 10px;
+
+}
+
+.label{
+
+margin-top:10px;
+
+font-size:13px;
+
+color:#9ca3af;
+
+letter-spacing:1px;
+
+}
+
+.card-dark{
+
+background:#111111;
+
+border:1px solid #222;
+
+border-radius:20px;
+
+padding:30px;
+
+margin-bottom:25px;
+
+}
+
+.title{
+
+font-size:36px;
+
+font-weight:700;
+
+margin-bottom:25px;
+
+}
+
+.address-card{
+
+border:2px solid #2563eb;
+
+border-radius:18px;
+
+padding:25px;
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:flex-start;
+
+margin-bottom:20px;
+
+transition:.3s;
+
+cursor:pointer;
+
+}
+
+.address-card:hover{
+
+border-color:#4f7dff;
+
+}
+
+.address-left{
+
+display:flex;
+
+gap:18px;
+
+}
+
+.address-icon{
+
+width:56px;
+
+height:56px;
+
+background:#1b1b1b;
+
+border-radius:12px;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+font-size:22px;
+
+}
+
+.address-title{
+
+font-size:24px;
+
+font-weight:700;
+
+margin-bottom:8px;
+
+}
+
+.address-name{
+
+font-size:21px;
+
+font-weight:600;
+
+}
+
+.address-phone{
+
+color:#c4c4c4;
+
+margin:6px 0;
+
+}
+
+.address-text{
+
+color:#9ca3af;
+
+line-height:1.8;
+
+}
+
+.radio{
+
+width:22px;
+
+height:22px;
+
+accent-color:#2563eb;
+
+margin-top:8px;
+
+}
+
+.action-buttons{
+
+margin-top:20px;
+
+display:flex;
+
+gap:15px;
+
+}
+
+.btn-outline-custom{
+
+border:1px solid #333;
+
+color:white;
+
+padding:12px 22px;
+
+border-radius:10px;
+
+background:transparent;
+
+font-weight:600;
+
+}
+
+.btn-outline-custom:hover{
+
+background:#1d1d1d;
+
+}
+
+.btn-remove{
+
+background:#dc2626;
+
+border:none;
+
+padding:12px 22px;
+
+border-radius:10px;
+
+color:white;
+
+font-weight:600;
+
+}
+
+.btn-remove:hover{
+
+background:#b91c1c;
+
+}
+
+@media(max-width:991px){
+
+.address-card{
+
+flex-direction:column;
+
+}
+
+.action-buttons{
+
+flex-wrap:wrap;
+
+}
+
+}
+.product-row{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+padding:22px 0;
+
+border-bottom:1px solid #232323;
+
+}
+
+.product-row:last-child{
+
+border-bottom:none;
+
+}
+
+.product-left{
+
+display:flex;
+
+align-items:center;
+
+gap:18px;
+
+}
+
+.product-image{
+
+width:90px;
+
+height:90px;
+
+background:#000;
+
+border-radius:14px;
+
+padding:8px;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+}
+
+.product-image img{
+
+width:100%;
+
+height:100%;
+
+object-fit:contain;
+
+}
+
+.product-info h4{
+
+font-size:24px;
+
+font-weight:600;
+
+margin-bottom:8px;
+
+}
+
+.product-info p{
+
+color:#9ca3af;
+
+margin-bottom:10px;
+
+}
+
+.qty-box{
+
+display:inline-block;
+
+background:#1f1f1f;
+
+padding:8px 16px;
+
+border-radius:10px;
+
+font-size:15px;
+
+}
+
+.item-price{
+
+font-size:28px;
+
+font-weight:700;
+
+color:white;
+
+}
+
+@media(max-width:991px){
+
+.product-row{
+
+flex-direction:column;
+
+align-items:flex-start;
+
+}
+
+.item-price{
+
+margin-top:18px;
+
+}
+
+}
+.summary-card{
+
+background:#111111;
+
+border:1px solid #222;
+
+border-radius:18px;
+
+padding:30px;
+
+top:20px;
+
+}
+
+.summary-title{
+
+font-size:30px;
+
+font-weight:700;
+
+margin-bottom:30px;
+
+}
+
+.summary-row{
+
+display:flex;
+
+justify-content:space-between;
+
+margin-bottom:22px;
+
+color:#d1d5db;
+
+font-size:18px;
+
+}
+
+.summary-divider{
+
+border-color:#2d2d2d;
+
+margin:25px 0;
+
+}
+
+.summary-total{
+
+display:flex;
+
+justify-content:space-between;
+
+font-size:36px;
+
+font-weight:800;
+
+margin-bottom:30px;
+
+}
+
+.summary-total span:last-child{
+
+color:#7aa2ff;
+
+}
+
+.place-order-btn{
+
+width:100%;
+
+padding:18px;
+
+border:none;
+
+border-radius:12px;
+
+background:#2563eb;
+
+font-size:19px;
+
+font-weight:700;
+
+color:white;
+
+transition:.3s;
+
+}
+
+.place-order-btn:hover{
+
+background:#1d4ed8;
+
+transform:translateY(-2px);
+
+}
+
+.terms-text{
+
+font-size:13px;
+
+color:#8b8b8b;
+
+text-align:center;
+
+margin-top:18px;
+
+}
+
+.feature-card{
+
+margin-top:28px;
+
+background:#111111;
+
+border:1px solid #222;
+
+border-radius:18px;
+
+padding:28px;
+
+}
+
+.feature-title{
+
+font-size:28px;
+
+font-weight:700;
+
+margin-bottom:30px;
+
+}
+
+.feature-item{
+
+display:flex;
+
+align-items:flex-start;
+
+margin-bottom:28px;
+
+}
+
+.feature-icon{
+
+width:52px;
+
+height:52px;
+
+background:#1d1d1d;
+
+border-radius:50%;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+margin-right:18px;
+
+font-size:22px;
+
+color:#7aa2ff;
+
+}
+
+.feature-item h6{
+
+font-size:19px;
+
+font-weight:700;
+
+margin-bottom:6px;
+
+}
+
+.feature-item p{
+
+color:#9ca3af;
+
+margin:0;
+
+font-size:15px;
+
+}
+
+@media(max-width:991px){
+
+.summary-card{
+
+position:relative !important;
+
+margin-top:25px;
+
+}
+
+.summary-total{
+
+font-size:28px;
+
+}
+
+}
+.footer{
+
+margin-top:80px;
+
+background:#0b0b0b;
+
+border-top:1px solid #1f1f1f;
+
+padding:60px 0;
+
+}
+
+.footer-logo{
+
+font-size:34px;
+
+font-weight:800;
+
+margin-bottom:20px;
+
+}
+
+.footer-heading{
+
+font-size:18px;
+
+font-weight:700;
+
+margin-bottom:18px;
+
+}
+
+.footer-text{
+
+color:#9ca3af;
+
+line-height:1.8;
+
+}
+
+.footer-links{
+
+list-style:none;
+
+padding:0;
+
+margin:0;
+
+}
+
+.footer-links li{
+
+margin-bottom:12px;
+
+}
+
+.footer-links a{
+
+color:#bcbcbc;
+
+text-decoration:none;
+
+transition:.3s;
+
+}
+
+.footer-links a:hover{
+
+color:white;
+
+}
+
+.payment-icons{
+
+display:flex;
+
+gap:18px;
+
+font-size:26px;
+
+margin-top:18px;
+
+color:#2563eb;
+
+}
+
+.footer-line{
+
+margin:40px 0;
+
+border-color:#1f1f1f;
+
+}
+
+.footer-bottom{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+flex-wrap:wrap;
+
+}
+
+.footer-bottom p{
+
+margin:0;
+
+color:#8b8b8b;
+
+}
+
+.footer-bottom a{
+
+color:#bcbcbc;
+
+font-size:20px;
+
+margin-left:18px;
+
+transition:.3s;
+
+}
+
+.footer-bottom a:hover{
+
+color:white;
+
+}
+
+@media(max-width:991px){
+
+.footer-bottom{
+
+text-align:center;
+
+justify-content:center;
+
+gap:20px;
+
+}
+
+}
+.message-container{
+    position:fixed;
+    top:20px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:99999;
+
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+
+    align-items:center;
+}
+
+.toast-message{
+    min-width:300px;
+    max-width:500px;
+
+    padding:14px 22px;
+    border-radius:12px;
+
+    color:white;
+    font-weight:600;
+    text-align:center;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.18);
+
+    animation:fadeIn .3s ease;
+}
+
+
+.toast-message.success{
+    background:#16a34a;
+}
+
+
+.toast-message.error,
+.toast-message.danger{
+    background:#dc2626;
+}
+
+
+.toast-message.warning{
+    background:#f59e0b;
+}
+
+
+.toast-message.info{
+    background:#2563eb;
+}
+
+@keyframes fadeIn{
+    from{
+        opacity:0;
+        transform:translateY(-15px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+@keyframes fadeOut{
+    from{
+        opacity:1;
+        transform:translateY(0);
+    }
+    to{
+        opacity:0;
+        transform:translateY(-15px);
+    }
+}
+
+#couponCode{
+
+    background:#1b1b1b;
+    border:1px solid #333;
+    color:#fff;
+
+}
+
+#couponCode::placeholder{
+
+    color:#888;
+
+}
+
+.modal-content{
+
+    border:1px solid #2c2c2c;
+    border-radius:15px;
+
+}
+
+.modal-body .border{
+
+    background:#181818;
+    border-color:#333 !important;
+
+}
+
+.coupon-card{
+
+    background:#181818;
+    border:1px solid #303030;
+    border-radius:12px;
+    transition:.3s;
+
+}
+
+.coupon-card:hover{
+
+    border-color:#2563eb;
+    transform:translateY(-2px);
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+{% if messages %}
+<div class="message-container">
+    {% for message in messages %}
+        <div class="toast-message {{ message.tags }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<nav class="navbar navbar-expand-lg">
+
+<div class="container-fluid">
+
+<a class="brand"
+href="{% url 'public_home' %}">
+    <i class="bi bi-bag-check-fill"></i>
+
+
+Pocket Store
+
+</a>
+
+<div class="navbar-nav mx-auto">
+
+<a
+class="nav-link"
+href="{% url 'public_home' %}">
+
+Home
+
+</a>
+
+<a
+class="nav-link"
+href="{% url 'mobile_page' %}">
+
+Mobiles
+
+</a>
+
+<a
+class="nav-link"
+href="{% url 'audio_page' %}">
+
+Audio
+
+</a>
+
+<a
+class="nav-link"
+href="#">
+
+Contacts
+
+</a>
+
+</div>
+
+<div>
+
+<a
+href="{% url 'wishlist' %}"
+class="icon-link">
+
+<i class="bi bi-heart"></i>
+
+<span class="count">
+
+{{ wishlist_count }}
+
+</span>
+
+</a>
+
+<a
+href="{% url 'cart' %}"
+class="icon-link">
+
+<i class="bi bi-cart3"></i>
+
+<span class="count">
+
+{{ total_items }}
+
+</span>
+
+</a>
+
+<a
+href="{% url 'customer_home' %}"
+class="icon-link">
+
+<i class="bi bi-person-circle"></i>
+
+</a>
+
+</div>
+
+</div>
+
+</nav>
+
+<div class="checkout-wrapper">
+
+<form
+method="POST"
+action="{% url 'payment' %}">
+
+{% csrf_token %}
+
+<div class="stepper">
+
+<div class="step">
+
+<div class="circle done">
+
+<i class="bi bi-cart3"></i>
+
+</div>
+
+<div class="label">
+
+CART
+
+</div>
+
+</div>
+
+<div class="line"></div>
+
+<div class="step">
+
+<div class="circle active">
+
+2
+
+</div>
+
+<div class="label">
+
+ADDRESS
+
+</div>
+
+</div>
+
+<div class="line"></div>
+
+<div class="step">
+
+<div class="circle">
+
+3
+
+</div>
+
+<div class="label">
+
+PAYMENT
+
+</div>
+
+</div>
+
+<div class="line"></div>
+
+<div class="step">
+
+<div class="circle">
+
+4
+
+</div>
+
+<div class="label">
+
+CONFIRM
+
+</div>
+
+</div>
+
+</div>
+
+<div class="row">
+
+<div class="col-lg-8">
+
+<div class="card-dark">
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+<h2 class="title mb-0">
+
+Delivery Address
+
+</h2>
+
+<a
+href="{% url 'add_address' %}"
+class="text-primary fw-bold">
+
+Add New Address
+
+</a>
+
+</div>
+
+{% for address in addresses %}
+
+<label class="address-card">
+
+<div class="address-left">
+
+<div class="address-icon">
+
+<i class="bi bi-house-door"></i>
+
+</div>
+
+<div>
+
+<div class="address-title">
+
+{{ address.get_address_type_display }}
+
+</div>
+
+<div class="address-name">
+
+{{ address.full_name }}
+
+</div>
+
+<div class="address-phone">
+
+{{ address.phone }}
+
+</div>
+
+<div class="address-text">
+
+{{ address.address_line1 }}
+
+<br>
+
+{% if address.address_line2 %}
+{{ address.address_line2 }}<br>
+{% endif %}
+
+{{ address.city }},
+
+{{ address.state }}
+
+-
+
+{{ address.zip_code }}
+
+</div>
+
+<div class="action-buttons">
+
+<a
+href="{% url 'edit_address' address.id %}"
+class="btn-outline-custom">
+
+Edit Address
+
+</a>
+
+<a
+href="{% url 'delete_address' address.id %}"
+class="btn-remove"
+onclick="return confirm('Delete Address?')">
+
+Remove
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+<input
+
+type="radio"
+
+class="radio"
+
+name="address"
+
+value="{{ address.id }}"
+
+{% if address.is_default %}
+
+checked
+
+{% endif %}
+
+>
+
+</label>
+
+{% endfor %}
+
+</div>
+
+<div class="card-dark">
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+<h2 class="title mb-0">
+
+Order Summary
+
+</h2>
+
+<span
+class="badge rounded-pill bg-secondary px-3 py-2">
+
+{{ total_items }} Items
+
+</span>
+
+</div>
+
+{% for item in cart_items %}
+
+<div class="product-row">
+
+<div class="product-left">
+
+<div class="product-image">
+
+{% if item.variant.main_image %}
+
+<img
+src="{{ item.variant.main_image.url }}"
+alt="{{ item.variant.product.product_name }}">
+
+{% elif item.variant.images.first %}
+
+<img
+src="{{ item.variant.images.first.image.url }}"
+alt="{{ item.variant.product.product_name }}">
+
+{% else %}
+
+<img
+src="{% static 'images/no-image.png' %}">
+
+{% endif %}
+
+</div>
+
+<div class="product-info">
+
+<h4>
+
+{{ item.variant.product.product_name }}
+
+</h4>
+
+<p>
+
+{{ item.variant.product.brand.brand_name }}
+
+{% if item.variant.storage %}
+
+• {{ item.variant.storage }}
+
+{% endif %}
+
+{% if item.variant.ram %}
+
+• {{ item.variant.ram }}
+
+{% endif %}
+
+{% if item.variant.color %}
+
+• {{ item.variant.color }}
+
+{% endif %}
+
+</p>
+
+<div class="qty-box">
+
+Qty :
+<strong>
+
+{{ item.quantity }}
+
+</strong>
+
+</div>
+
+{% if item.discount_amount > 0 %}
+
+<div class="mt-2">
+
+<small class="text-decoration-line-through text-secondary">
+
+₹{{ item.original_amount }}
+
+</small>
+
+<span class="text-success fw-bold ms-2">
+
+Save ₹{{ item.discount_amount }}
+
+</span>
+
+</div>
+
+{% endif %}
+
+</div>
+
+</div>
+
+<div class="text-end">
+
+<div class="item-price">
+
+₹{{ item.selling_amount }}
+
+</div>
+
+</div>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+</div>
+
+
+<div class="col-lg-4">
+
+<div class="summary-card sticky-top">
+
+<h3 class="summary-title">
+    Price Summary
+</h3>
+
+<div class="mb-4">
+
+    <label class="form-label text-secondary">
+        Apply Coupon
+    </label>
+
+    <div class="d-flex">
+
+       <input
+    type="text"
+    class="form-control me-2"
+    id="couponCode"
+    readonly
+    value="{% if applied_coupon %}{{ applied_coupon.coupon_code }}{% endif %}"
+    placeholder="Enter coupon code">
+
+        <button
+            type="button"
+            class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#couponModal">
+
+            Apply
+
+        </button>
+
+    </div>
+
+</div>
+
+<div class="summary-row">
+
+    <span>
+        Subtotal ({{ total_items }} items)
+    </span>
+
+    <span>
+        ₹{{ subtotal }}
+    </span>
+
+</div>
+
+<div class="summary-row">
+
+<span>
+
+Offer Discount
+
+</span>
+
+<span class="text-danger fw-bold">
+
+-₹{{ discount_amount }}
+
+</span>
+
+
+
+</div>
+<div class="d-flex justify-content-between mb-2">
+
+    <span>Coupon Discount</span>
+
+    <span class="text-success">
+
+        -₹{{ coupon_discount }}
+
+    </span>
+
+</div>
+<div class="summary-row">
+
+<span>
+
+Delivery
+
+</span>
+
+<span class="text-success fw-bold">
+
+{% if delivery_charge == 0 %}
+
+FREE
+
+{% else %}
+
+₹{{ delivery_charge }}
+
+{% endif %}
+
+</span>
+
+</div>
+
+<div class="summary-row">
+
+<span>
+
+GST
+
+</span>
+
+<span>
+
+₹{{ tax_amount }}
+
+</span>
+
+</div>
+
+
+<hr class="summary-divider">
+
+{% if applied_coupon %}
+
+<div class="alert alert-success d-flex justify-content-between align-items-center mb-3">
+
+    <div>
+        Coupon Applied :
+        <strong>{{ applied_coupon.coupon_code }}</strong>
+    </div>
+
+    <a href="{% url 'remove_coupon' %}"
+       class="btn btn-sm btn-danger">
+
+        Remove
+
+    </a>
+
+</div>
+
+{% endif %}
+
+<div class="summary-total">
+
+    <span>Total Amount</span>
+
+    <span>₹{{ total_amount }}</span>
+
+</div>
+<input
+type="hidden"
+name="payment_method"
+value="cod">
+
+<button
+type="submit"
+class="place-order-btn">
+
+<i class="bi bi-shield-lock-fill me-2"></i>
+
+Place Order Securely
+
+</button>
+</div>
+
+<p class="terms-text">
+
+By continuing, you agree to our
+
+Terms & Conditions.
+
+</p>
+
+</div>
+
+
+<div class="feature-card">
+
+<h4 class="feature-title">
+
+Why Choose Us?
+
+</h4>
+
+<div class="feature-item">
+
+<div class="feature-icon">
+
+<i class="bi bi-shield-check"></i>
+
+</div>
+
+<div>
+
+<h6>
+
+Secure Checkout
+
+</h6>
+
+<p>
+
+256-bit SSL Encryption
+
+</p>
+
+</div>
+
+</div>
+
+<div class="feature-item">
+
+<div class="feature-icon">
+
+<i class="bi bi-arrow-repeat"></i>
+
+</div>
+
+<div>
+
+<h6>
+
+Easy Returns
+
+</h6>
+
+<p>
+
+7 Days Return Policy
+
+</p>
+
+</div>
+
+</div>
+
+<div class="feature-item mb-0">
+
+<div class="feature-icon">
+
+<i class="bi bi-award"></i>
+
+</div>
+
+<div>
+
+<h6>
+
+Brand Warranty
+
+</h6>
+
+<p>
+
+Official Manufacturer Warranty
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</form>
+
+</div>
+<div
+class="modal fade"
+id="couponModal">
+
+<div class="modal-dialog modal-dialog-centered">
+
+<div class="modal-content bg-dark">
+
+<div class="modal-header">
+
+<h5>
+
+Available Coupons
+
+</h5>
+
+<button
+class="btn-close btn-close-white"
+data-bs-dismiss="modal">
+
+</button>
+
+</div>
+
+<div class="modal-body">
+
+{% for coupon in coupons %}
+
+<div class="coupon-card p-3 mb-3">
+<h5>
+
+{{ coupon.coupon_code }}
+
+</h5>
+
+
+
+<strong>
+
+{{ coupon.discount_value }}
+
+{% if coupon.discount_type == "percentage" %}
+
+%
+
+{% else %}
+
+₹
+
+{% endif %}
+
+OFF
+
+</strong>
+
+<form
+method="POST"
+action="{% url 'apply_coupon' %}">
+
+{% csrf_token %}
+
+<input
+type="hidden"
+name="coupon_id"
+value="{{ coupon.id }}">
+
+<button class="btn btn-primary mt-2 w-100">
+    Apply Coupon
+</button>
+
+</form>
+
+</div>
+
+{% empty %}
+
+<p>
+
+No coupons available.
+
+</p>
+
+{% endfor %}
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+<footer class="footer mt-5">
+
+<div class="container">
+
+<div class="row gy-5">
+
+<div class="col-lg-4">
+
+<h3 class="footer-logo">
+
+PocketStore
+
+</h3>
+
+<p class="footer-text">
+
+Premium smartphones, earbuds and accessories from the world's leading brands.
+
+</p>
+
+</div>
+
+<div class="col-lg-2">
+
+<h6 class="footer-heading">
+
+Shop
+
+</h6>
+
+<ul class="footer-links">
+
+<li>
+
+<a href="{% url 'mobile_page' %}">
+
+Mobiles
+
+</a>
+
+</li>
+
+<li>
+
+<a href="{% url 'audio_page' %}">
+
+Audio
+
+</a>
+
+</li>
+
+<li>
+
+<a href="{% url 'wishlist' %}">
+
+Wishlist
+
+</a>
+
+</li>
+
+<li>
+
+<a href="{% url 'cart' %}">
+
+Cart
+
+</a>
+
+</li>
+
+</ul>
+
+</div>
+
+<div class="col-lg-3">
+
+<h6 class="footer-heading">
+
+Customer
+
+</h6>
+
+<ul class="footer-links">
+
+<li>
+
+<a href="{% url 'customer_home' %}">
+
+My Account
+
+</a>
+
+</li>
+
+<li>
+
+<a href="{% url 'order_list' %}">
+
+My Orders
+
+</a>
+
+</li>
+
+<li>
+
+<a href="#">
+
+Support
+
+</a>
+
+</li>
+
+<li>
+
+<a href="#">
+
+Privacy Policy
+
+</a>
+
+</li>
+
+</ul>
+
+</div>
+
+<div class="col-lg-3">
+
+<h6 class="footer-heading">
+
+Secure Payments
+
+</h6>
+
+<p class="footer-text">
+
+Cash on Delivery available.
+
+100% Secure Checkout.
+
+</p>
+
+<div class="payment-icons">
+
+<i class="bi bi-shield-check"></i>
+
+<i class="bi bi-credit-card"></i>
+
+<i class="bi bi-wallet2"></i>
+
+</div>
+
+</div>
+
+</div>
+
+<hr class="footer-line">
+
+<div class="footer-bottom">
+
+<p>
+
+© {{ now|date:"Y" }} PocketStore.
+
+All Rights Reserved.
+
+</p>
+
+<div>
+
+<a href="#">
+
+<i class="bi bi-facebook"></i>
+
+</a>
+
+<a href="#">
+
+<i class="bi bi-instagram"></i>
+
+</a>
+
+<a href="#">
+
+<i class="bi bi-twitter-x"></i>
+
+</a>
+
+<a href="#">
+
+<i class="bi bi-youtube"></i>
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</footer>
+
+{% for address in addresses %}
+
+<div
+class="modal fade"
+id="deleteAddress{{ address.id }}"
+tabindex="-1">
+
+<div class="modal-dialog modal-dialog-centered">
+
+<div class="modal-content bg-dark border-secondary">
+
+<div class="modal-header border-secondary">
+
+<h5>
+
+Delete Address
+
+</h5>
+
+<button
+type="button"
+class="btn-close btn-close-white"
+data-bs-dismiss="modal">
+
+</button>
+
+</div>
+
+<div class="modal-body">
+
+Are you sure you want to remove this address?
+
+</div>
+
+<div class="modal-footer border-secondary">
+
+<button
+class="btn btn-secondary"
+data-bs-dismiss="modal">
+
+Cancel
+
+</button>
+
+<a
+href="{% url 'delete_address' address.id %}"
+class="btn btn-danger">
+
+Delete
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+{% endfor %}
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+
+const radios=document.querySelectorAll("input[name='address']");
+
+radios.forEach(r=>{
+
+r.addEventListener("change",function(){
+
+document.querySelectorAll(".address-card")
+
+.forEach(card=>{
+
+card.style.borderColor="#2b2b2b";
+
+});
+
+this.closest(".address-card")
+
+.style.borderColor="#2563eb";
+
+});
+
+});
+
+window.addEventListener("load",()=>{
+
+const checked=document.querySelector("input[name='address']:checked");
+
+if(checked){
+
+checked.closest(".address-card")
+
+.style.borderColor="#2563eb";
+
+}
+
+});
+
+</script>
+<script>
+setTimeout(function(){
+
+    document.querySelectorAll(".toast-message").forEach(function(msg){
+
+        msg.style.animation = "fadeOut 0.4s ease forwards";
+
+        setTimeout(function(){
+            msg.remove();
+        },400);
+
+    });
+
+},3000);
+</script>
+
+</body>
+
+</html>

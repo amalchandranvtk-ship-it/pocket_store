@@ -1,0 +1,378 @@
+{% extends "admin_panel/base.html" %}
+{% load static %}
+
+{% block title %}
+Products
+{% endblock %}
+
+{% block extra_css %}
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,Helvetica,sans-serif}
+
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;gap:20px}
+.header h1{font-size:30px;font-weight:900;margin:0}
+.header p{margin-top:6px;color:#64748b}
+.grid{display:grid;grid-template-columns:2fr 1fr;gap:24px}
+.cardx{background:white;border:1px solid #e5e7eb;border-radius:16px;padding:28px;box-shadow:0 4px 18px rgba(15,23,42,.04)}
+.form-label{font-size:12px;font-weight:900;color:#64748b;text-transform:uppercase}
+.form-control,.form-select{height:50px;border-radius:10px;background:#f8fafc;border:1px solid #dbe3ef}
+textarea.form-control{height:140px}
+.preview{width:100%;height:260px;border-radius:14px;object-fit:cover}
+.image-box{width:100%;height:260px;border-radius:14px;border:2px dashed #dbe3ef;background:#f8fafc;color:#64748b;display:flex;align-items:center;justify-content:center;text-align:center}
+.spec-box{background:#f8fafc;border:1px solid #e5e7eb;border-radius:12px;padding:18px;margin-top:16px}
+.btn-blue{background:#2563eb;color:white;border:none;border-radius:10px;padding:12px 24px;font-weight:800}
+.btn-blue:hover{background:#1d4ed8;color:white}
+.bottom{background:white;border:1px solid #e5e7eb;border-radius:16px;margin-top:24px;padding:20px}
+.custom-alert{border-radius:10px;font-size:14px}
+@media(max-width:991px){
+.layout{display:block}
+.sidebar{position:relative;width:100%;height:auto}
+.menu{overflow:visible}
+.main-content{margin-left:0;width:100%}
+.content-area{padding:22px}
+.grid{grid-template-columns:1fr}
+.header{flex-direction:column;align-items:flex-start}
+}
+@media(max-width:576px){
+.brand-box{padding:18px 16px 10px}
+.brand-box h3{font-size:18px}
+.menu a,.logout-box a{padding:9px 12px;font-size:13px}
+.topbar{justify-content:center;padding:0 15px}
+.content-area{padding:16px}
+.header h1{font-size:24px}
+.cardx{padding:20px}
+}
+.message-container{
+    position:fixed;
+    top:20px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:99999;
+
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+
+    align-items:center;
+}
+
+.toast-message{
+    min-width:300px;
+    max-width:500px;
+
+    padding:14px 22px;
+    border-radius:12px;
+
+    color:white;
+    font-weight:600;
+    text-align:center;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.18);
+
+    animation:fadeIn .3s ease;
+}
+
+.toast-message.success{
+    background:#16a34a;
+}
+
+.toast-message.error,
+.toast-message.danger{
+    background:#dc2626;
+}
+.toast-message.warning{
+    background:#f59e0b;
+}
+
+.toast-message.info{
+    background:#2563eb;
+}
+
+@keyframes fadeIn{
+    from{
+        opacity:0;
+        transform:translateY(-15px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+@keyframes fadeOut{
+    from{
+        opacity:1;
+        transform:translateY(0);
+    }
+    to{
+        opacity:0;
+        transform:translateY(-15px);
+    }
+}
+
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="header">
+<div>
+<h1>{{ title }}</h1>
+<p>Create or update product details.</p>
+</div>
+
+<a href="{% url 'product_list' %}" class="btn btn-secondary">
+Back
+</a>
+</div>
+
+
+
+<form method="POST" enctype="multipart/form-data">
+{% csrf_token %}
+
+<div class="grid">
+
+<div>
+
+<div class="cardx">
+
+<h4 class="fw-bold mb-4">
+<i class="bi bi-box text-primary"></i>
+General Information
+</h4>
+
+<div class="row g-4">
+
+<div class="col-md-6">
+<label class="form-label">Product Name</label>
+<input type="text"
+name="product_name"
+value="{{ product.product_name }}"
+class="form-control"
+placeholder="Enter product name">
+</div>
+
+<div class="col-md-6">
+<label class="form-label">Brand</label>
+
+<select name="brand" class="form-select">
+
+<option value="">Select Brand</option>
+
+{% for brand in brands %}
+<option value="{{ brand.id }}"
+{% if product.brand.id == brand.id %}selected{% endif %}>
+{{ brand.brand_name }}
+</option>
+{% endfor %}
+
+</select>
+</div>
+
+<div class="col-md-6">
+<label class="form-label">Category</label>
+
+<select name="category" class="form-select">
+
+<option value="">Select Category</option>
+
+{% for category in categories %}
+<option value="{{ category.id }}"
+{% if product.category.id == category.id %}selected{% endif %}>
+{{ category.category_name }}
+</option>
+{% endfor %}
+
+</select>
+</div>
+
+<div class="col-md-6">
+<label class="form-label">Status</label>
+
+<select name="product_status" class="form-select">
+
+<option value="active"
+{% if product.product_status == 'active' %}selected{% endif %}>
+Active
+</option>
+
+<option value="inactive"
+{% if product.product_status == 'inactive' %}selected{% endif %}>
+Inactive
+</option>
+
+</select>
+</div>
+
+<div class="col-12">
+<label class="form-label">Short Description</label>
+
+<textarea name="short_description"
+class="form-control"
+placeholder="Short product description">{{ product.short_description }}</textarea>
+</div>
+
+<div class="col-12">
+<label class="form-label">Full Description</label>
+
+<textarea name="full_description"
+class="form-control"
+placeholder="Full product description">{{ product.full_description }}</textarea>
+</div>
+
+</div>
+
+</div>
+
+<div class="cardx mt-4">
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+<h4 class="fw-bold mb-0">
+<i class="bi bi-list-check text-primary"></i>
+Specifications
+</h4>
+
+<button type="button" class="btn btn-sm btn-primary" onclick="addSpecification()">
+<i class="bi bi-plus-lg"></i>
+</button>
+</div>
+
+<div id="specification-wrapper">
+
+{% if product.specifications.all %}
+
+{% for spec in product.specifications.all %}
+
+<div class="spec-box">
+
+<div class="row g-3">
+
+<div class="col-md-5">
+<input type="text"
+name="spec_name"
+value="{{ spec.spec_name }}"
+class="form-control"
+placeholder="Specification">
+</div>
+
+<div class="col-md-5">
+<input type="text"
+name="spec_value"
+value="{{ spec.spec_value }}"
+class="form-control"
+placeholder="Value">
+</div>
+
+<div class="col-md-2">
+<button type="button"
+class="btn btn-danger w-100"
+onclick="this.closest('.spec-box').remove()">
+<i class="bi bi-trash"></i>
+</button>
+</div>
+
+</div>
+
+</div>
+
+{% endfor %}
+
+{% else %}
+
+<div class="spec-box">
+
+<div class="row g-3">
+
+<div class="col-md-5">
+<input type="text"
+name="spec_name"
+class="form-control"
+placeholder="Specification">
+</div>
+
+<div class="col-md-5">
+<input type="text"
+name="spec_value"
+class="form-control"
+placeholder="Value">
+</div>
+
+<div class="col-md-2">
+<button type="button"
+class="btn btn-danger w-100"
+onclick="this.closest('.spec-box').remove()">
+<i class="bi bi-trash"></i>
+</button>
+</div>
+
+</div>
+
+</div>
+
+{% endif %}
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="bottom">
+<button type="submit" class="btn-blue">
+Save Product
+</button>
+</div>
+
+</form>
+
+{% endblock %}
+
+{% block extra_js %}
+
+
+<script>
+function addSpecification(){
+
+let html = `
+<div class="spec-box">
+
+<div class="row g-3">
+
+<div class="col-md-5">
+<input type="text"
+name="spec_name"
+class="form-control"
+placeholder="Specification">
+</div>
+
+<div class="col-md-5">
+<input type="text"
+name="spec_value"
+class="form-control"
+placeholder="Value">
+</div>
+
+<div class="col-md-2">
+<button type="button"
+class="btn btn-danger w-100"
+onclick="this.closest('.spec-box').remove()">
+<i class="bi bi-trash"></i>
+</button>
+</div>
+
+</div>
+
+</div>
+`;
+
+document.getElementById("specification-wrapper").insertAdjacentHTML("beforeend", html);
+}
+</script>
+
+
+{% endblock %}

@@ -1,0 +1,1158 @@
+{% extends "admin_panel/base.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}
+Sales Report
+{% endblock %}
+
+{% block extra_css %}
+
+<style>
+
+.page-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    margin-bottom:25px;
+}
+
+.page-title{
+    font-size:28px;
+    font-weight:700;
+    color:#212529;
+}
+
+.page-subtitle{
+    color:#6c757d;
+    margin-top:4px;
+    font-size:14px;
+}
+
+.filter-card{
+    background:#fff;
+    border-radius:15px;
+    padding:25px;
+    box-shadow:0 8px 20px rgba(0,0,0,.06);
+    margin-bottom:25px;
+}
+
+.summary-card{
+    border:none;
+    border-radius:15px;
+    overflow:hidden;
+    box-shadow:0 8px 20px rgba(0,0,0,.06);
+    transition:.3s;
+}
+
+.summary-card:hover{
+    transform:translateY(-5px);
+}
+
+.summary-icon{
+    width:55px;
+    height:55px;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:22px;
+    color:#fff;
+}
+
+.summary-number{
+    font-size:28px;
+    font-weight:700;
+}
+
+.summary-title{
+    color:#6c757d;
+    font-size:14px;
+}
+
+.table-card{
+    background:#fff;
+    border-radius:15px;
+    padding:20px;
+    box-shadow:0 8px 20px rgba(0,0,0,.06);
+}
+
+.report-table th{
+    white-space:nowrap;
+    background:#f8f9fa;
+}
+
+.badge{
+    padding:8px 12px;
+    border-radius:20px;
+}
+
+.action-buttons .btn{
+    margin-right:6px;
+    margin-top:5px;
+}
+
+@media(max-width:768px){
+
+.page-header{
+    flex-direction:column;
+    align-items:flex-start;
+}
+
+.action-buttons{
+    margin-top:15px;
+}
+
+}
+
+@media print{
+
+.no-print{
+    display:none !important;
+}
+
+body{
+    background:#fff !important;
+}
+
+.table-card{
+    box-shadow:none;
+}
+
+}
+
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+
+    <div class="page-header">
+
+        <div>
+
+            <div class="page-title">
+                <i class="bi bi-graph-up-arrow text-primary"></i>
+                Sales Report
+            </div>
+
+            <div class="page-subtitle">
+                Daily • Weekly • Monthly • Yearly • Custom Report
+            </div>
+
+        </div>
+
+        <div class="action-buttons no-print">
+
+            
+            <a href="{% url 'sales_report_pdf' %}?{{ request.GET.urlencode }}"
+class="btn btn-danger">
+
+<i class="bi bi-file-earmark-pdf"></i>
+
+PDF
+
+</a>
+
+          <a href="{% url 'sales_report_excel' %}?{{ request.GET.urlencode }}"
+class="btn btn-success">
+
+<i class="bi bi-file-earmark-excel"></i>
+
+Excel
+
+</a>
+
+        </div>
+
+    </div>
+
+
+
+
+    <div class="filter-card no-print">
+
+        <form method="GET">
+
+            <div class="row g-3">
+
+                <div class="col-lg-3">
+
+                    <label class="form-label fw-semibold">
+                        Report Type
+                    </label>
+
+                    <select
+                            class="form-select"
+                            id="reportType"
+                            name="report">
+
+                        <option value="">Choose</option>
+
+                        <option value="daily"
+                        {% if report == "daily" %}
+                        selected
+                        {% endif %}
+                        >
+                            Daily
+                        </option>
+
+                        <option value="weekly"
+                        {% if report == "weekly" %}
+                        selected
+                        {% endif %}
+                        >
+                            Weekly
+                        </option>
+
+                        <option value="monthly"
+                        {% if report == "monthly" %}
+                        selected
+                        {% endif %}
+                        >
+                            Monthly
+                        </option>
+
+                        <option value="yearly"
+                        {% if report == "yearly" %}
+                        selected
+                        {% endif %}
+                        >
+                            Yearly
+                        </option>
+
+                        <option value="custom"
+                        {% if report == "custom" %}
+                        selected
+                        {% endif %}
+                        >
+                            Custom Date Range
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+
+                <div class="col-lg-3 date-field d-none"
+                     id="dailyField">
+
+                    <label class="form-label fw-semibold">
+                        Select Date
+                    </label>
+
+                    <input
+                            type="date"
+                            class="form-control"
+                            name="date"
+                            value="{{ request.GET.date }}">
+
+                </div>
+
+
+
+
+                <div class="col-lg-3 week-field d-none"
+                     id="weekFrom">
+
+                    <label class="form-label fw-semibold">
+
+                        From Date
+
+                    </label>
+
+                    <input
+                            type="date"
+                            class="form-control"
+                            name="week_from"
+                            value="{{ request.GET.week_from }}">
+
+                </div>
+
+                <div class="col-lg-3 week-field d-none"
+                     id="weekTo">
+
+                    <label class="form-label fw-semibold">
+
+                        To Date
+
+                    </label>
+
+                    <input
+                            type="date"
+                            class="form-control"
+                            name="week_to"
+                            value="{{ request.GET.week_to }}">
+
+                </div>
+
+
+
+
+                <div class="col-lg-3 month-field d-none"
+                     id="monthField">
+
+                    <label class="form-label fw-semibold">
+
+                        Month
+
+                    </label>
+
+                    <input
+                            type="month"
+                            class="form-control"
+                            name="month"
+                            value="{{ request.GET.month }}">
+
+                </div>
+
+
+
+
+                <div class="col-lg-3 year-field d-none"
+                     id="yearField">
+
+                    <label class="form-label fw-semibold">
+
+                        Year
+
+                    </label>
+
+                    <input
+                            type="number"
+                            min="2020"
+                            max="2100"
+                            class="form-control"
+                            name="year"
+                            value="{{ request.GET.year }}"
+                            placeholder="2026">
+
+                </div>
+
+
+
+
+                <div class="col-lg-3 custom-field d-none"
+                     id="customFrom">
+
+                    <label class="form-label fw-semibold">
+
+                        From
+
+                    </label>
+
+                    <input
+                            type="date"
+                            class="form-control"
+                            name="from_date"
+                            value="{{ request.GET.from_date }}">
+
+                </div>
+
+                <div class="col-lg-3 custom-field d-none"
+                     id="customTo">
+
+                    <label class="form-label fw-semibold">
+
+                        To
+
+                    </label>
+
+                    <input
+                            type="date"
+                            class="form-control"
+                            name="to_date"
+                            value="{{ request.GET.to_date }}">
+
+                </div>
+
+
+
+
+                <div class="col-12">
+
+                    <button
+                            class="btn btn-primary"
+                            type="submit">
+
+                        <i class="bi bi-search"></i>
+
+                        Generate Report
+
+                    </button>
+
+                    <a href="{% url 'sales_report' %}"
+                       class="btn btn-secondary">
+
+                        <i class="bi bi-x-circle"></i>
+
+                        Clear
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+<div class="row g-4 mb-4">
+
+    <div class="col-xl-3 col-lg-6 col-md-6">
+
+        <div class="card summary-card border-0 h-100">
+
+            <div class="card-body">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div>
+
+                        <div class="summary-title mb-2">
+                            Total Sales
+                        </div>
+
+                        <div class="summary-number text-success">
+
+                            ₹{{ total_sales|default:0|floatformat:2|intcomma }}
+
+                        </div>
+
+                    </div>
+
+                    <div class="summary-icon bg-success">
+
+                        <i class="bi bi-currency-rupee"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-xl-3 col-lg-6 col-md-6">
+
+        <div class="card summary-card border-0 h-100">
+
+            <div class="card-body">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div>
+
+                        <div class="summary-title mb-2">
+                            Total Orders
+                        </div>
+
+                        <div class="summary-number text-primary">
+
+                            {{ total_orders|default:0 }}
+
+                        </div>
+
+                    </div>
+
+                    <div class="summary-icon bg-primary">
+
+                        <i class="bi bi-bag-check-fill"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-xl-3 col-lg-6 col-md-6">
+
+        <div class="card summary-card border-0 h-100">
+
+            <div class="card-body">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div>
+
+                        <div class="summary-title mb-2">
+                            Products Sold
+                        </div>
+
+                        <div class="summary-number text-info">
+
+                            {{ total_products|default:0 }}
+
+                        </div>
+
+                    </div>
+
+                    <div class="summary-icon bg-info">
+
+                        <i class="bi bi-box-seam-fill"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-xl-3 col-lg-6 col-md-6">
+
+        <div class="card summary-card border-0 h-100">
+
+            <div class="card-body">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div>
+
+                        <div class="summary-title mb-2">
+                            Average Order Value
+                        </div>
+
+                        <div class="summary-number text-warning">
+
+                            ₹{{ average_order_value|default:0|floatformat:2|intcomma }}
+
+                        </div>
+
+                    </div>
+
+                    <div class="summary-icon bg-warning">
+
+                        <i class="bi bi-graph-up-arrow"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="row g-4 mb-4">
+
+    <div class="col-xl-3 col-lg-6 col-md-6">
+
+        <div class="card summary-card border-0 h-100">
+
+            <div class="card-body">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div>
+
+                        <div class="summary-title mb-2">
+                            Coupon Discount
+                        </div>
+
+                        <div class="summary-number text-danger">
+
+                            ₹{{ coupon_discount|default:0|floatformat:2|intcomma }}
+
+                        </div>
+
+                    </div>
+
+                    <div class="summary-icon bg-danger">
+
+                        <i class="bi bi-ticket-perforated-fill"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-xl-3 col-lg-6 col-md-6">
+
+        <div class="card summary-card border-0 h-100">
+
+            <div class="card-body">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div>
+
+                        <div class="summary-title mb-2">
+                            Product Discount
+                        </div>
+
+                        <div class="summary-number text-secondary">
+
+                            ₹{{ product_discount|default:0|floatformat:2|intcomma }}
+
+                        </div>
+
+                    </div>
+
+                    <div class="summary-icon bg-secondary">
+
+                        <i class="bi bi-percent"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    <div class="col-xl-3 col-lg-6 col-md-6">
+
+        <div class="card summary-card border-0 h-100">
+
+            <div class="card-body">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div>
+
+                        <div class="summary-title mb-2">
+                            Total Discount
+                        </div>
+
+                        <div class="summary-number text-dark">
+
+                            ₹{{ total_discount|default:0|floatformat:2|intcomma }}
+
+                        </div>
+
+                    </div>
+
+                    <div class="summary-icon bg-dark">
+
+                        <i class="bi bi-tags-fill"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-xl-3 col-lg-6 col-md-6">
+
+        <div class="card summary-card border-0 h-100">
+
+            <div class="card-body">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div>
+
+                        <div class="summary-title mb-2">
+                            Net Revenue
+                        </div>
+
+                        <div class="summary-number text-success">
+
+                            ₹{{ net_revenue|default:0|floatformat:2|intcomma }}
+
+                        </div>
+
+                    </div>
+
+                    <div class="summary-icon bg-success">
+
+                        <i class="bi bi-wallet2"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<div class="table-card">
+
+    <div class="d-flex justify-content-between align-items-center flex-wrap mb-3">
+
+        <div>
+
+            <h5 class="fw-bold mb-1">
+                Sales Report
+            </h5>
+
+            <small class="text-muted">
+
+                Showing {{ page_obj.start_index }} -
+                {{ page_obj.end_index }}
+                of
+                {{ page_obj.paginator.count }}
+                Orders
+
+            </small>
+
+        </div>
+
+        <div class="text-end">
+
+            <span class="badge bg-primary">
+
+                {{ page_obj.paginator.count }} Orders
+
+            </span>
+
+        </div>
+
+    </div>
+
+    <div class="table-responsive">
+
+        <table class="table table-hover table-bordered align-middle report-table mb-0">
+
+            <thead>
+
+                <tr>
+
+                    <th>#</th>
+
+                    <th>Order ID</th>
+
+                    <th>Date</th>
+
+                    <th>Customer</th>
+
+                    <th>Items</th>
+
+                    <th>Subtotal</th>
+
+                    <th>Product Discount</th>
+
+                    <th>Coupon Discount</th>
+
+                    <th>Total</th>
+
+                    <th>Payment</th>
+
+                    <th>Status</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for order in page_obj %}
+                            <tr>
+
+                    <td>
+
+                        {{ forloop.counter0|add:page_obj.start_index }}
+
+                    </td>
+
+                    <td>
+
+                        <span class="fw-semibold">
+
+                            #{{ order.order_number }}
+
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                       {{ order.placed_at|date:"d M Y" }}
+                            <br>
+
+                        <small class="text-muted">
+
+                           {{ order.placed_at|date:"h:i A" }}
+
+                        </small>
+
+                    </td>
+
+                    <td>
+
+                        <div class="fw-semibold">
+
+                            {{ order.user.get_full_name|default:order.user.username }}
+
+                        </div>
+
+                        <small class="text-muted">
+
+                            {{ order.user.email }}
+
+                        </small>
+
+                    </td>
+
+                    <td class="text-center">
+
+                        {{ order.items.count }}
+
+                    </td>
+
+                    <td>
+
+                        ₹{{ order.subtotal|floatformat:2|intcomma }}
+
+                    </td>
+
+                    <td class="text-danger">
+
+                        -₹{{ order.discount_amount|floatformat:2|intcomma }}
+                    </td>
+
+                    <td class="text-danger">
+
+                        -₹{{ order.coupon_discount_value|floatformat:2|intcomma }}
+
+                    </td>
+
+                    <td class="fw-bold text-success">
+
+                        ₹{{ order.total_amount|floatformat:2|intcomma }}
+
+                    </td>
+
+                   <td>
+
+    {% if order.payment %}
+
+        <span class="badge bg-primary">
+
+            {{ order.payment.get_payment_method_display }}
+
+        </span>
+
+    {% else %}
+
+        <span class="badge bg-secondary">
+
+            No Payment
+
+        </span>
+
+    {% endif %}
+
+</td>
+
+             <td>
+
+    {% if order.order_status == "delivered" %}
+        <span class="badge bg-success">{{ order.get_order_status_display }}</span>
+
+    {% elif order.order_status == "cancelled" %}
+        <span class="badge bg-danger">{{ order.get_order_status_display }}</span>
+
+    {% elif order.order_status == "returned" %}
+        <span class="badge bg-dark">{{ order.get_order_status_display }}</span>
+
+    {% elif order.order_status == "processing" %}
+        <span class="badge bg-info">{{ order.get_order_status_display }}</span>
+
+    {% elif order.order_status == "confirmed" %}
+        <span class="badge bg-primary">{{ order.get_order_status_display }}</span>
+
+    {% else %}
+        <span class="badge bg-warning text-dark">{{ order.get_order_status_display }}</span>
+    {% endif %}
+
+</td>
+
+                  
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="11" class="text-center py-5">
+
+                        <i class="bi bi-bar-chart display-4 text-muted"></i>
+
+                        <h5 class="mt-3">
+                            No Sales Found
+                        </h5>
+
+                        <p class="text-muted mb-0">
+
+                            No orders are available for the selected period.
+
+                        </p>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+{% if page_obj.paginator.num_pages > 1 %}
+
+<nav class="mt-4">
+
+    <ul class="pagination justify-content-center">
+
+        {% if page_obj.has_previous %}
+
+        <li class="page-item">
+
+            <a class="page-link"
+               href="?page=1&{{ request.GET.urlencode }}">
+
+                First
+
+            </a>
+
+        </li>
+
+        <li class="page-item">
+
+            <a class="page-link"
+               href="?page={{ page_obj.previous_page_number }}&{{ request.GET.urlencode }}">
+
+                Previous
+
+            </a>
+
+        </li>
+
+        {% else %}
+
+        <li class="page-item disabled">
+
+            <span class="page-link">
+
+                First
+
+            </span>
+
+        </li>
+
+        <li class="page-item disabled">
+
+            <span class="page-link">
+
+                Previous
+
+            </span>
+
+        </li>
+
+        {% endif %}
+
+        {% for num in page_obj.paginator.page_range %}
+
+            {% if num >= page_obj.number|add:-2 and num <= page_obj.number|add:2 %}
+
+                {% if page_obj.number == num %}
+
+                    <li class="page-item active">
+
+                        <span class="page-link">
+
+                            {{ num }}
+
+                        </span>
+
+                    </li>
+
+                {% else %}
+
+                    <li class="page-item">
+
+                        <a class="page-link"
+                           href="?page={{ num }}&{{ request.GET.urlencode }}">
+
+                            {{ num }}
+
+                        </a>
+
+                    </li>
+
+                {% endif %}
+
+            {% endif %}
+
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+
+        <li class="page-item">
+
+            <a class="page-link"
+               href="?page={{ page_obj.next_page_number }}&{{ request.GET.urlencode }}">
+
+                Next
+
+            </a>
+
+        </li>
+
+        <li class="page-item">
+
+            <a class="page-link"
+               href="?page={{ page_obj.paginator.num_pages }}&{{ request.GET.urlencode }}">
+
+                Last
+
+            </a>
+
+        </li>
+
+        {% else %}
+
+        <li class="page-item disabled">
+
+            <span class="page-link">
+
+                Next
+
+            </span>
+
+        </li>
+
+        <li class="page-item disabled">
+
+            <span class="page-link">
+
+                Last
+
+            </span>
+
+        </li>
+
+        {% endif %}
+
+    </ul>
+
+</nav>
+
+{% endif %}
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+    const reportType = document.getElementById("reportType");
+
+    const dailyField = document.getElementById("dailyField");
+
+    const weekFrom = document.getElementById("weekFrom");
+    const weekTo = document.getElementById("weekTo");
+
+    const monthField = document.getElementById("monthField");
+
+    const yearField = document.getElementById("yearField");
+
+    const customFrom = document.getElementById("customFrom");
+    const customTo = document.getElementById("customTo");
+
+    function hideAllFields() {
+
+        dailyField.classList.add("d-none");
+
+        weekFrom.classList.add("d-none");
+        weekTo.classList.add("d-none");
+
+        monthField.classList.add("d-none");
+
+        yearField.classList.add("d-none");
+
+        customFrom.classList.add("d-none");
+        customTo.classList.add("d-none");
+
+    }
+
+    function showFields() {
+
+        hideAllFields();
+
+        switch (reportType.value) {
+
+            case "daily":
+
+                dailyField.classList.remove("d-none");
+
+                break;
+
+            case "weekly":
+
+                weekFrom.classList.remove("d-none");
+                weekTo.classList.remove("d-none");
+
+                break;
+
+            case "monthly":
+
+                monthField.classList.remove("d-none");
+
+                break;
+
+            case "yearly":
+
+                yearField.classList.remove("d-none");
+
+                break;
+
+            case "custom":
+
+                customFrom.classList.remove("d-none");
+                customTo.classList.remove("d-none");
+
+                break;
+
+        }
+
+    }
+
+    reportType.addEventListener("change", showFields);
+
+    showFields();
+
+});
+</script>
+
+{% endblock %}
+

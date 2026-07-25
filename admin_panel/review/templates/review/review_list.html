@@ -1,0 +1,240 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <h3 class="mb-1">Reviews Management</h3>
+
+    <p class="text-muted">
+        View customer reviews and ratings.
+    </p>
+
+    <div class="row mb-4">
+
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <small>Total Reviews</small>
+                    <h3>{{ total_reviews }}</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <small>Average Rating</small>
+                    <h3>{{ average_rating|floatformat:1 }}</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <small>5 Star Reviews</small>
+                    <h3>{{ five_star }}</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <small>Low Rating Reviews</small>
+                    <h3>{{ low_rating }}</h3>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <form method="get">
+
+        <div class="row mb-3">
+
+            <div class="col-md-5">
+                <input
+                    type="text"
+                    name="search"
+                    class="form-control"
+                    placeholder="Search"
+                    value="{{ request.GET.search }}"
+                >
+            </div>
+
+            <div class="col-md-2">
+                <select
+                    class="form-select"
+                    name="rating"
+                >
+                <option value="">All Ratings</option>
+<option value="5" {% if rating == "5" %}selected{% endif %}>5</option>
+<option value="4" {% if rating == "4" %}selected{% endif %}>4</option>
+<option value="3" {% if rating == "3" %}selected{% endif %}>3</option>
+<option value="2" {% if rating == "2" %}selected{% endif %}>2</option>
+<option value="1" {% if rating == "1" %}selected{% endif %}>1</option>
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <select
+                    class="form-select"
+                    name="status"
+                >
+                 <option value="">All</option>
+<option value="Published" {% if status == "Published" %}selected{% endif %}>
+    Published
+</option>
+<option value="Hidden" {% if status == "Hidden" %}selected{% endif %}>
+    Hidden
+</option>
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <button class="btn btn-primary w-100">
+                    Search
+                </button>
+            </div>
+              <div class="col-md-1">
+
+            <a
+        href="{% url 'review_list' %}"
+        class="btn btn-outline-secondary w-100">
+
+        Clear
+
+            </a>
+            </div>
+
+        </div>
+
+    </form>
+
+    <table class="table table-bordered align-middle">
+
+        <thead>
+
+            <tr>
+
+                <th>Product</th>
+                <th>Customer</th>
+                <th>Rating</th>
+                <th>Review</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th></th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+        {% for review in page_obj %}
+
+            <tr>
+
+<td>{{ review.product.product_name }}</td>
+                <td>{{ review.user.get_full_name }}</td>
+
+                <td>
+
+                    {% for i in "12345" %}
+
+                        {% if forloop.counter <= review.rating %}
+                            ★
+                        {% else %}
+                            ☆
+                        {% endif %}
+
+                    {% endfor %}
+
+                </td>
+
+                <td>
+
+                    {{ review.review_description|truncatechars:45 }}
+
+                </td>
+
+                <td>
+
+                    {{ review.created_at|date:"M d,Y" }}
+
+                </td>
+
+                <td>
+
+                    <span class="badge bg-success">
+                        {{ review.status }}
+                    </span>
+
+                </td>
+
+            </tr>
+
+        {% empty %}
+
+            <tr>
+
+                <td colspan="7" class="text-center">
+
+                    No Reviews Found
+
+                </td>
+
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    <nav>
+
+        <ul class="pagination">
+
+            {% if page_obj.has_previous %}
+
+            <li class="page-item">
+                <a
+                    class="page-link"
+                    href="?page={{ page_obj.previous_page_number }}"
+                >
+                    Previous
+                </a>
+            </li>
+
+            {% endif %}
+
+            <li class="page-item active">
+                <span class="page-link">
+                    {{ page_obj.number }}
+                </span>
+            </li>
+
+            {% if page_obj.has_next %}
+
+            <li class="page-item">
+                <a
+                    class="page-link"
+                    href="?page={{ page_obj.next_page_number }}"
+                >
+                    Next
+                </a>
+            </li>
+
+            {% endif %}
+
+        </ul>
+
+    </nav>
+
+</div>
+
+{% endblock %}

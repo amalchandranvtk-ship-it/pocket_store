@@ -1,0 +1,327 @@
+{% extends "admin_panel/base.html" %}
+{% load static %}
+
+{% block title %}
+Products
+{% endblock %}
+
+{% block extra_css %}
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,Helvetica,sans-serif}
+
+
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;gap:20px}
+.header h1{font-size:30px;font-weight:900;margin:0}
+.header p{margin-top:6px;color:#64748b}
+.btn-blue{background:#2563eb;color:white;border:none;border-radius:10px;padding:12px 22px;font-weight:800;text-decoration:none}
+.btn-blue:hover{background:#1d4ed8;color:white}
+.cardx{background:white;border:1px solid #e5e7eb;border-radius:16px;padding:24px;box-shadow:0 4px 18px rgba(15,23,42,.04);margin-bottom:24px}
+.form-control,.form-select{height:48px;border-radius:10px;background:#f8fafc;border:1px solid #dbe3ef}
+.table-card{background:white;border:1px solid #e5e7eb;border-radius:16px;overflow:hidden;box-shadow:0 4px 18px rgba(15,23,42,.04)}
+.table{margin:0;min-width:1050px}
+th{font-size:12px;color:#64748b;padding:18px!important}
+td{padding:18px!important;vertical-align:middle}
+.pimg{width:64px;height:64px;border-radius:10px;object-fit:cover;background:#111827}
+.pill{background:#f1f5f9;color:#334155;padding:7px 12px;border-radius:18px;font-size:12px;font-weight:800}
+.stock-badge{width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;text-align:center;font-size:10px;font-weight:900;line-height:1.1}
+.in{background:#dcfce7;color:#15803d}
+.low{background:#ffedd5;color:#ea580c}
+.out{background:#fee2e2;color:#dc2626}
+.footer{display:flex;justify-content:space-between;align-items:center;padding:18px;border-top:1px solid #e5e7eb;color:#64748b}
+.custom-alert{border-radius:10px;font-size:14px}
+@media(max-width:991px){
+.layout{display:block}
+.sidebar{position:relative;width:100%;height:auto}
+.menu{overflow:visible}
+.main-content{margin-left:0;width:100%}
+.content-area{padding:22px}
+.header,.footer{flex-direction:column;align-items:flex-start}
+}
+@media(max-width:576px){
+.brand-box{padding:18px 16px 10px}
+.brand-box h3{font-size:18px}
+.menu a,.logout-box a{padding:9px 12px;font-size:13px}
+.topbar{justify-content:center;padding:0 15px}
+.content-area{padding:16px}
+.header h1{font-size:24px}
+.cardx{padding:18px}
+}
+.message-container{
+    position:fixed;
+    top:20px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:99999;
+
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+
+    align-items:center;
+}
+
+.toast-message{
+    min-width:300px;
+    max-width:500px;
+
+    padding:14px 22px;
+    border-radius:12px;
+
+    color:white;
+    font-weight:600;
+    text-align:center;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.18);
+
+    animation:fadeIn .3s ease;
+}
+
+.toast-message.success{
+    background:#16a34a;
+}
+
+.toast-message.error,
+.toast-message.danger{
+    background:#dc2626;
+}
+.toast-message.warning{
+    background:#f59e0b;
+}
+
+.toast-message.info{
+    background:#2563eb;
+}
+
+@keyframes fadeIn{
+    from{
+        opacity:0;
+        transform:translateY(-15px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+@keyframes fadeOut{
+    from{
+        opacity:1;
+        transform:translateY(0);
+    }
+    to{
+        opacity:0;
+        transform:translateY(-15px);
+    }
+}
+
+</style>
+{% endblock %}
+{% block content %}
+
+
+
+
+
+<div class="header">
+<div>
+<h1>Products Management</h1>
+<p>Manage mobile phones and audio products.</p>
+</div>
+
+<a href="{% url 'add_product' %}" class="btn-blue">
+<i class="bi bi-plus-lg"></i> Add Product
+</a>
+</div>
+
+
+
+<form method="GET" class="cardx">
+
+<div class="row g-3 align-items-end">
+
+<div class="col-md-3">
+<label class="form-label fw-bold">Category</label>
+<select name="category" class="form-select">
+<option value="">All Categories</option>
+{% for category in categories %}
+<option value="{{ category.id }}" {% if category_id == category.id|stringformat:'s' %}selected{% endif %}>
+{{ category.category_name }}
+</option>
+{% endfor %}
+</select>
+</div>
+
+<div class="col-md-3">
+<label class="form-label fw-bold">Brand</label>
+<select name="brand" class="form-select">
+<option value="">All Brands</option>
+{% for brand in brands %}
+<option value="{{ brand.id }}" {% if brand_id == brand.id|stringformat:'s' %}selected{% endif %}>
+{{ brand.brand_name }}
+</option>
+{% endfor %}
+</select>
+</div>
+
+<div class="col-md-3">
+<label class="form-label fw-bold">Stock</label>
+<select name="stock" class="form-select">
+<option value="">Any Stock</option>
+<option value="in_stock" {% if stock == 'in_stock' %}selected{% endif %}>In Stock</option>
+<option value="low_stock" {% if stock == 'low_stock' %}selected{% endif %}>Low Stock</option>
+<option value="out_of_stock" {% if stock == 'out_of_stock' %}selected{% endif %}>Out of Stock</option>
+</select>
+</div>
+
+<div class="col-md-3">
+<label class="form-label fw-bold">Search</label>
+<input type="text" name="q" value="{{ q }}" class="form-control" placeholder="Name or SKU">
+</div>
+
+<div class="col-md-2">
+<button class="btn-blue w-100">Search</button>
+</div>
+
+<div class="col-md-2">
+<a href="{% url 'product_list' %}" class="btn btn-light w-100">Clear</a>
+</div>
+
+</div>
+
+</form>
+
+<div class="table-card">
+
+<div class="table-responsive">
+
+<table class="table align-middle">
+
+<thead>
+<tr>
+<th>IMAGE</th>
+<th>PRODUCT NAME</th>
+<th>CATEGORY</th>
+<th>BRAND</th>
+<th>VARIANTS</th>
+<th>STOCK</th>
+<th>STATUS</th>
+<th>ACTION</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for product in products %}
+
+<tr>
+
+<td>
+{% if product.default_variant and product.default_variant.main_image %}
+<img src="{{ product.default_variant.main_image.url }}" class="pimg">
+{% elif product.variants.first and product.variants.first.main_image %}
+<img src="{{ product.variants.first.main_image.url }}" class="pimg">
+{% else %}
+<div class="pimg"></div>
+{% endif %}
+</td>
+
+<td>
+<strong>{{ product.product_name }}</strong><br>
+<small class="text-muted">{{ product.slug }}</small>
+</td>
+
+<td>
+<span class="pill">{{ product.category.category_name }}</span>
+</td>
+
+<td>{{ product.brand.brand_name }}</td>
+
+<td>
+<a href="{% url 'variant_list' product.id %}" class="btn btn-sm btn-outline-primary">
+{{ product.active_variant_count }} Variants
+</a>
+</td>
+
+<td>
+{% if product.total_stock > 10 %}
+<div class="stock-badge in">IN<br>STOCK</div>
+{% elif product.total_stock > 0 %}
+<div class="stock-badge low">LOW<br>STOCK</div>
+{% else %}
+<div class="stock-badge out">OUT<br>STOCK</div>
+{% endif %}
+</td>
+
+<td>
+{% if product.product_status == "active" %}
+<span class="badge text-bg-success">Active</span>
+{% else %}
+<span class="badge text-bg-danger">Inactive</span>
+{% endif %}
+</td>
+
+<td>
+<a href="{% url 'edit_product' product.id %}" class="btn btn-sm btn-primary">
+<i class="bi bi-pencil"></i>
+</a>
+
+<a href="{% url 'delete_product' product.id %}" onclick="return confirm('Delete product?')" class="btn btn-sm btn-danger">
+<i class="bi bi-trash"></i>
+</a>
+</td>
+
+</tr>
+
+{% empty %}
+
+<tr>
+<td colspan="8" class="text-center py-5 text-muted">
+No products found
+</td>
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+<div class="footer">
+
+<div>
+Showing {{ products|length }} products
+</div>
+
+<div>
+
+{% if page_obj.has_previous %}
+<a class="btn btn-light btn-sm" href="?page={{ page_obj.previous_page_number }}&q={{ q }}">
+Previous
+</a>
+{% endif %}
+
+<span class="btn btn-primary btn-sm">
+{{ page_obj.number }}
+</span>
+
+{% if page_obj.has_next %}
+<a class="btn btn-light btn-sm" href="?page={{ page_obj.next_page_number }}&q={{ q }}">
+Next
+</a>
+{% endif %}
+
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+
+
+{% endblock %}

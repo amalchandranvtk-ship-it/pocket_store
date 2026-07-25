@@ -1,0 +1,1110 @@
+{% load static %}
+{% load socialaccount %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PocketStore Signup</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <style>
+
+body{
+
+background:#080808;
+
+font-family:Inter,sans-serif;
+
+color:white;
+
+}
+
+.topbar{
+
+height:75px;
+
+background:#0b0b0b;
+
+border-bottom:1px solid #1f1f1f;
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+padding:0 55px;
+
+}
+
+.brand{
+
+font-size:24px;
+
+font-weight:800;
+
+color:white;
+
+text-decoration:none;
+
+}
+
+.desktop-nav{
+
+display:flex;
+
+gap:38px;
+
+}
+
+.nav-link{
+
+color:#bdbdbd;
+
+text-decoration:none;
+
+font-size:15px;
+
+font-weight:500;
+
+transition:.3s;
+
+}
+
+.nav-link:hover{
+
+color:white;
+
+}
+
+.header-icons{
+
+display:flex;
+
+gap:22px;
+
+align-items:center;
+
+}
+
+.top-icon{
+
+color:#d1d5db;
+
+font-size:20px;
+
+position:relative;
+
+transition:.3s;
+
+}
+
+.top-icon:hover{
+
+color:#2563eb;
+
+}
+
+.badge-count{
+
+position:absolute;
+
+top:-7px;
+
+right:-8px;
+
+background:#2563eb;
+
+width:18px;
+
+height:18px;
+
+font-size:10px;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+border-radius:50%;
+
+color:white;
+
+font-weight:700;
+
+}
+
+
+.profile-banner{
+background:#090909;
+border:1px solid #222;
+border-radius:18px;
+padding:35px;
+margin-bottom:45px;
+}
+
+.profile-image{
+width:130px;
+height:130px;
+border-radius:50%;
+object-fit:cover;
+border:3px solid #3b82f6;
+box-shadow:0 0 25px rgba(59,130,246,.45);
+}
+
+.edit-profile-icon{
+position:absolute;
+bottom:5px;
+right:5px;
+width:36px;
+height:36px;
+background:#3b82f6;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+color:#fff;
+text-decoration:none;
+}
+
+.profile-name{
+font-size:62px;
+font-weight:800;
+color:#fff;
+margin-bottom:12px;
+line-height:1;
+}
+
+.profile-info{
+font-size:20px;
+color:#b5b5b5;
+margin-bottom:10px;
+}
+
+.profile-info i{
+margin-right:10px;
+}
+
+.profile-btn-primary{
+background:#3563eb;
+color:#fff;
+padding:14px 40px;
+border-radius:10px;
+font-weight:600;
+}
+
+.profile-btn-primary:hover{
+background:#2451d5;
+color:#fff;
+}
+
+.profile-btn-outline{
+border:1px solid #444;
+color:#fff;
+padding:14px 40px;
+border-radius:10px;
+font-weight:600;
+}
+
+.profile-btn-outline:hover{
+background:#1b1b1b;
+color:#fff;
+}
+
+.profile-tabs{
+border-bottom:1px solid #222;
+margin-bottom:35px;
+}
+
+.profile-tabs .nav-link{
+color:#bdbdbd;
+font-weight:600;
+padding:18px 8px;
+margin-right:35px;
+border:none;
+border-bottom:3px solid transparent;
+}
+
+.profile-tabs .nav-link.active{
+color:#9db3ff;
+border-color:#3b82f6;
+background:transparent;
+}
+
+@media(max-width:991px){
+
+.profile-banner{
+padding:25px;
+}
+
+.profile-name{
+font-size:42px;
+text-align:center;
+}
+
+.profile-info{
+text-align:center;
+font-size:18px;
+}
+
+.profile-btn-primary,
+.profile-btn-outline{
+width:100%;
+}
+
+}
+
+@media(max-width:576px){
+
+.profile-image{
+width:110px;
+height:110px;
+}
+
+.profile-name{
+font-size:34px;
+}
+
+.profile-info{
+font-size:16px;
+}
+
+.profile-tabs .nav{
+overflow:auto;
+flex-wrap:nowrap;
+}
+
+.profile-tabs .nav-link{
+white-space:nowrap;
+}
+
+}
+
+.info-card{
+background:#090909;
+border:1px solid #222;
+border-radius:18px;
+padding:38px;
+height:100%;
+}
+
+.card-header-custom{
+display:flex;
+justify-content:space-between;
+align-items:center;
+flex-wrap:wrap;
+margin-bottom:20px;
+}
+
+.icon-box{
+width:46px;
+height:46px;
+background:#111827;
+border-radius:12px;
+display:flex;
+align-items:center;
+justify-content:center;
+color:#7ea6ff;
+font-size:22px;
+}
+
+.card-header-custom h3{
+color:#e5e7eb;
+font-size:36px;
+font-weight:700;
+}
+
+.card-divider{
+border-color:#222;
+margin:25px 0 40px;
+}
+
+.verified-text{
+font-size:13px;
+letter-spacing:2px;
+color:#7d8590;
+font-weight:600;
+}
+
+.label-title{
+color:#7b7b7b;
+font-size:14px;
+letter-spacing:1px;
+margin-bottom:10px;
+text-transform:uppercase;
+}
+
+.value-title{
+color:#fff;
+font-size:28px;
+font-weight:600;
+margin-bottom:0;
+word-break:break-word;
+}
+
+.address-type{
+color:#7d8590;
+font-size:13px;
+letter-spacing:2px;
+text-transform:uppercase;
+margin-bottom:18px;
+}
+
+.address-name{
+font-size:36px;
+font-weight:700;
+color:#fff;
+margin-bottom:18px;
+}
+
+.address-text{
+color:#c6c6c6;
+font-size:20px;
+line-height:1.8;
+margin-bottom:30px;
+}
+
+.map-box{
+height:170px;
+background:#0d1117;
+border:1px solid #1f2937;
+border-radius:14px;
+margin-bottom:30px;
+position:relative;
+display:flex;
+align-items:flex-end;
+padding:18px;
+overflow:hidden;
+}
+
+.map-box::before{
+content:"";
+position:absolute;
+inset:0;
+background:
+linear-gradient(90deg,transparent 24%,rgba(59,130,246,.08) 25%,transparent 26%),
+linear-gradient(transparent 24%,rgba(59,130,246,.08) 25%,transparent 26%);
+background-size:32px 32px;
+opacity:.4;
+}
+
+.location-dot{
+width:10px;
+height:10px;
+background:#3b82f6;
+border-radius:50%;
+margin-right:10px;
+position:relative;
+z-index:2;
+}
+
+.map-box span{
+position:relative;
+z-index:2;
+font-size:12px;
+letter-spacing:2px;
+color:#8fb2ff;
+}
+
+.manage-btn{
+display:flex;
+align-items:center;
+justify-content:center;
+gap:12px;
+width:100%;
+height:62px;
+border:1px solid #3b82f6;
+border-radius:12px;
+text-decoration:none;
+font-size:18px;
+font-weight:600;
+color:#d7e2ff;
+transition:.3s;
+}
+
+.manage-btn:hover{
+background:#2451d5;
+color:#fff;
+}
+
+.empty-address{
+text-align:center;
+padding:50px 20px;
+}
+
+@media(max-width:992px){
+
+.info-card{
+padding:28px;
+}
+
+.card-header-custom h3{
+font-size:28px;
+}
+
+.address-name{
+font-size:28px;
+}
+
+.value-title{
+font-size:22px;
+}
+
+.address-text{
+font-size:17px;
+}
+
+}
+
+@media(max-width:576px){
+
+.card-header-custom{
+display:block;
+}
+
+.verified-text{
+display:block;
+margin-top:15px;
+}
+
+.card-header-custom h3{
+font-size:24px;
+}
+
+.address-name{
+font-size:24px;
+}
+
+.value-title{
+font-size:18px;
+}
+
+.manage-btn{
+height:54px;
+font-size:16px;
+}
+
+}
+.footer{
+
+margin-top:80px;
+
+padding:60px 0;
+
+background:#090909;
+
+border-top:1px solid #1e1e1e;
+
+}
+
+.footer h3{
+
+font-size:34px;
+
+font-weight:800;
+
+margin-bottom:15px;
+
+color:white;
+
+}
+
+.footer h6{
+
+color:white;
+
+margin-bottom:20px;
+
+font-size:16px;
+
+font-weight:700;
+
+}
+
+.footer p{
+
+color:#8b8b8b;
+
+line-height:1.8;
+
+}
+
+.footer a{
+
+display:block;
+
+color:#8b8b8b;
+
+text-decoration:none;
+
+margin-bottom:12px;
+
+transition:.3s;
+
+}
+
+.footer a:hover{
+
+color:white;
+
+}
+.message-container{
+    position:fixed;
+    top:20px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:99999;
+
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+
+    align-items:center;
+}
+
+.toast-message{
+    min-width:300px;
+    max-width:500px;
+
+    padding:14px 22px;
+    border-radius:12px;
+
+    color:white;
+    font-weight:600;
+    text-align:center;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.18);
+
+    animation:fadeIn .3s ease;
+}
+
+
+.toast-message.success{
+    background:#16a34a;
+}
+
+
+.toast-message.error,
+.toast-message.danger{
+    background:#dc2626;
+}
+
+
+.toast-message.warning{
+    background:#f59e0b;
+}
+
+
+.toast-message.info{
+    background:#2563eb;
+}
+
+@keyframes fadeIn{
+    from{
+        opacity:0;
+        transform:translateY(-15px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+@keyframes fadeOut{
+    from{
+        opacity:1;
+        transform:translateY(0);
+    }
+    to{
+        opacity:0;
+        transform:translateY(-15px);
+    }
+}
+
+.profile-btn-danger{
+
+background:transparent;
+
+border:1px solid #dc3545;
+
+color:#dc3545;
+
+padding:14px 20px;
+
+border-radius:10px;
+
+font-weight:600;
+
+transition:.3s;
+
+}
+
+.profile-btn-danger:hover{
+
+background:#dc3545;
+
+color:#fff;
+
+}
+
+
+
+</style>
+
+
+<header class="topbar">
+
+    <a href="{% url 'public_home' %}" class="brand">
+            <i class="bi bi-bag-check-fill"></i>
+
+        PocketStore
+    </a>
+
+    <nav class="desktop-nav">
+
+        <a href="{% url 'public_home' %}" class="nav-link">
+            Home
+        </a>
+
+        <a href="{% url 'mobile_page' %}" class="nav-link">
+            Mobiles
+        </a>
+
+        <a href="{% url 'audio_page' %}" class="nav-link">
+            Audio
+        </a>
+
+        <a href="#" class="nav-link">
+            Contacts
+        </a>
+
+    </nav>
+
+    <div class="header-icons">
+
+        <a href="{% url 'wishlist' %}" class="top-icon">
+
+            <i class="bi bi-heart"></i>
+
+            {% if wishlist_count %}
+            <span class="badge-count">
+                {{ wishlist_count }}
+            </span>
+            {% endif %}
+
+        </a>
+
+        <a href="{% url 'cart' %}" class="top-icon">
+
+            <i class="bi bi-cart3"></i>
+
+            {% if cart_count %}
+            <span class="badge-count">
+                {{ cart_count }}
+            </span>
+            {% endif %}
+
+        </a>
+
+        <a href="{% url 'customer_home' %}" class="top-icon">
+
+            <i class="bi bi-person-circle"></i>
+
+        </a>
+
+    </div>
+
+</header>
+
+
+<body>
+{% if messages %}
+<div class="message-container">
+    {% for message in messages %}
+        <div class="toast-message {{ message.tags }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="container-fluid px-lg-5 px-3 py-4">
+
+<div class="profile-banner">
+
+<div class="row align-items-center g-4">
+
+<div class="col-lg-7">
+
+<div class="d-flex align-items-center flex-column flex-md-row">
+
+<div class="position-relative">
+
+{% if request.user.profile_image %}
+<img src="{{ request.user.profile_image.url }}" class="profile-image">
+{% else %}
+<img src="{% static 'images/default-user.png' %}" class="profile-image">
+{% endif %}
+
+<a href="{% url 'edit_profile' %}" class="edit-profile-icon">
+<i class="bi bi-pencil-fill"></i>
+</a>
+
+</div>
+
+<div class="ms-md-4 mt-4 mt-md-0">
+
+<h1 class="profile-name">
+{{ request.user.full_name }}
+</h1>
+
+<p class="profile-info">
+<i class="bi bi-envelope"></i>
+{{ request.user.email }}
+</p>
+
+<p class="profile-info mb-0">
+<i class="bi bi-telephone"></i>
+{{ request.user.phone }}
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-lg-5">
+
+<div class="d-flex justify-content-lg-end flex-wrap gap-3">
+
+<a href="{% url 'edit_profile' %}" class="btn profile-btn-primary">
+Edit Profile
+</a>
+
+<a href="{% url 'change_password' %}" class="btn profile-btn-outline">
+Change Password
+</a>
+ <a href="{% url 'customer_logout' %}" class="btn profile-btn-danger">
+        <i class="bi bi-box-arrow-right me-2"></i>
+        Logout
+    </a>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<div class="profile-tabs">
+
+<ul class="nav">
+
+<li class="nav-item">
+<a class="nav-link active" href="#">
+Profile
+</a>
+</li>
+
+<li class="nav-item">
+<a class="nav-link" href="{% url 'order_list' %}">
+My Orders
+</a>
+</li>
+
+<li class="nav-item">
+<a class="nav-link" href="{% url 'wallet' %}">
+Wallet
+</a>
+</li>
+
+<li class="nav-item">
+<a class="nav-link" href="{% url 'referral_home' %}">
+Referrals
+</a>
+</li>
+
+</ul>
+
+</div>
+<div class="row g-4">
+
+<div class="col-lg-8">
+
+<div class="info-card">
+
+<div class="card-header-custom">
+
+<div class="d-flex align-items-center">
+
+<div class="icon-box me-3">
+<i class="bi bi-person-badge"></i>
+</div>
+
+<h3 class="mb-0">
+Personal Information
+</h3>
+
+</div>
+
+<span class="verified-text">
+VERIFIED ACCOUNT
+</span>
+
+</div>
+
+<hr class="card-divider">
+
+<div class="row gy-5">
+
+<div class="col-md-6">
+
+<p class="label-title">
+Full Name
+</p>
+
+<h5 class="value-title">
+{{ request.user.full_name }}
+</h5>
+
+</div>
+
+<div class="col-md-6">
+
+<p class="label-title">
+Email Address
+</p>
+
+<h5 class="value-title">
+{{ request.user.email }}
+</h5>
+
+</div>
+
+<div class="col-md-6">
+
+<p class="label-title">
+Phone Number
+</p>
+
+<h5 class="value-title">
+{{ request.user.phone|default:"Not Added" }}
+</h5>
+
+</div>
+
+<div class="col-md-6">
+
+<p class="label-title">
+Member Since
+</p>
+
+<h5 class="value-title">
+{{ request.user.date_joined|date:"F d, Y" }}
+</h5>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-lg-4">
+
+<div class="info-card h-100">
+
+<div class="d-flex align-items-center mb-4">
+
+<div class="icon-box me-3">
+<i class="bi bi-geo-alt"></i>
+</div>
+
+<h3 class="mb-0">
+Primary Address
+</h3>
+
+</div>
+
+{% if default_address %}
+
+<p class="address-type">
+{{ default_address.get_address_type_display }} Address
+</p>
+
+<h4 class="address-name">
+{{ default_address.full_name }}
+</h4>
+
+<p class="address-text">
+
+{{ default_address.address_line1 }}
+
+{% if default_address.address_line2 %}
+<br>
+{{ default_address.address_line2 }}
+{% endif %}
+
+<br>
+
+{{ default_address.city }},
+{{ default_address.state }}
+
+<br>
+
+{{ default_address.zip_code }}
+
+<br>
+
+{{ default_address.country }}
+
+</p>
+
+
+<a href="{% url 'address_list' %}" class="manage-btn">
+
+Manage Addresses
+
+<i class="bi bi-chevron-right"></i>
+
+</a>
+
+{% else %}
+
+<div class="empty-address">
+
+<i class="bi bi-house-add fs-1 mb-3"></i>
+
+<h5>No Address Added</h5>
+
+<p class="text-secondary">
+
+Add your delivery address.
+
+</p>
+
+<a href="{% url 'add_address' %}" class="btn profile-btn-primary w-100 mt-3">
+
+Add Address
+
+</a>
+
+</div>
+
+{% endif %}
+
+</div>
+
+</div>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+setTimeout(function(){
+
+    document.querySelectorAll(".toast-message").forEach(function(msg){
+
+        msg.style.animation = "fadeOut 0.4s ease forwards";
+
+        setTimeout(function(){
+            msg.remove();
+        },400);
+
+    });
+
+},3000);
+</script>
+</body>
+<footer class="footer">
+
+<div class="container">
+
+<div class="row">
+
+<div class="col-lg-4">
+
+<h3>
+
+PocketStore
+
+</h3>
+
+<p>
+
+High-performance technology for those who demand engineering excellence.
+
+</p>
+
+</div>
+
+<div class="col-lg-2">
+
+<h6>
+
+Support
+
+</h6>
+
+<a href="#">Help Center</a>
+
+<a href="#">Contact</a>
+
+<a href="#">Track Order</a>
+
+</div>
+
+<div class="col-lg-2">
+
+<h6>
+
+Shop
+
+</h6>
+
+<a href="{% url 'mobile_page' %}">
+Mobiles
+</a>
+
+<a href="{% url 'audio_page' %}">
+Audio
+</a>
+
+<a href="{% url 'wishlist' %}">
+Wishlist
+</a>
+
+</div>
+
+<div class="col-lg-4 text-lg-end">
+
+<p>
+
+© 2026 PocketStore
+
+</p>
+
+<p>
+
+All Rights Reserved.
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</footer>
+</html>

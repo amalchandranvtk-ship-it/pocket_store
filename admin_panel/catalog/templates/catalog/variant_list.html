@@ -1,0 +1,340 @@
+{% extends "admin_panel/base.html" %}
+{% load static %}
+
+{% block title %}
+Products
+{% endblock %}
+
+{% block extra_css %}
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,Helvetica,sans-serif}
+
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;gap:20px}
+.header h1{font-size:30px;font-weight:900;margin:0}
+.header p{color:#64748b;margin-top:6px}
+.btn-blue{background:#2563eb;color:white;border:none;border-radius:10px;padding:12px 22px;font-weight:800;text-decoration:none}
+.btn-blue:hover{background:#1d4ed8;color:white}
+.cardx{background:white;border:1px solid #e5e7eb;border-radius:16px;padding:24px;box-shadow:0 4px 18px rgba(15,23,42,.04);margin-bottom:24px}
+.product-img{width:95px;height:95px;border-radius:12px;object-fit:cover;background:#f1f5f9}
+.summary{display:flex;align-items:center;justify-content:space-between;gap:25px}
+.total-box{text-align:center}
+.total-box strong{display:block;font-size:32px}
+.total-box small{font-size:11px;color:#94a3b8;font-weight:900}
+.table-card{background:white;border:1px solid #e5e7eb;border-radius:16px;overflow:hidden;box-shadow:0 4px 18px rgba(15,23,42,.04)}
+.table{margin:0;min-width:1000px}
+th{font-size:12px;color:#64748b;padding:18px!important}
+td{padding:18px!important;vertical-align:middle}
+.vimg{width:60px;height:60px;border-radius:10px;object-fit:cover;background:#f1f5f9}
+.status-pill{padding:7px 13px;border-radius:20px;font-size:12px;font-weight:800}
+.active{background:#dcfce7;color:#15803d}
+.inactive{background:#fee2e2;color:#dc2626}
+.stock-badge{width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;text-align:center;font-size:10px;font-weight:900;line-height:1.1}
+.in{background:#dbeafe;color:#2563eb}
+.low{background:#ffedd5;color:#ea580c}
+.out{background:#fee2e2;color:#dc2626}
+.footer{display:flex;justify-content:space-between;align-items:center;padding:18px;border-top:1px solid #e5e7eb;color:#64748b}
+.custom-alert{border-radius:10px;font-size:14px}
+@media(max-width:991px){
+.layout{display:block}
+.sidebar{position:relative;width:100%;height:auto}
+.menu{overflow:visible}
+.main-content{margin-left:0;width:100%}
+.content-area{padding:22px}
+.summary,.header,.footer{flex-direction:column;align-items:flex-start}
+}
+@media(max-width:576px){
+.brand-box{padding:18px 16px 10px}
+.brand-box h3{font-size:18px}
+.menu a,.logout-box a{padding:9px 12px;font-size:13px}
+.topbar{justify-content:center;padding:0 15px}
+.content-area{padding:16px}
+.header h1{font-size:24px}
+.cardx{padding:18px}
+}
+.message-container{
+    position:fixed;
+    top:20px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:99999;
+
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+
+    align-items:center;
+}
+
+.toast-message{
+    min-width:300px;
+    max-width:500px;
+
+    padding:14px 22px;
+    border-radius:12px;
+
+    color:white;
+    font-weight:600;
+    text-align:center;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.18);
+
+    animation:fadeIn .3s ease;
+}
+
+.toast-message.success{
+    background:#16a34a;
+}
+
+.toast-message.error,
+.toast-message.danger{
+    background:#dc2626;
+}
+.toast-message.warning{
+    background:#f59e0b;
+}
+
+.toast-message.info{
+    background:#2563eb;
+}
+
+@keyframes fadeIn{
+    from{
+        opacity:0;
+        transform:translateY(-15px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+@keyframes fadeOut{
+    from{
+        opacity:1;
+        transform:translateY(0);
+    }
+    to{
+        opacity:0;
+        transform:translateY(-15px);
+    }
+}
+
+</style>
+
+{% endblock %}
+{% block content %}
+
+
+<div class="header">
+
+<div>
+<h1>Variants - {{ product.product_name }}</h1>
+<p>Manage all variants and stock levels.</p>
+</div>
+
+<a href="{% url 'add_variant' product.id %}" class="btn-blue">
+<i class="bi bi-plus-lg"></i> Add Variant
+</a>
+
+</div>
+
+<div class="cardx summary">
+
+<div class="d-flex align-items-center gap-4">
+{% if variants %}
+  {% with first_variant=variants.0 %}
+
+    {% if first_variant.main_image %}
+          <img src="{{ first_variant.main_image.url }}" class="vimg">
+    {% else %}
+    <div class="vimg"></div>
+    {% endif %}
+  {% endwith %}
+
+{% endif %}
+
+<div>
+<h4 class="fw-bold mb-1">{{ product.product_name }}</h4>
+
+<p class="text-muted mb-0">
+<i class="bi bi-phone"></i> {{ product.category.category_name }}
+&nbsp;&nbsp;
+<i class="bi bi-building"></i> {{ product.brand.brand_name }}
+</p>
+</div>
+
+</div>
+
+<div class="d-flex gap-5">
+
+<div class="total-box">
+<small>TOTAL VARIANTS</small>
+<strong>{{ variants.paginator.count }}</strong>
+</div>
+
+<div class="total-box">
+<small>ACTIVE</small>
+<strong class="text-success">{{ product.active_variant_count }}</strong>
+</div>
+
+</div>
+
+</div>
+
+<div class="table-card">
+
+<div class="table-responsive">
+
+<table class="table align-middle">
+
+<thead>
+
+<tr>
+<th>IMAGE</th>
+<th>VARIANT</th>
+<th>SKU</th>
+<th>PRICE</th>
+<th>STOCK</th>
+<th>STATUS</th>
+<th>STOCK STATUS</th>
+<th>ACTIONS</th>
+</tr>
+
+</thead>
+
+<tbody>
+
+{% for variant in variants %}
+
+<tr>
+
+<td>
+
+{% if variant.main_image %}
+<img src="{{ variant.main_image.url }}" class="vimg">
+{% else %}
+<div class="vimg"></div>
+{% endif %}
+
+</td>
+
+<td>
+
+<strong>{{ variant.color }}</strong><br>
+
+{% if product.category.type == "mobiles" %}
+<small class="text-muted">{{ variant.ram }} / {{ variant.storage }}</small>
+{% else %}
+<small class="text-muted">{{ variant.connectivity }} / {{ variant.battery_life }}</small>
+{% endif %}
+
+</td>
+
+<td>{{ variant.sku }}</td>
+
+<td><strong>₹{{ variant.price }}</strong></td>
+
+
+
+<td>{{ variant.stock_quantity }}</td>
+
+<td>
+
+{% if variant.is_active %}
+<span class="status-pill active">Active</span>
+{% else %}
+<span class="status-pill inactive">Inactive</span>
+{% endif %}
+
+</td>
+
+<td>
+
+{% if variant.stock_quantity > 10 %}
+<div class="stock-badge in">IN<br>STOCK</div>
+
+{% elif variant.stock_quantity > 0 %}
+<div class="stock-badge low">LOW<br>STOCK</div>
+
+{% else %}
+<div class="stock-badge out">OUT<br>STOCK</div>
+{% endif %}
+
+</td>
+
+<td>
+
+<a href="{% url 'edit_variant' variant.id %}"
+class="btn btn-sm btn-primary">
+<i class="bi bi-pencil"></i>
+</a>
+
+<a href="{% url 'delete_variant' variant.id %}"
+onclick="return confirm('Delete variant?')"
+class="btn btn-sm btn-danger">
+<i class="bi bi-trash"></i>
+</a>
+
+</td>
+
+</tr>
+
+{% empty %}
+
+<tr>
+<td colspan="9" class="text-center py-5 text-muted">
+No variants added yet
+</td>
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+<div class="footer">
+
+<div>
+Showing {{ variants|length }} variants
+</div>
+
+<div class="d-flex align-items-center gap-2">
+
+{% if variants.has_previous %}
+<a class="btn btn-light btn-sm"
+href="?page={{ variants.previous_page_number }}">
+Previous
+</a>
+{% endif %}
+
+<span class="btn btn-primary btn-sm">
+{{ variants.number }}
+</span>
+
+{% if variants.has_next %}
+<a class="btn btn-light btn-sm"
+href="?page={{ variants.next_page_number }}">
+Next
+</a>
+{% endif %}
+
+<a href="{% url 'product_list' %}" class="btn btn-dark btn-sm ms-2">
+Back To Products
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+
+
+{% endblock %}
