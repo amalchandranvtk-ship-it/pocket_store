@@ -460,7 +460,13 @@ Logout
 
 <header class="topbar">
 
-<div class="admin-profile">
+<div class="dropdown">
+
+<div
+class="admin-profile"
+role="button"
+data-bs-toggle="dropdown"
+aria-expanded="false">
 
 <div class="text-end">
 
@@ -471,14 +477,82 @@ Logout
 </div>
 
 {% if request.user.profile_image %}
-
 <img src="{{ request.user.profile_image.url }}">
-
 {% else %}
-
 <img src="{% static 'images/default-profile.png' %}">
-
 {% endif %}
+
+</div>
+
+<div class="dropdown-menu dropdown-menu-end p-0 shadow border-0"
+style="width:360px;border-radius:18px;overflow:hidden;">
+
+<div class="p-4">
+
+<div class="text-center">
+
+{% if request.user.profile_image %}
+<img
+src="{{ request.user.profile_image.url }}"
+style="width:90px;height:90px;border-radius:50%;object-fit:cover;border:4px solid #2563eb;">
+{% else %}
+<img
+src="{% static 'images/default-profile.png' %}"
+style="width:90px;height:90px;border-radius:50%;object-fit:cover;border:4px solid #2563eb;">
+{% endif %}
+
+<h5 class="mt-3 mb-1">
+{{ request.user.full_name }}
+</h5>
+
+<p class="text-muted mb-1">
+<i class="bi bi-envelope-fill"></i>
+{{ request.user.email }}
+</p>
+
+<p class="text-muted mb-1">
+<i class="bi bi-telephone-fill"></i>
+{{ request.user.phone }}
+</p>
+
+<p class="text-muted">
+<i class="bi bi-person-badge-fill"></i>
+Administrator
+</p>
+
+<hr>
+
+<div class="d-grid gap-2">
+
+<button
+class="btn btn-primary"
+data-bs-toggle="modal"
+data-bs-target="#editProfileModal">
+
+<i class="bi bi-pencil-square"></i>
+
+Edit Profile
+
+</button>
+
+<button
+class="btn btn-outline-primary"
+data-bs-toggle="modal"
+data-bs-target="#changePasswordModal">
+
+<i class="bi bi-key-fill"></i>
+
+Change Password
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
 
 </div>
 
@@ -489,6 +563,261 @@ Logout
 {% block content %}
 
 {% endblock %}
+
+<div class="modal fade"
+id="editProfileModal"
+tabindex="-1">
+
+<div class="modal-dialog modal-lg">
+
+<div class="modal-content">
+
+<div class="modal-header">
+
+<h5 class="modal-title">
+
+Edit Profile
+
+</h5>
+
+<button
+type="button"
+class="btn-close"
+data-bs-dismiss="modal">
+
+</button>
+
+</div>
+
+<form
+method="POST"
+action="{% url 'admin_edit_profile' %}"
+enctype="multipart/form-data">
+
+{% csrf_token %}
+
+<div class="modal-body">
+
+<div class="row g-3">
+
+<div class="col-md-12 text-center">
+
+{% if admin_user.profile_image %}
+
+<img
+src="{{ admin_user.profile_image.url }}"
+id="previewImage"
+style="width:120px;height:120px;border-radius:50%;object-fit:cover;border:3px solid #2563eb;">
+
+{% else %}
+
+<img
+src="{% static 'images/default-profile.png' %}"
+id="previewImage"
+style="width:120px;height:120px;border-radius:50%;object-fit:cover;border:3px solid #2563eb;">
+
+{% endif %}
+
+</div>
+
+<div class="col-md-12">
+
+<label class="form-label">
+
+Profile Image
+
+</label>
+
+<input
+type="file"
+class="form-control"
+name="profile_image"
+id="profileImage">
+
+</div>
+
+<div class="col-md-6">
+
+<label class="form-label">
+
+Full Name
+
+</label>
+
+<input
+type="text"
+class="form-control"
+name="full_name"
+value="{{ admin_user.full_name }}"
+required>
+
+</div>
+
+<div class="col-md-6">
+
+<label class="form-label">
+
+Email
+
+</label>
+
+<input
+type="email"
+class="form-control"
+name="email"
+value="{{ admin_user.email }}"
+required>
+
+</div>
+
+<div class="col-md-12">
+
+<label class="form-label">
+
+Phone
+
+</label>
+
+<input
+type="text"
+class="form-control"
+name="phone"
+value="{{ admin_user.phone }}">
+
+</div>
+
+</div>
+
+</div>
+
+<div class="modal-footer">
+
+<button
+type="button"
+class="btn btn-secondary"
+data-bs-dismiss="modal">
+
+Cancel
+
+</button>
+
+<button
+type="submit"
+class="btn btn-primary">
+
+Save Changes
+
+</button>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="modal fade"
+id="changePasswordModal"
+tabindex="-1">
+
+<div class="modal-dialog">
+
+<div class="modal-content">
+
+<div class="modal-header">
+
+<h5 class="modal-title">
+
+Change Password
+
+</h5>
+
+<button
+type="button"
+class="btn-close"
+data-bs-dismiss="modal">
+
+</button>
+
+</div>
+
+<form
+method="POST"
+action="{% url 'admin_change_password' %}">
+
+{% csrf_token %}
+
+<div class="modal-body">
+
+
+
+<div class="mb-3">
+
+<label class="form-label">
+
+New Password
+
+</label>
+
+<input
+type="password"
+class="form-control"
+name="new_password"
+required>
+
+</div>
+
+<div class="mb-3">
+
+<label class="form-label">
+
+Confirm Password
+
+</label>
+
+<input
+type="password"
+class="form-control"
+name="confirm_password"
+required>
+
+</div>
+
+</div>
+
+<div class="modal-footer">
+
+<button
+type="button"
+class="btn btn-secondary"
+data-bs-dismiss="modal">
+
+Cancel
+
+</button>
+
+<button
+type="submit"
+class="btn btn-primary">
+
+Update Password
+
+</button>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+</div>
+
 
 </div>
 

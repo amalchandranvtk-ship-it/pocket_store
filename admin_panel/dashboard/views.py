@@ -1,7 +1,6 @@
 from datetime import timedelta
 
 from django.contrib import messages
-from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 from django.db.models.functions import (
@@ -12,138 +11,11 @@ from django.db.models.functions import (
 from django.shortcuts import redirect, render
 from django.utils import timezone
 
-import re
 
-from customer.accounts.models import User
 from customer.orders.models import Order, OrderItem
 from admin_panel.catalog.models import Product
 
 
-@login_required(login_url="admin_login")
-def edit_profile(request):
-
-    if request.method != "POST":
-        return redirect("admin_dashboard")
-
-    user = request.user
-
-    full_name = request.POST.get("full_name", "").strip()
-    email = request.POST.get("email", "").strip()
-    phone = request.POST.get("phone", "").strip()
-
-    profile_image = request.FILES.get("profile_image")
-
-    if User.objects.exclude(id=user.id).filter(email=email).exists():
-
-        messages.error(
-            request,
-            "Email already exists."
-        )
-
-        return redirect("admin_dashboard")
-
-    user.full_name = full_name
-    user.email = email
-    user.phone = phone
-
-    if profile_image:
-
-        user.profile_image = profile_image
-
-    user.save()
-
-    messages.success(
-        request,
-        "Profile updated successfully."
-    )
-
-    return redirect("admin_dashboard")
-
-
-
-@login_required(login_url="admin_login")
-def change_password(request):
-
-    if request.method != "POST":
-        return redirect("admin_dashboard")
-
-    user = request.user
-
-    new_password = request.POST.get("new_password")
-    confirm_password = request.POST.get("confirm_password")
-
-  
-
-   
-
-    if new_password != confirm_password:
-
-        messages.error(
-            request,
-            "New password and confirm password do not match."
-        )
-
-        return redirect("admin_dashboard")
-
-    if len(new_password) < 8:
-
-        messages.error(
-            request,
-            "Password must contain at least 8 characters."
-        )
-
-        return redirect("admin_dashboard")
-
-    if not re.search(r"[A-Z]", new_password):
-
-        messages.error(
-            request,
-            "Password must contain at least one uppercase letter."
-        )
-
-        return redirect("admin_dashboard")
-
-    if not re.search(r"[a-z]", new_password):
-
-        messages.error(
-            request,
-            "Password must contain at least one lowercase letter."
-        )
-
-        return redirect("admin_dashboard")
-
-    if not re.search(r"\d", new_password):
-
-        messages.error(
-            request,
-            "Password must contain at least one number."
-        )
-
-        return redirect("admin_dashboard")
-
-    if not re.search(r"[!@#$%^&*()_+\-=\[\]{};':\"\\|,.<>/?]", new_password):
-
-        messages.error(
-            request,
-            "Password must contain at least one special character."
-        )
-
-        return redirect("admin_dashboard")
-
-    user.set_password(new_password)
-    user.save()
-
-    update_session_auth_hash(
-        request,
-        user
-    )
-
-    messages.success(
-        request,
-        "Password changed successfully."
-    )
-
-    return redirect("admin_dashboard")
 
  
 

@@ -12,4 +12,8 @@ urlpatterns = [
     path('block/<int:user_id>/', views.block_customer, name='block_customer'),
     path('unblock/<int:user_id>/', views.unblock_customer, name='unblock_customer'),
     path('logout/', views.admin_logout, name='admin_logout'),
+
+    path("edit-profile/",views.edit_profile,name="admin_edit_profile"),
+    path("change-password/",views.change_password,name="admin_change_password"),
+    
 ]
