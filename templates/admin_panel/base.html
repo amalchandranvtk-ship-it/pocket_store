@@ -750,6 +750,8 @@ method="POST"
 action="{% url 'admin_change_password' %}">
 
 {% csrf_token %}
+<input type="hidden" name="next" value="{{ request.path }}">
+
 
 <div class="modal-body">
 

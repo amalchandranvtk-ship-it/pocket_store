@@ -14,6 +14,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.cache import never_cache
 from customer.accounts.models import User
 from django.contrib.auth import update_session_auth_hash
+from customer.accounts.views import is_valid_password
 
 
 
@@ -23,19 +24,6 @@ User = get_user_model()
 def is_admin(user):
     return user.is_authenticated and user.is_staff
 
-
-def validate_password(password):
-    if len(password) < 8:
-        return "Password must contain minimum 8 characters"
-    if not re.search(r"[A-Z]", password):
-        return "Password must contain at least one uppercase letter"
-    if not re.search(r"[a-z]", password):
-        return "Password must contain at least one lowercase letter"
-    if not re.search(r"[0-9]", password):
-        return "Password must contain at least one number"
-    if not re.search(r"[@$!%*?&]", password):
-        return "Password must contain at least one special character"
-    return None
 
 
 def send_admin_otp(request, email):
@@ -159,7 +147,7 @@ def reset_password(request):
             messages.error(request, "Passwords do not match")
             return redirect("admin_reset_password")
 
-        password_error = validate_password(password)
+        password_error = is_valid_password(password)
 
         if password_error:
             messages.error(request, password_error)
@@ -291,52 +279,27 @@ def change_password(request):
     if request.method != "POST":
         return redirect("admin_dashboard")
 
+    next_url = request.POST.get("next", "admin_dashboard")
+
     user = request.user
 
     new_password = request.POST.get("new_password")
     confirm_password = request.POST.get("confirm_password")
 
     if new_password != confirm_password:
-
         messages.error(request,"New password and confirm password do not match.")
+        return redirect(next_url)
 
-        return redirect("admin_dashboard")
-
-    if len(new_password) < 8:
-
-        messages.error(request,"Password must contain at least 8 characters.")
-
-        return redirect("admin_dashboard")
-
-    if not re.search(r"[A-Z]", new_password):
-
-        messages.error(request,"Password must contain at least one uppercase letter.")
-
-        return redirect("admin_dashboard")
-
-    if not re.search(r"[a-z]", new_password):
-
-        messages.error(request,"Password must contain at least one lowercase letter.")
-
-        return redirect("admin_dashboard")
-
-    if not re.search(r"\d", new_password):
-
-        messages.error(request,"Password must contain at least one number.")
-
-        return redirect("admin_dashboard")
-
-    if not re.search(r"[!@#$%^&*()_+\-=\[\]{};':\"\\|,.<>/?]", new_password):
-
-        messages.error(request,"Password must contain at least one special character.")
-
-        return redirect("admin_dashboard")
+    password_error = is_valid_password(new_password)
+    if password_error:
+        messages.error(request, password_error)
+        return redirect(next_url)
 
     user.set_password(new_password)
     user.save()
 
-    update_session_auth_hash(request,user)
+    update_session_auth_hash(request, user)
 
-    messages.success(request,"Password changed successfully.")
+    messages.success(request, "Password changed successfully.")
 
-    return redirect("admin_dashboard")
+    return redirect(next_url)
