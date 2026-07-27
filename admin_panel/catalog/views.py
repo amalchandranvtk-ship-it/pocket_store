@@ -9,6 +9,7 @@ from django.utils.text import slugify
 from django.views.decorators.cache import never_cache
 import base64 
 from django.core.files.base import ContentFile
+import re
 
 from .models import (Category, Brand,Product,ProductSpecification, ProductVariant, VariantImage)
 
@@ -28,23 +29,55 @@ def valid_decimal(value):
         return None
 
 
-def validate_category(name, type_value):
+def validate_category(name, type_value,description):
     if not name:
-        return "Category name is required"
+        return "Category is required"
+    if not name.replace(" ","").isalpha():
+        return "Category name must contain only letters"
+    if len(name.strip())<3:
+        return "Category name must contain atleast 3 characters"
     if not type_value:
         return "Category type is required"
     if type_value not in ["mobiles", "audio"]:
         return "Invalid category type"
+    if not description:
+        return "Description is required"
+    if len(description.strip())<5:
+        return "Description must contain atleast 5 characters"
     return None
 
 
-def validate_product(name, category_id, brand_id,edit=False):
+
+
+def validate_product(name, category_id, brand_id,short_description,full_description, edit=False):
+    name = name.strip()
+    short_description=short_description.strip()
+    full_description=full_description.strip()
     if not name:
         return "Product name is required"
+
+    if len(name) < 3:
+        return "Product name must contain at least 3 characters"
+
+    if not re.match(r'^[A-Za-z0-9 ]+$', name):
+        return "Product name can contain only letters, numbers and spaces"
+
     if not category_id:
         return "Category is required"
+
     if not brand_id:
         return "Brand is required"
+    if not short_description:
+        return "Short description is required"
+    if len(short_description)<8:
+        return "Short description must contain atleast 8 characters"
+   
+
+    if not full_description:
+        return "Full description is required"
+    if len(full_description)<8:
+        return "Full description must contain atleast 8 characters"
+    
     return None
 
 def validate_image_file(image):
@@ -54,14 +87,20 @@ def validate_image_file(image):
         return "Only jpg, jpeg, png, webp images are allowed"
     if image.size> 5 * 1024 * 1024:
         return "Image size must be below 5MB"
+    
     return None
 
 def validate_variant(product, color, sku, price, stock, ram="", storage="", connectivity="", battery_life="", variant_id=None):
     if not color:
         return "Color is required"
-
+    if not color.replace(" ","").isalpha():
+        return "color must contain letters"
+    if len(color)<2:
+        return "color must contain atleast 2 characters"
     if not sku:
         return "SKU is required"
+    if len(sku)<2:
+        return "sku must contain atleast 2 characters"
 
     sku_qs = ProductVariant.objects.filter(sku=sku)
     if variant_id:
@@ -84,14 +123,24 @@ def validate_variant(product, color, sku, price, stock, ram="", storage="", conn
     if product.category.type == "mobiles":
         if not ram:
             return "RAM is required for mobile variant"
+        if not any(char.isdigit() for char in ram):
+            return "RAM must contain at least one number"
         if not storage:
             return "Storage is required for mobile variant"
+        if not any(char.isdigit() for char in storage):
+            return "Storage must contain at least one number"
 
+ 
     if product.category.type == "audio":
         if not connectivity:
             return "Connectivity is required for audio variant"
+        if not connectivity.replace(" ","").isalpha():
+            return "Connectivity must contain letters"
         if not battery_life:
             return "Battery life is required for audio variant"
+        if not any(char.isdigit() for char in battery_life):
+            return "Battery life must contain at least one number"
+        
 
     return None
 
@@ -159,10 +208,15 @@ def category_form(request, category_id=None):
         image = request.FILES.get("image")
         is_active = True if request.POST.get("is_active") else False
 
-        error = validate_category(name, type_value)
+        error = validate_category(name, type_value,description)
         if error:
             messages.error(request, error)
             return redirect(request.path)
+        if image:
+            error=validate_image_file(image)
+            if error:
+                messages.error(request,error)
+                return redirect(request.path)
 
         exists = Category.objects.filter(category_name__iexact=name, is_deleted=False)
         if category:
@@ -273,11 +327,6 @@ def product_form(request, product_id=None):
         brand_id = request.POST.get("brand", "")
         
 
-        error = validate_product(name, category_id, brand_id, edit=bool(product))
-        if error:
-            messages.error(request, error)
-            return redirect(request.path)
-
         exists = Product.objects.filter(product_name__iexact=name, is_deleted=False)
         if product:
             exists = exists.exclude(id=product.id)
@@ -296,6 +345,11 @@ def product_form(request, product_id=None):
         product.short_description = request.POST.get("short_description", "")
         product.full_description = request.POST.get("full_description", "")
         product.product_status = request.POST.get("product_status", "active")
+        error = validate_product(name, category_id, brand_id, product.short_description,product.full_description,edit=bool(product))
+        if error:
+            messages.error(request, error)
+            return redirect(request.path)
+
 
         product.save()
 
@@ -303,6 +357,15 @@ def product_form(request, product_id=None):
 
         spec_names = request.POST.getlist("spec_name")
         spec_values = request.POST.getlist("spec_value")
+        for spec_name in spec_names:
+            spec_name = spec_name.strip()
+
+            if not spec_name:
+                messages.error(request, "Specification name is required")
+                return redirect(request.path)
+            if not spec_name.replace(" ","").isalpha():
+                messages.error(request,"Specification name must contain letters")
+                return redirect(request.path)
 
         for spec_name, spec_value in zip(spec_names, spec_values):
             if spec_name and spec_value:

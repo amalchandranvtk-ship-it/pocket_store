@@ -6,6 +6,7 @@ Products
 {% endblock %}
 
 {% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css">
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,Helvetica,sans-serif}
@@ -230,8 +231,12 @@ const cropImage = document.getElementById("cropImage");
 
 function openCropper(src) {
     currentImageSrc = src;
+
+    cropImage.onload = function () {
+        modal.show();
+    };
+
     cropImage.src = src;
-    modal.show();
 }
 
 modalElement.addEventListener("shown.bs.modal", function () {
