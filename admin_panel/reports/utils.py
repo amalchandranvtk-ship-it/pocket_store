@@ -40,35 +40,21 @@ def get_sales_report_data(request):
     if report_type == "daily":
 
         if selected_date:
-            orders = orders.filter(
-                placed_at__date=selected_date
-            )
+            orders = orders.filter(placed_at__date=selected_date)
         else:
-            orders = orders.filter(
-                placed_at__date=today
-            )
+            orders = orders.filter(placed_at__date=today)
 
     elif report_type == "weekly":
 
         if week_from and week_to:
 
-            orders = orders.filter(
-                placed_at__date__range=[
-                    week_from,
-                    week_to,
-                ]
-            )
+            orders = orders.filter(placed_at__date__range=[week_from,week_to])
 
         else:
 
             start_date = today - timedelta(days=6)
 
-            orders = orders.filter(
-                placed_at__date__range=[
-                    start_date,
-                    today,
-                ]
-            )
+            orders = orders.filter(placed_at__date__range=[start_date,today])
 
     elif report_type == "monthly":
 
@@ -76,31 +62,21 @@ def get_sales_report_data(request):
 
             year_value, month_value = month.split("-")
 
-            orders = orders.filter(
-                placed_at__year=int(year_value),
-                placed_at__month=int(month_value),
-            )
+            orders = orders.filter(placed_at__year=int(year_value),placed_at__month=int(month_value))
 
         else:
 
-            orders = orders.filter(
-                placed_at__year=today.year,
-                placed_at__month=today.month,
-            )
+            orders = orders.filter(placed_at__year=today.year,placed_at__month=today.month)
 
     elif report_type == "yearly":
 
         if year:
 
-            orders = orders.filter(
-                placed_at__year=int(year)
-            )
+            orders = orders.filter(placed_at__year=int(year))
 
         else:
 
-            orders = orders.filter(
-                placed_at__year=today.year
-            )
+            orders = orders.filter(placed_at__year=today.year)
 
     elif report_type == "custom":
 
@@ -108,12 +84,7 @@ def get_sales_report_data(request):
 
             if from_date <= to_date:
 
-                orders = orders.filter(
-                    placed_at__date__range=[
-                        from_date,
-                        to_date,
-                    ]
-                )
+                orders = orders.filter(placed_at__date__range=[from_date,to_date])
 
             else:
 
