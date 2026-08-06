@@ -1070,7 +1070,7 @@ body{
     <div class="product-image-container zoom-box">
       {% if offer_data.has_offer %}
 <div class="offer-badge">
-    {{ offer_data.discount_percentage }}% OFF
+    {{ offer_data.label }}
 </div>
 {% endif %}
 
@@ -1133,7 +1133,7 @@ body{
 </span>
 
 <span class="save-badge">
-{{ offer_data.discount_percentage }}% OFF
+{{ offer_data.label }}
 </span>
 
 {% else %}
@@ -1480,15 +1480,15 @@ body{
             <div class="related-img-wrapper">
 {% if related.offer_data.has_offer %}
 <div class="save-label">
-    {{ related.offer_data.discount_percentage }}% OFF
+    {{ related.offer_data.label }}
 </div>
 {% endif %}
-              {% endif %}
+             
 
               <a href="{% url 'add_to_wishlist' related_variant.id %}" class="favorite-btn">
                 <span class="material-symbols-outlined">favorite</span>
               </a>
-
+              {% endif %}
               <a href="{% url 'product_detail' related.slug %}">
                 {% if related_variant.main_image %}
                   <img alt="{{ related.product_name }}" src="{{ related_variant.main_image.url }}">

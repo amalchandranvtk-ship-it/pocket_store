@@ -28,6 +28,7 @@ urlpatterns = [
     path('admin/', include('admin_panel.reports.urls')),
     path('admin/offer/', include('admin_panel.offers.urls')),
     path('admin/', include('admin_panel.review.urls')),
+    path("accounts/", include("allauth.urls")), 
 
 
 

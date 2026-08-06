@@ -779,11 +779,11 @@
 
           <div class="product-img">
 
-            {% if product.offer_data.has_offer %}
-<div class="offer-badge">
-    {{ product.offer_data.discount_percentage }}% OFF
-</div>
-{% endif %}
+          {% if product.offer_data.has_offer %}
+            <div class="offer-badge">
+               {{ product.offer_data.label }}
+            </div>
+          {% endif %}
 
             {% if variant and variant.main_image %}
 

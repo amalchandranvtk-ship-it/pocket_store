@@ -1131,10 +1131,9 @@ if(data.success){
 window.location.href=data.redirect_url;
 
 }
-
 else{
 
-alert(data.message);
+window.location.href="{% url 'order_failed' %}";
 
 }
 
@@ -1160,11 +1159,10 @@ headers:{
 if(!data.success){
 
 alert(data.message);
-
+window.location.href="{% url 'order_failed' %}";
 return;
 
 }
-
 var options={
 
 key:data.key,
@@ -1183,6 +1181,12 @@ handler:function(response){
 
 verifyPayment(response);
 
+},
+
+modal:{
+    ondismiss:function(){
+        window.location.href="{% url 'order_failed' %}";
+    }
 },
 
 theme:{

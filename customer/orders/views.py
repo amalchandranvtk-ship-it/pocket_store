@@ -432,7 +432,6 @@ def place_order(request):
 
             return redirect("checkout")
 
-    order_number = ("PS"+ timezone.now().strftime("%Y%m%d%H%M%S"))
 
     payment_status = "pending"
     if payment_method == "wallet":
@@ -460,82 +459,94 @@ def place_order(request):
 
     coupon = totals["coupon"]
 
-    order = Order.objects.create(
+    if payment_method == "razorpay":
 
-        user=request.user,
+        request.session["checkout_address"] = address.id
+        request.session["payment_method"] = "razorpay"
 
-        address=address,
+        return JsonResponse({"success": True})
 
-        order_number=order_number,
+    if payment_method != "razorpay":
 
-        subtotal=totals["subtotal"],
 
-        discount_amount=totals["discount_amount"] ,
-        coupon_code=(coupon.coupon_code if coupon else None),
+        order_number = ("PS"+ timezone.now().strftime("%Y%m%d%H%M%S"))
 
-        coupon_discount_type=(coupon.discount_type if coupon else None),
+        order = Order.objects.create(
 
-        coupon_discount_value=(totals["coupon_discount"]),
-        delivery_charge=totals["delivery_charge"],
+           user=request.user,
 
-        tax_amount=totals["tax_amount"],
+           address=address,
 
-        total_amount=totals["total_amount"],
+           order_number=order_number,
 
-        payment_status=payment_status,
+           subtotal=totals["subtotal"],
 
-        order_status="pending",
+           discount_amount=totals["discount_amount"] ,
+           coupon_code=(coupon.coupon_code if coupon else None),
 
-        estimated_delivery=timezone.now().date()
+           coupon_discount_type=(coupon.discount_type if coupon else None),
 
-        + timedelta(days=5)
+           coupon_discount_value=(totals["coupon_discount"]),
+           delivery_charge=totals["delivery_charge"],
 
-    )
-    for item in cart_items:
+           tax_amount=totals["tax_amount"],
 
-        variant = item.variant
+           total_amount=totals["total_amount"],
 
-        offer_data = get_variant_offer_price(variant)
+           payment_status=payment_status,
 
-        unit_price = offer_data["selling_price"]
+           order_status="pending",
 
-        OrderItem.objects.create(
+           estimated_delivery=timezone.now().date()
+
+           + timedelta(days=5)
+
+        )
+        for item in cart_items:
+
+           variant = item.variant
+
+           offer_data = get_variant_offer_price(variant)
+
+           unit_price = offer_data["selling_price"]
+
+           OrderItem.objects.create(
+
+               order=order,
+
+               variant=variant,
+
+               product_name=variant.product.product_name,
+
+               sku=variant.sku,
+
+               quantity=item.quantity,
+
+               price=unit_price,
+
+               total=unit_price * item.quantity,
+
+               status="pending"
+
+            )
+
+           variant.stock_quantity -= item.quantity
+
+           variant.save()
+
+        payment = Payment.objects.create(
 
             order=order,
 
-            variant=variant,
+            payment_method=payment_method,
 
-            product_name=variant.product.product_name,
+            amount=totals["total_amount"],
 
-            sku=variant.sku,
-
-            quantity=item.quantity,
-
-            price=unit_price,
-
-            total=unit_price * item.quantity,
-
-            status="pending"
+            payment_status=payment_status
 
         )
 
-        variant.stock_quantity -= item.quantity
-
-        variant.save()
-
-    payment = Payment.objects.create(
-
-        order=order,
-
-        payment_method=payment_method,
-
-        amount=totals["total_amount"],
-
-        payment_status=payment_status
-
-    )
-
-    OrderStatusHistory.objects.create(order=order,status="Pending",note="Order placed successfully.")
+        OrderStatusHistory.objects.create(order=order,status="Pending",note="Order placed successfully.")
 
     if payment_method == "cod":
 
@@ -599,7 +610,6 @@ def place_order(request):
 
         })
 
-    request.session["razorpay_order_number"]=order.order_number
 
     return JsonResponse({"success": True})
 
@@ -610,14 +620,9 @@ def create_razorpay_order(request):
     if request.method != "POST":
 
         return JsonResponse({"success": False,"message": "Invalid request."})
+    cart_items = CartItem.objects.filter(user=request.user).select_related("variant")
 
-    order_number = request.session.get("razorpay_order_number")
-
-    if not order_number:
-
-        return JsonResponse({"success": False,"message": "Order not found."})
-
-    order = get_object_or_404( Order,order_number=order_number,user=request.user)
+    totals = calculate_cart_totals(cart_items,request)
 
     client = razorpay.Client(
 
@@ -625,19 +630,13 @@ def create_razorpay_order(request):
 
     razorpay_order = client.order.create({
 
-        "amount": int(order.total_amount * 100),
-
+        "amount": int(totals["total_amount"] *100),
         "currency": "INR",
 
-        "payment_capture": 1,
+        "payment_capture": 1
 
     })
 
-    payment = order.payment
-
-    payment.transaction_id = razorpay_order["id"]
-
-    payment.save(update_fields=["transaction_id"])
 
     return JsonResponse({
 
@@ -645,8 +644,7 @@ def create_razorpay_order(request):
 
         "key": settings.RAZORPAY_KEY_ID,
 
-        "amount": int(order.total_amount * 100),
-
+        "amount": int(totals["total_amount"] * 100),
         "order_id": razorpay_order["id"]
 
     })
@@ -686,31 +684,110 @@ def verify_razorpay_payment(request):
 
         return JsonResponse({"success": False,"message": "Payment verification failed."})
 
-    order_number = request.session.get("razorpay_order_number")
+    cart_items = CartItem.objects.filter(user=request.user).select_related("variant","variant__product")
+    if not cart_items.exists():
+       return JsonResponse({"success": False,"message": "Cart is empty."})
 
-    order = get_object_or_404(Order,order_number=order_number,user=request.user)
+    address_id = request.session.get("checkout_address")
 
-    payment = order.payment
+    if not address_id:
+        return JsonResponse({"success": False,"message": "Address not found."})
 
-    payment.transaction_id = razorpay_payment_id
+    address = get_object_or_404(Address,id=address_id,user=request.user)
+    totals = calculate_cart_totals(cart_items,request)
 
-    payment.payment_status = "paid"
+    coupon = totals["coupon"]
 
-    payment.paid_at = timezone.now()
+    order_number = ("PS" +timezone.now().strftime("%Y%m%d%H%M%S"))
 
-    payment.save()
+    
+    order = Order.objects.create(
 
-    order.payment_status = "paid"
+           user=request.user,
 
-    order.save(update_fields=["payment_status"])
+           address=address,
 
-    CartItem.objects.filter(user=request.user).delete()
+           order_number=order_number,
 
-    request.session.pop("razorpay_order_number",None)
+           subtotal=totals["subtotal"],
 
-    request.session.pop("razorpay_amount",None)
+           discount_amount=totals["discount_amount"] ,
+           coupon_code=(coupon.coupon_code if coupon else None),
+
+           coupon_discount_type=(coupon.discount_type if coupon else None),
+
+           coupon_discount_value=(totals["coupon_discount"]),
+           delivery_charge=totals["delivery_charge"],
+
+           tax_amount=totals["tax_amount"],
+
+           total_amount=totals["total_amount"],
+
+           payment_status="paid",
+
+           order_status="pending",
+
+           estimated_delivery=timezone.now().date()
+
+           + timedelta(days=5)
+
+        )
+    for item in cart_items:
+
+           variant = item.variant
+
+           offer_data = get_variant_offer_price(variant)
+
+           unit_price = offer_data["selling_price"]
+
+           OrderItem.objects.create(
+
+               order=order,
+
+               variant=variant,
+
+               product_name=variant.product.product_name,
+
+               sku=variant.sku,
+
+               quantity=item.quantity,
+
+               price=unit_price,
+
+               total=unit_price * item.quantity,
+
+               status="pending"
+
+            )
+
+           variant.stock_quantity -= item.quantity
+
+           variant.save()
+
+    payment = Payment.objects.create(
+
+            order=order,
+
+            payment_method="razorpay",
+
+            amount=totals["total_amount"],
+
+            payment_status="paid",
+            transaction_id=razorpay_payment_id,
+            paid_at=timezone.now(),
+
+        )
+
+    OrderStatusHistory.objects.create(order=order,status="Pending",note="Order placed successfully.")
+
+ 
+
+    cart_items.delete()
+    request.session.pop("checkout_address",None)
+
     request.session.pop("coupon_id", None)
     request.session.pop("coupon_code", None)
+    request.session.pop("payment_method", None)
 
     return JsonResponse({"success": True,"redirect_url": reverse(
         "order_success",

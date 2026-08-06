@@ -133,13 +133,7 @@ def product_listing(request, product_type):
         "variants",
         "variants__images"
     ).distinct()
-    for product in products:
-
-        variant = product.default_variant
-
-        if variant:
-
-            product.offer_data = get_variant_offer_price(variant)
+    
 
     if q:
         products = products.filter(
@@ -171,17 +165,17 @@ def product_listing(request, product_type):
         messages.error(request, "Minimum price cannot be greater than maximum price")
     else:
         if min_price is not None:
-            products = products.filter(selling_price__gte=min_price)
+            products = products.filter(variants__price__gte=min_price)
 
         if max_price is not None:
-            products = products.filter(selling_price__lte=max_price)
-
+            products = products.filter(variants__price__lte=max_price)
     products = products.distinct()
 
+    products = products.annotate(sort_price=Min("variants__price"))
     if sort == "price_low":
-        products = products.order_by("selling_price", Lower("product_name"))
+        products = products.order_by("sort_price")
     elif sort == "price_high":
-        products = products.order_by("-selling_price", Lower("product_name"))
+        products = products.order_by("-sort_price")
     elif sort == "a_z":
         products = products.order_by(Lower("product_name"))
     elif sort == "z_a":
@@ -192,6 +186,13 @@ def product_listing(request, product_type):
 
     paginator = Paginator(products, 8)
     page_obj = paginator.get_page(request.GET.get("page"))
+    for product in page_obj:
+    
+        variant = product.default_variant
+    
+        if variant:
+    
+            product.offer_data = get_variant_offer_price(variant)
 
     categories = Category.objects.filter(
         type=product_type,
