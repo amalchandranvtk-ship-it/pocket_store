@@ -1530,6 +1530,19 @@ Return Item
 
 {% endif %}
 
+{% if item.status == "cancelled" %}
+
+    <a
+        href="{% url 'repurchase_item' item.id %}"
+        class="btn btn-primary btn-sm">
+
+        <i class="bi bi-cart-plus me-1"></i>
+        Repurchase
+
+    </a>
+
+    {% endif %}
+
 {% if item.status == "delivered" %}
 
     {% if item.review %}
@@ -1572,6 +1585,18 @@ Return Item
 
         {% elif return_item.return_request.status == "approved" %}
             <span class="badge bg-success">Approved</span>
+            <div class="mt-3">
+
+                <a
+                  href="{% url 'repurchase_item' item.id %}"
+                  class="btn btn-primary btn-sm">
+
+                  <i class="bi bi-cart-plus me-1"></i>
+                  Repurchase
+
+                </a>
+
+            </div>
 
         {% elif return_item.return_request.status == "rejected" %}
             <span class="badge bg-danger">Rejected</span>

@@ -450,7 +450,7 @@ def approve_return(request, return_id):
 
     messages.success(request,"Refund approved successfully.")
 
-    return redirect("admin_return_detail",return_request.id)
+    return redirect("admin_return_list",return_request.id)
 
 
 @login_required(login_url="admin_login")
@@ -475,4 +475,4 @@ def reject_return(request, return_id):
 
     messages.success(request,"Return request rejected.")
 
-    return redirect("admin_return_detail",return_request.id)
+    return redirect("admin_return_list",return_request.id)

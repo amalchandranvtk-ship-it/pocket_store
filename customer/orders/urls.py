@@ -22,5 +22,6 @@ urlpatterns = [
     path("order-item/<int:item_id>/return/",views.return_request,name="return_request",),
     path("apply-coupon/",views.apply_coupon,name="apply_coupon",),
     path("remove-coupon/",views.remove_coupon,name="remove_coupon",),
+    path("repurchase/<int:item_id>/",views.repurchase_item,name="repurchase_item"),
 
 ]

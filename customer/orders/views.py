@@ -55,6 +55,9 @@ from reportlab.platypus import (
 
 from reportlab.pdfbase.pdfmetrics import stringWidth
 
+from customer.store.models import CartItem,Wishlist
+from admin_panel.catalog.models import ProductVariant
+
 
 
 
@@ -1924,3 +1927,36 @@ def remove_coupon(request):
     messages.success(request,"Coupon removed.")
 
     return redirect("checkout")
+
+
+@login_required(login_url="customer_login")
+def repurchase_item(request, item_id):
+
+    item = get_object_or_404(OrderItem.objects.select_related("variant","variant__product"),id=item_id,order__user=request.user)
+
+    variant = item.variant
+
+    if (
+        variant.is_deleted
+        or variant.product.is_deleted
+        or not variant.is_active
+        or variant.product.product_status != "active"
+    ):
+        messages.error(request,"This product is currently unavailable.")
+
+        return redirect("order_detail",order_number=item.order.order_number)
+
+    cart_item = CartItem.objects.filter(user=request.user,variant=variant).first()
+
+    if cart_item:
+        messages.error(request,"This product is already in your cart.")
+
+        return redirect("order_detail",order_number=item.order.order_number)
+
+    CartItem.objects.create(user=request.user,variant=variant,quantity=1)
+    Wishlist.objects.filter(user=request.user,variant=variant).delete()
+
+
+    messages.success(request,f"{item.product_name} added to your cart.")
+
+    return redirect("cart")

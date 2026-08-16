@@ -748,7 +748,7 @@ color:#fff;
 {% if request.user.profile_image %}
 <img src="{{ request.user.profile_image.url }}" class="profile-image">
 {% else %}
-<img src="{% static 'images/default-user.png' %}" class="profile-image">
+<img src="{% static 'images/default-image.jpg' %}" class="profile-image">
 {% endif %}
 
 <a href="{% url 'edit_profile' %}" class="edit-profile-icon">

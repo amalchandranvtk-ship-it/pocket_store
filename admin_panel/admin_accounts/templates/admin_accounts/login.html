@@ -333,18 +333,18 @@
         {% csrf_token %}
 
         <div class="mb-3">
-          <label class="form-label text-muted">Email Address</label>
+          <label class="form-label">Email Address</label>
 
           <div class="position-relative">
             <i class="bi bi-person input-icon"></i>
-            <input type="email" name="email" class="form-control" >
+            <input type="email" name="email" class="form-control"  placeholder="Enter your email" >
           </div>
         </div>
 
         <div class="mb-3">
 
           <div class="d-flex justify-content-between">
-            <label class="form-label text-muted">Password</label>
+            <label class="form-label">Password</label>
             <a href="{% url 'admin_forgot_password' %}" class="text-decoration-none small text-primary">
               Forgot Password?
             </a>
@@ -352,7 +352,7 @@
 
           <div class="position-relative">
             <i class="bi bi-lock input-icon"></i>
-            <input type="password"  id="password" name="password" class="form-control" >
+            <input type="password"  id="password" name="password" class="form-control"  placeholder="Enter your password" >
             <i class="bi bi-eye eye-icon" id="togglePassword"></i>
           </div>
 
