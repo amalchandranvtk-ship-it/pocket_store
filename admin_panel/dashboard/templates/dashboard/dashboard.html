@@ -740,7 +740,7 @@ Revenue
 
 <div class="summary-value">
 
-₹{{ total_sales }}
+₹{{ total_sales |floatformat:1}}
 
 </div>
 
@@ -869,7 +869,7 @@ Best Selling Products
 
 <span class="badge-sales">
 
-₹{{ product.total_sales }}
+₹{{ product.total_sales |floatformat:2}}
 
 </span>
 
@@ -951,7 +951,7 @@ Best Selling Categories
 
 <span class="badge-sales">
 
-₹{{ category.total_sales }}
+₹{{ category.total_sales |floatformat:2 }}
 
 </span>
 
@@ -1033,7 +1033,7 @@ Best Selling Brands
 
 <span class="badge-sales">
 
-₹{{ brand.total_sales }}
+₹{{ brand.total_sales |floatformat:2}}
 
 </span>
 
